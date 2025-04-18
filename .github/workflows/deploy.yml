@@ -1,0 +1,59 @@
+name: Deploy
+on:
+  pull_request:
+  push:
+    branches: [master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    strategy:
+          matrix:
+            node-version: [20]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up NODE ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install client with NPM
+      working-directory: client
+      run: npm i
+    - name: Test client with NPM
+      working-directory: client
+      run: npm run test
+    - name: Build client with NPM
+      working-directory: client
+      run: npm run build
+    - name: Transpile client with NPM
+      working-directory: client
+      run: npm run transpile
+    - name: Install with NPM
+      run: npm i
+    - name: Test with NPM
+      run: npm run test
+    - name: Test E2E with NPM
+      run: npm run test:e2e
+    - name: Build with NPM
+      run: npm run build
+    - name: Delete client npm package
+      working-directory: client
+      run: |
+        curl -X DELETE -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/vzhyhunou/packages/npm/vzh-cms-2-client
+      if: ${{ github.event_name != 'pull_request' }}
+    - name: Publish client with NPM
+      working-directory: client
+      run: npm publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: ${{ github.event_name != 'pull_request' }}
+    - name: Delete npm package
+      run: |
+        curl -X DELETE -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/vzhyhunou/packages/npm/vzh-cms-2
+      if: ${{ github.event_name != 'pull_request' }}
+    - name: Publish with NPM
+      run: npm publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: ${{ github.event_name != 'pull_request' }}
