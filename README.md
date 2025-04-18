@@ -1,2 +1,30 @@
-# vzh-cms-2
-ReactJS and NestJS - CMS
+# ReactJS and NestJS - CMS
+![Deploy](https://github.com/vzhyhunou/vzh-cms-2/actions/workflows/deploy.yml/badge.svg)
+
+## Tech stack and libraries
+### Backend
+- NestJS
+- PassportJS
+- nestjs-i18n
+- class-transformer
+- class-validator
+- cron
+- moment
+- bcrypt
+### Frontend
+- ReactJS
+- React-admin
+- React Router
+- Material-UI
+- ViteJS
+- Jest
+
+## Getting Started
+### Running
+- Download and install Node 17.9.1
+- Install packages: `npm install`
+- Build the project: `npm run build`
+- Run app: `node dist/main.js`
+### Usage
+- Home page: http://localhost:8090
+- Admin console: http://localhost:8090/admin, use `admin`, `editor`, `manager` as username and password
