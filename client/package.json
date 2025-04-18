@@ -1,0 +1,50 @@
+{
+  "name": "@vzhyhunou/vzh-cms-2-client",
+  "version": "0.0.1",
+  "dependencies": {
+    "react-admin": "^5.2.1",
+    "ra-language-russian": "^4.14.2",
+    "ra-data-fakerest": "^5.1.1",
+    "jwt-decode": "^3.1.2",
+    "jwt-encode": "^1.0.1",
+    "js-md5": "^0.8.3",
+    "react-jsx-parser": "^1.29.0",
+    "ext-list": "^4.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite-plugin-eslint": "^1.8.1",
+    "eslint-config-react-app": "^7.0.1",
+    "jest": "^29.7.0",
+    "@testing-library/react": "^14.1.2",
+    "jest-environment-jsdom": "^29.7.0",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.5",
+    "@babel/cli": "^7.23.4"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "scripts": {
+    "format": "prettier --write '{src,test}/**/*.{js,json,jsx}'",
+    "start": "cross-env REACT_APP_SRC=back vite",
+    "start:fake": "cross-env REACT_APP_SRC=fake vite",
+    "build": "cross-env BUILD_PATH=../dist/public REACT_APP_SRC=back vite build",
+    "build:fake": "cross-env BUILD_PATH=../dist/public REACT_APP_SRC=fake vite build && rimraf ../docs && BUILD_PATH=../docs REACT_APP_SRC=fake REACT_APP_BASE=/vzh-cms-2 vite build",
+    "test": "cross-env REACT_APP_SRC=back jest",
+    "transpile": "babel src -d lib --ignore 'src/main.jsx,src/config.js,src/provider/back.js,src/provider/fake.js,src/provider/resources,**/*.test.js,**/*.test.jsx,**/__mocks__'"
+  },
+  "files": [
+    "package.json",
+    "lib"
+  ],
+  "exports": {
+    ".": "./lib/index.js",
+    "./provider/builder/fake": "./lib/provider/builder/fake.js",
+    "./provider/builder/back": "./lib/provider/builder/back.js",
+    "./provider/messages/en": "./lib/provider/messages/en.js",
+    "./provider/messages/ru": "./lib/provider/messages/ru.js"
+  }
+}
