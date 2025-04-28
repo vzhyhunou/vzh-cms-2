@@ -9,7 +9,7 @@ import {
 import { Schema } from '../../src/schemas/schema.entity';
 import customRepository from '../../src/schemas/schemas.repository';
 import schema from './schema.fixture';
-import { DatasourceModule } from '../../src/datasource/datasource.module';
+import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 
 describe('SchemasRepository', () => {
@@ -20,7 +20,7 @@ describe('SchemasRepository', () => {
     const moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule,
-        DatasourceModule,
+        DataSourceModule,
         TypeOrmModule.forFeature([Schema])
       ],
       providers: [
