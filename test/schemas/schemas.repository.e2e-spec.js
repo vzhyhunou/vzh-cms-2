@@ -1,16 +1,14 @@
 import { Test } from '@nestjs/testing';
 import {
-  TypeOrmModule,
-  getRepositoryToken,
   getEntityManagerToken,
   getCustomRepositoryToken
 } from '@nestjs/typeorm';
 
 import { Schema } from '../../src/schemas/schema.entity';
-import customRepository from '../../src/schemas/schemas.repository';
 import schema from './schema.fixture';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
+import { SchemasModule } from '../../src/schemas/schemas.module';
 
 describe('SchemasRepository', () => {
   let manager;
@@ -18,18 +16,7 @@ describe('SchemasRepository', () => {
 
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [
-        ConfigModule,
-        DataSourceModule,
-        TypeOrmModule.forFeature([Schema])
-      ],
-      providers: [
-        {
-          provide: getCustomRepositoryToken(Schema),
-          inject: [getRepositoryToken(Schema)],
-          useFactory: (repository) => repository.extend(customRepository)
-        }
-      ]
+      imports: [ConfigModule, DataSourceModule, SchemasModule]
     }).compile();
 
     manager = moduleFixture.get(getEntityManagerToken());

@@ -1,0 +1,5 @@
+{
+  "moduleFileExtensions": ["js", "json"],
+  "rootDir": "../..",
+  "testRegex": "schemas.service.e2e-spec.js$"
+}
