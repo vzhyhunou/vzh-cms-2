@@ -8,6 +8,7 @@ import {
 
 import { config } from '../datasource/configuration';
 import { Schema } from './schema.entity';
+import { SchemasController } from './schemas.controller';
 import customRepository from './schemas.repository';
 import { SchemasService } from './schemas.service';
 
@@ -16,6 +17,7 @@ import { SchemasService } from './schemas.service';
     ConfigModule.forFeature(config),
     TypeOrmModule.forFeature([Schema])
   ],
+  controllers: [SchemasController],
   providers: [
     {
       provide: getCustomRepositoryToken(Schema),

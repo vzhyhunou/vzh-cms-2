@@ -1,0 +1,87 @@
+import { getCustomRepositoryToken } from '@nestjs/typeorm';
+import {
+  Controller,
+  Dependencies,
+  Get,
+  Put,
+  Delete,
+  Body,
+  Post,
+  Bind,
+  Param,
+  Query
+} from '@nestjs/common';
+
+import { Schema } from './schema.entity';
+import { SchemaPipe } from './schema.pipe';
+import { SchemasService } from './schemas.service';
+
+@Controller('api/schemas')
+@Dependencies(getCustomRepositoryToken(Schema), SchemasService)
+export class SchemasController {
+  constructor(repository, service) {
+    this.repository = repository;
+    this.service = service;
+  }
+
+  @Post()
+  @Bind(Body(SchemaPipe))
+  async create(entity) {
+    const result = await this.repository.save(entity);
+    await this.service.initialize();
+    return result;
+  }
+
+  @Put(':id')
+  @Bind(Body(SchemaPipe))
+  async update(entity) {
+    const result = await this.repository.save(entity);
+    await this.service.initialize();
+    return result;
+  }
+
+  @Delete(':id')
+  @Bind(Param('id'))
+  async remove(id) {
+    await this.repository.remove(id);
+    await this.service.initialize();
+  }
+
+  @Get()
+  @Bind(Query())
+  async findAll({ page = 0, size = 20, sort }) {
+    const { content, totalElements } = await this.repository.findAll({
+      page,
+      size,
+      sort: sort && sort.split(',')
+    });
+    return {
+      content,
+      page: {
+        totalElements
+      }
+    };
+  }
+
+  @Get(':id')
+  @Bind(Param('id'))
+  findById(id) {
+    return this.repository.findById(id);
+  }
+
+  @Get('search/list')
+  @Bind(Query())
+  async list({ page = 0, size = 20, sort, ...rest }) {
+    const { content, totalElements } = await this.repository.list(rest, {
+      page,
+      size,
+      sort: sort && sort.split(',')
+    });
+    return {
+      content,
+      page: {
+        totalElements
+      }
+    };
+  }
+}

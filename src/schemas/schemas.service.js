@@ -4,6 +4,7 @@ import { EntitySchema, DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 
 import { Schema } from '../schemas/schema.entity';
+import baseRepository from '../common/repository/base.repository';
 
 @Injectable()
 @Dependencies(ConfigService, getCustomRepositoryToken(Schema))
@@ -30,18 +31,9 @@ export class SchemasService {
     await this.dataSource.initialize();
   }
 
-  async save(entity) {
-    const result = await this.repository.save(entity);
-    await this.initialize();
-    return result;
-  }
-
-  async remove(id) {
-    await this.repository.remove({ id });
-    await this.initialize();
-  }
-
   getRepository(id) {
-    return this.dataSource.getRepository(this.schemas.get(id));
+    return this.dataSource
+      .getRepository(this.schemas.get(id))
+      .extend(baseRepository);
   }
 }

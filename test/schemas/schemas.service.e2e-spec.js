@@ -26,44 +26,44 @@ describe('SchemasService (e2e)', () => {
   describe('save()', () => {
     it('should save item', async () => {
       let entity = repository.create(schema('user'));
-      await subj.save(entity);
+      await repository.save(entity);
+      await subj.initialize();
 
       entity = await repository.find();
       expect(entity).toMatchObject([{ id: 'user' }]);
 
-      let usersRepository = subj.getRepository('user');
-      entity = usersRepository.create({ id: 'admin' });
-      await usersRepository.save(entity);
+      let itemsRepository = subj.getRepository('user');
+      entity = itemsRepository.create({ id: 'admin' });
+      await itemsRepository.save(entity);
 
-      usersRepository = subj.getRepository('user');
-      entity = await usersRepository.find();
+      entity = await itemsRepository.find();
       expect(entity).toMatchObject([{ id: 'admin' }]);
 
       entity = repository.create(schema('page'));
-      await subj.save(entity);
+      await repository.save(entity);
+      await subj.initialize();
 
       entity = await repository.find();
       expect(entity).toMatchObject([{ id: 'user' }, { id: 'page' }]);
 
-      usersRepository = subj.getRepository('user');
-      entity = await usersRepository.find();
+      itemsRepository = subj.getRepository('user');
+      entity = await itemsRepository.find();
       //expect(entity).toMatchObject([{ id: 'admin' }]);
 
-      let pagesRepository = subj.getRepository('page');
-      entity = pagesRepository.create({ id: 'home' });
-      await pagesRepository.save(entity);
+      itemsRepository = subj.getRepository('page');
+      entity = itemsRepository.create({ id: 'home' });
+      await itemsRepository.save(entity);
 
-      pagesRepository = subj.getRepository('page');
-      entity = await pagesRepository.find();
+      entity = await itemsRepository.find();
       expect(entity).toMatchObject([{ id: 'home' }]);
 
-      await subj.remove('user');
+      await repository.remove({ id: 'user' });
+      await subj.initialize();
 
       entity = await repository.find();
       expect(entity).toMatchObject([{ id: 'page' }]);
 
-      pagesRepository = subj.getRepository('page');
-      entity = await pagesRepository.find();
+      entity = await itemsRepository.find();
       //expect(entity).toMatchObject([{ id: 'home' }]);
     });
   });
