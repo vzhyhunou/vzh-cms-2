@@ -25,6 +25,7 @@ import { SchemasService } from './schemas.service';
       useFactory: (repository) => repository.extend(customRepository)
     },
     SchemasService
-  ]
+  ],
+  exports: [SchemasService]
 })
 export class SchemasModule {}

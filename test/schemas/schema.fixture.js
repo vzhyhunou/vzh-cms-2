@@ -6,6 +6,10 @@ export default (id) => ({
       id: {
         type: 'varchar',
         primary: true
+      },
+      f: {
+        type: 'varchar',
+        nullable: true
       }
     }
   })

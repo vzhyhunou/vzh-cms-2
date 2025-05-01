@@ -69,32 +69,21 @@ describe('SchemasController (e2e)', () => {
   it('/schemas (POST)', async () => {
     const user = repository.create(schema('user'));
     await repository.save(user);
-    const dto = {
-      id: 'page',
-      value: JSON.stringify({
-        name: 'page',
-        columns: {
-          id: {
-            type: 'varchar',
-            primary: true
-          }
-        }
-      })
-    };
+    const page = schema('page');
     await request(app.getHttpServer())
       .post('/api/schemas')
-      .send(dto)
+      .send(page)
       .expect(201);
     const result = await repository.find();
-    expect(result).toMatchObject([user, dto]);
+    expect(result).toMatchObject([user, page]);
   });
 
   it('/schemas/:id (PUT)', async () => {
     const user = repository.create(schema('user'));
     await repository.save(user);
-    const page = repository.create(schema('page'));
+    let page = repository.create(schema('page'));
     await repository.save(page);
-    const dto = {
+    page = {
       id: 'page',
       value: JSON.stringify({
         name: 'page',
@@ -111,10 +100,10 @@ describe('SchemasController (e2e)', () => {
     };
     await request(app.getHttpServer())
       .put('/api/schemas/page')
-      .send(dto)
+      .send(page)
       .expect(200);
-    const result = await repository.find('page');
-    expect(result).toMatchObject([user, dto]);
+    const result = await repository.find();
+    expect(result).toMatchObject([user, page]);
   });
 
   afterEach(async () => {
