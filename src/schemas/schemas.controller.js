@@ -49,18 +49,21 @@ export class SchemasController {
 
   @Get()
   @Bind(Query())
-  async findAll({ page = 0, size = 20, sort }) {
-    const { content, totalElements } = await this.repository.findAll({
-      page,
-      size,
-      sort: sort && sort.split(',')
-    });
-    return {
-      content,
-      page: {
-        totalElements
-      }
-    };
+  findAll({ page = 0, size = 20, sort }) {
+    return this.repository
+      .findAll(
+        page,
+        size,
+        sort && Array.isArray(sort)
+          ? sort.map((s) => s.split(','))
+          : [sort.split(',')]
+      )
+      .then(({ content, totalElements }) => ({
+        content,
+        page: {
+          totalElements
+        }
+      }));
   }
 
   @Get(':id')
@@ -71,17 +74,21 @@ export class SchemasController {
 
   @Get('search/list')
   @Bind(Query())
-  async list({ page = 0, size = 20, sort, ...rest }) {
-    const { content, totalElements } = await this.repository.list(rest, {
-      page,
-      size,
-      sort: sort && sort.split(',')
-    });
-    return {
-      content,
-      page: {
-        totalElements
-      }
-    };
+  list({ id, page = 0, size = 20, sort }) {
+    return this.repository
+      .list(
+        id,
+        page,
+        size,
+        sort && Array.isArray(sort)
+          ? sort.map((s) => s.split(','))
+          : [sort.split(',')]
+      )
+      .then(({ content, totalElements }) => ({
+        content,
+        page: {
+          totalElements
+        }
+      }));
   }
 }

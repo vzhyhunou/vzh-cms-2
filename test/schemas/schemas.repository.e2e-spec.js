@@ -50,12 +50,12 @@ describe('SchemasRepository', () => {
     it('should return an array of schemas', async () => {
       const entities = manager.create(Schema, [schema('user'), schema('page')]);
       await manager.save(entities);
-      let result = await subj.findAll({ page: 0, size: 2 });
+      let result = await subj.findAll(0, 2);
       expect(result).toMatchObject({
         content: [{ id: 'user' }, { id: 'page' }],
         totalElements: 2
       });
-      result = await subj.findAll({ page: 1, size: 2 });
+      result = await subj.findAll(1, 2);
       expect(result).toMatchObject({ content: [], totalElements: 2 });
     });
   });
@@ -64,19 +64,19 @@ describe('SchemasRepository', () => {
     it('should return an empty array of schemas', async () => {
       const entity = manager.create(Schema, schema('user'));
       await manager.save(entity);
-      const result = await subj.list({ id: 'a' }, { page: 0, size: 1 });
+      const result = await subj.list('a', 0, 1);
       expect(result).toMatchObject({ content: [], totalElements: 0 });
     });
 
     it('should return a filtered array of schemas', async () => {
       const entities = manager.create(Schema, [schema('user'), schema('page')]);
       await manager.save(entities);
-      let result = await subj.list({ id: 'uS' }, { page: 0, size: 1 });
+      let result = await subj.list('uS', 0, 1);
       expect(result).toMatchObject({
         content: [{ id: 'user' }],
         totalElements: 1
       });
-      result = await subj.list({ id: 'uS' }, { page: 1, size: 1 });
+      result = await subj.list('uS', 1, 1);
       expect(result).toMatchObject({ content: [], totalElements: 1 });
     });
   });

@@ -43,19 +43,22 @@ export class ItemsController {
 
   @Get(':schema')
   @Bind(Param('schema'), Query())
-  async findAll(schema, { page = 0, size = 20, sort }) {
+  findAll(schema, { page = 0, size = 20, sort }) {
     const repository = this.service.getRepository(schema);
-    const { content, totalElements } = await repository.findAll({
-      page,
-      size,
-      sort: sort && sort.split(',')
-    });
-    return {
-      content,
-      page: {
-        totalElements
-      }
-    };
+    return repository
+      .findAll(
+        page,
+        size,
+        sort && Array.isArray(sort)
+          ? sort.map((s) => s.split(','))
+          : [sort.split(',')]
+      )
+      .then(({ content, totalElements }) => ({
+        content,
+        page: {
+          totalElements
+        }
+      }));
   }
 
   @Get(':schema/:id')

@@ -31,16 +31,14 @@ describe('ItemsController (e2e)', () => {
   });
 
   it('/items/user (GET)', async () => {
-    const admin = { id: 'admin' };
-    await itemsRepository.save(admin);
-    const manager = { id: 'manager' };
-    await itemsRepository.save(manager);
-    return request(app.getHttpServer())
+    const items = [{ id: 'admin' }, { id: 'manager' }];
+    await itemsRepository.save(items);
+    await request(app.getHttpServer())
       .get('/api/items/user?page=0&size=10&sort=id%2CASC')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({
-          content: [admin, manager],
+          content: items,
           page: { totalElements: 2 }
         });
       });
@@ -51,7 +49,7 @@ describe('ItemsController (e2e)', () => {
     await itemsRepository.save(admin);
     const manager = { id: 'manager' };
     await itemsRepository.save(manager);
-    return request(app.getHttpServer())
+    await request(app.getHttpServer())
       .get('/api/items/user/manager')
       .expect(200)
       .expect(({ body }) => {
