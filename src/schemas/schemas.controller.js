@@ -15,11 +15,13 @@ import {
 import { Schema } from './schema.entity';
 import { SchemaPipe } from './schema.pipe';
 import { SchemasService } from './schemas.service';
+import { BaseController } from '../common/controller/base.controller';
 
 @Controller('api/schemas')
 @Dependencies(getCustomRepositoryToken(Schema), SchemasService)
-export class SchemasController {
+export class SchemasController extends BaseController {
   constructor(repository, service) {
+    super();
     this.repository = repository;
     this.service = service;
   }
@@ -49,21 +51,8 @@ export class SchemasController {
 
   @Get()
   @Bind(Query())
-  findAll({ page = 0, size = 20, sort }) {
-    return this.repository
-      .findAll(
-        page,
-        size,
-        sort && Array.isArray(sort)
-          ? sort.map((s) => s.split(','))
-          : [sort.split(',')]
-      )
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
+  findAll(query) {
+    return super.findAll(this.repository, query);
   }
 
   @Get(':id')
@@ -76,14 +65,7 @@ export class SchemasController {
   @Bind(Query())
   list({ id, page = 0, size = 20, sort }) {
     return this.repository
-      .list(
-        id,
-        page,
-        size,
-        sort && Array.isArray(sort)
-          ? sort.map((s) => s.split(','))
-          : [sort.split(',')]
-      )
+      .list(id, page, size, super.queryParam(sort))
       .then(({ content, totalElements }) => ({
         content,
         page: {

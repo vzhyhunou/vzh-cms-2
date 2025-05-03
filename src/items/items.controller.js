@@ -12,11 +12,13 @@ import {
 } from '@nestjs/common';
 
 import { SchemasService } from '../schemas/schemas.service';
+import { BaseController } from '../common/controller/base.controller';
 
 @Controller('api/items')
 @Dependencies(SchemasService)
-export class ItemsController {
+export class ItemsController extends BaseController {
   constructor(service) {
+    super();
     this.service = service;
   }
 
@@ -43,22 +45,9 @@ export class ItemsController {
 
   @Get(':schema')
   @Bind(Param('schema'), Query())
-  findAll(schema, { page = 0, size = 20, sort }) {
+  findAll(schema, query) {
     const repository = this.service.getRepository(schema);
-    return repository
-      .findAll(
-        page,
-        size,
-        sort && Array.isArray(sort)
-          ? sort.map((s) => s.split(','))
-          : [sort.split(',')]
-      )
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
+    return super.findAll(repository, query);
   }
 
   @Get(':schema/:id')
