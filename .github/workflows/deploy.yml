@@ -40,7 +40,7 @@ jobs:
     - name: Delete client npm package
       working-directory: client
       run: |
-        curl -X DELETE -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/vzhyhunou/packages/npm/vzh-cms-2-client
+        curl -X DELETE -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/vzhyhunou/packages/npm/vzh-cms-client-2
       if: ${{ github.event_name != 'pull_request' }}
     - name: Publish client with NPM
       working-directory: client

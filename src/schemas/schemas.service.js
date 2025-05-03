@@ -4,7 +4,6 @@ import { EntitySchema, DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 
 import { Schema } from '../schemas/schema.entity';
-import baseRepository from '../common/repository/base.repository';
 
 @Injectable()
 @Dependencies(ConfigService, getRepositoryToken(Schema))
@@ -32,8 +31,6 @@ export class SchemasService {
   }
 
   getRepository(id) {
-    return this.dataSource
-      .getRepository(this.schemas.get(id))
-      .extend(baseRepository);
+    return this.dataSource.getRepository(this.schemas.get(id));
   }
 }

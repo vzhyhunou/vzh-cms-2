@@ -12,13 +12,12 @@ import {
 } from '@nestjs/common';
 
 import { SchemasService } from '../schemas/schemas.service';
-import { BaseController } from '../common/controller/base.controller';
+import { PageablePipe } from '../common/pipe/pageable.pipe';
 
 @Controller('api/items')
 @Dependencies(SchemasService)
-export class ItemsController extends BaseController {
+export class ItemsController {
   constructor(service) {
-    super();
     this.service = service;
   }
 
@@ -44,10 +43,17 @@ export class ItemsController extends BaseController {
   }
 
   @Get(':schema')
-  @Bind(Param('schema'), Query())
-  findAll(schema, query) {
+  @Bind(Param('schema'), Query(PageablePipe))
+  findAll(schema, { page, size, sort }) {
     const repository = this.service.getRepository(schema);
-    return super.findAll(repository, query);
+    return repository
+      .findAll(page, size, sort)
+      .then(({ content, totalElements }) => ({
+        content,
+        page: {
+          totalElements
+        }
+      }));
   }
 
   @Get(':schema/:id')
