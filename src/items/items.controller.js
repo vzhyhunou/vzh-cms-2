@@ -45,9 +45,16 @@ export class ItemsController extends BaseController {
 
   @Get(':schema')
   @Bind(Param('schema'), Query())
-  findAll(schema, query) {
+  findAll(schema, { page = 0, size = 20, sort = [] }) {
     const repository = this.service.getRepository(schema);
-    return super.findAll(repository, query);
+    return repository
+      .findAll(page, size, this.queryParam(sort))
+      .then(({ content, totalElements }) => ({
+        content,
+        page: {
+          totalElements
+        }
+      }));
   }
 
   @Get(':schema/:id')

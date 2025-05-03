@@ -6,15 +6,4 @@ export class BaseController {
       )
     );
   }
-
-  findAll(repository, { page = 0, size = 20, sort = [] }) {
-    return repository
-      .findAll(page, size, this.queryParam(sort))
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
-  }
 }

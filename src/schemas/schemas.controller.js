@@ -52,8 +52,15 @@ export class SchemasController extends BaseController {
 
   @Get()
   @Bind(Query())
-  findAll(query) {
-    return super.findAll(this.repository, query);
+  findAll({ page = 0, size = 20, sort = [] }) {
+    return this.repository
+      .findAll(page, size, this.queryParam(sort))
+      .then(({ content, totalElements }) => ({
+        content,
+        page: {
+          totalElements
+        }
+      }));
   }
 
   @Get(':id')
