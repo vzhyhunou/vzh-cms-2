@@ -1,8 +1,6 @@
 import { Test } from '@nestjs/testing';
-import {
-  getEntityManagerToken,
-  getCustomRepositoryToken
-} from '@nestjs/typeorm';
+import { getEntityManagerToken, getRepositoryToken } from '@nestjs/typeorm';
+import { Like } from 'typeorm';
 
 import { Schema } from '../../src/schemas/schema.entity';
 import schema from './schema.fixture';
@@ -20,7 +18,7 @@ describe('SchemasRepository', () => {
     }).compile();
 
     manager = moduleFixture.get(getEntityManagerToken());
-    subj = moduleFixture.get(getCustomRepositoryToken(Schema));
+    subj = moduleFixture.get(getRepositoryToken(Schema));
   });
 
   it('should be defined', () => {
@@ -58,25 +56,25 @@ describe('SchemasRepository', () => {
       result = await subj.findAll(1, 2);
       expect(result).toMatchObject({ content: [], totalElements: 2 });
     });
-  });
 
-  describe('list()', () => {
     it('should return an empty array of schemas', async () => {
       const entity = manager.create(Schema, schema('user'));
       await manager.save(entity);
-      const result = await subj.list('a', 0, 1);
+      const options = { where: { id: Like('%a%') } };
+      const result = await subj.findAll(0, 1, {}, options);
       expect(result).toMatchObject({ content: [], totalElements: 0 });
     });
 
     it('should return a filtered array of schemas', async () => {
       const entities = manager.create(Schema, [schema('user'), schema('page')]);
       await manager.save(entities);
-      let result = await subj.list('uS', 0, 1);
+      const options = { where: { id: Like('%uS%') } };
+      let result = await subj.findAll(0, 1, {}, options);
       expect(result).toMatchObject({
         content: [{ id: 'user' }],
         totalElements: 1
       });
-      result = await subj.list('uS', 1, 1);
+      result = await subj.findAll(1, 1, {}, options);
       expect(result).toMatchObject({ content: [], totalElements: 1 });
     });
   });

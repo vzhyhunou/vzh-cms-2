@@ -1,5 +1,5 @@
 import { Dependencies, Injectable } from '@nestjs/common';
-import { getCustomRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntitySchema, DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 
@@ -7,7 +7,7 @@ import { Schema } from '../schemas/schema.entity';
 import baseRepository from '../common/repository/base.repository';
 
 @Injectable()
-@Dependencies(ConfigService, getCustomRepositoryToken(Schema))
+@Dependencies(ConfigService, getRepositoryToken(Schema))
 export class SchemasService {
   schemas;
   dataSource;

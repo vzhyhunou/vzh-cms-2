@@ -1,15 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import {
-  TypeOrmModule,
-  getRepositoryToken,
-  getCustomRepositoryToken
-} from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { config } from '../datasource/configuration';
 import { Schema } from './schema.entity';
 import { SchemasController } from './schemas.controller';
-import customRepository from './schemas.repository';
+import '../common/repository/base.repository';
 import { SchemasService } from './schemas.service';
 
 @Module({
@@ -18,14 +14,7 @@ import { SchemasService } from './schemas.service';
     TypeOrmModule.forFeature([Schema])
   ],
   controllers: [SchemasController],
-  providers: [
-    {
-      provide: getCustomRepositoryToken(Schema),
-      inject: [getRepositoryToken(Schema)],
-      useFactory: (repository) => repository.extend(customRepository)
-    },
-    SchemasService
-  ],
+  providers: [SchemasService],
   exports: [SchemasService]
 })
 export class SchemasModule {}

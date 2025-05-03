@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { getCustomRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 
 import { DataSourceModule } from '../../src/datasource/datasource.module';
@@ -19,7 +19,7 @@ describe('SchemasService (e2e)', () => {
     }).compile();
 
     const configService = moduleFixture.get(ConfigService);
-    repository = moduleFixture.get(getCustomRepositoryToken(Schema));
+    repository = moduleFixture.get(getRepositoryToken(Schema));
     subj = new SchemasService(configService, repository);
   });
 

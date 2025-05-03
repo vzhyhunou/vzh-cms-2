@@ -1,4 +1,4 @@
-import { getCustomRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   Controller,
   Dependencies,
@@ -11,6 +11,7 @@ import {
   Param,
   Query
 } from '@nestjs/common';
+import { Like } from 'typeorm';
 
 import { Schema } from './schema.entity';
 import { SchemaPipe } from './schema.pipe';
@@ -18,7 +19,7 @@ import { SchemasService } from './schemas.service';
 import { BaseController } from '../common/controller/base.controller';
 
 @Controller('api/schemas')
-@Dependencies(getCustomRepositoryToken(Schema), SchemasService)
+@Dependencies(getRepositoryToken(Schema), SchemasService)
 export class SchemasController extends BaseController {
   constructor(repository, service) {
     super();
@@ -63,9 +64,12 @@ export class SchemasController extends BaseController {
 
   @Get('search/list')
   @Bind(Query())
-  list({ id, page = 0, size = 20, sort }) {
+  list({ id, page = 0, size = 20, sort = [] }) {
     return this.repository
-      .list(id, page, size, super.queryParam(sort))
+      .findAll(page, size, super.queryParam(sort), {
+        select: { id: true },
+        where: id ? { id: Like(`%${id}%`) } : {}
+      })
       .then(({ content, totalElements }) => ({
         content,
         page: {

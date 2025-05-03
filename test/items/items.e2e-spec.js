@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { getCustomRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import request from 'supertest';
 
 import schema from '../schemas/schema.fixture';
@@ -18,7 +18,7 @@ describe('ItemsController (e2e)', () => {
       imports: [ConfigModule, DataSourceModule, ItemsModule]
     }).compile();
 
-    const repository = moduleFixture.get(getCustomRepositoryToken(Schema));
+    const repository = moduleFixture.get(getRepositoryToken(Schema));
     const service = moduleFixture.get(SchemasService);
     app = moduleFixture.createNestApplication();
 

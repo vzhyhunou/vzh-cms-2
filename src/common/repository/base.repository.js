@@ -17,7 +17,7 @@ Repository.prototype.findById = function (id) {
   });
 };
 
-Repository.prototype.findAll = async function (page, size, order) {
+Repository.prototype.findAll = async function (page, size, order, options) {
   return Promise.all([
     this.find({
       relations: Object.fromEntries(
@@ -25,9 +25,10 @@ Repository.prototype.findAll = async function (page, size, order) {
       ),
       skip: page * size,
       take: size,
-      order
+      order,
+      ...options
     }),
-    this.count()
+    this.count(options)
   ]).then(([content, totalElements]) => ({
     content,
     totalElements
