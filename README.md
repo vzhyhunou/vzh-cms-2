@@ -4,10 +4,9 @@
 ## Tech stack and libraries
 ### Backend
 - NestJS
+- TypeORM
 - PassportJS
 - nestjs-i18n
-- class-transformer
-- class-validator
 - cron
 - moment
 - bcrypt

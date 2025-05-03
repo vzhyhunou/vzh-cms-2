@@ -11,7 +11,10 @@
     "test": "cross-env NODE_ENV=development jest",
     "test:cov": "cross-env NODE_ENV=development jest --coverage",
     "test:e2e": "cross-env NODE_ENV=development jest --config ./test/jest-e2e.json",
-    "test:e2e:schemas:repository": "cross-env NODE_ENV=development jest --config ./test/schemas/schemas.repository.jest-e2e.json"
+    "test:e2e:schemas:repository": "cross-env NODE_ENV=development jest --config ./test/schemas/schemas.repository.jest-e2e.json",
+    "test:e2e:schemas:service": "cross-env NODE_ENV=development jest --config ./test/schemas/schemas.service.jest-e2e.json",
+    "test:e2e:schemas": "cross-env NODE_ENV=development jest --config ./test/schemas/schemas.jest-e2e.json",
+    "test:e2e:items": "cross-env NODE_ENV=development jest --config ./test/items/items.jest-e2e.json"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",
