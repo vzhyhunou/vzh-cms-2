@@ -16,13 +16,12 @@ import { Like } from 'typeorm';
 import { Schema } from './schema.entity';
 import { SchemaPipe } from './schema.pipe';
 import { SchemasService } from './schemas.service';
-import { BaseController } from '../common/controller/base.controller';
+import { PageablePipe } from '../common/pipe/pageable.pipe';
 
 @Controller('api/schemas')
 @Dependencies(getRepositoryToken(Schema), SchemasService)
-export class SchemasController extends BaseController {
+export class SchemasController {
   constructor(repository, service) {
-    super();
     this.repository = repository;
     this.service = service;
   }
@@ -51,10 +50,10 @@ export class SchemasController extends BaseController {
   }
 
   @Get()
-  @Bind(Query())
-  findAll({ page = 0, size = 20, sort = [] }) {
+  @Bind(Query(PageablePipe))
+  findAll({ page, size, sort }) {
     return this.repository
-      .findAll(page, size, this.queryParam(sort))
+      .findAll(page, size, sort)
       .then(({ content, totalElements }) => ({
         content,
         page: {
@@ -70,10 +69,10 @@ export class SchemasController extends BaseController {
   }
 
   @Get('search/list')
-  @Bind(Query())
-  list({ id, page = 0, size = 20, sort = [] }) {
+  @Bind(Query(PageablePipe))
+  list({ id, page, size, sort }) {
     return this.repository
-      .findAll(page, size, super.queryParam(sort), {
+      .findAll(page, size, sort, {
         select: { id: true },
         where: id ? { id: Like(`%${id}%`) } : {}
       })
