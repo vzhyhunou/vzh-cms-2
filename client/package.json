@@ -1,5 +1,5 @@
 {
-  "name": "@vzhyhunou/vzh-cms-2-client",
+  "name": "@vzhyhunou/vzh-cms-client-2",
   "version": "0.0.1",
   "dependencies": {
     "react-admin": "^5.2.1",
