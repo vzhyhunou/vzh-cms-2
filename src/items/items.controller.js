@@ -62,4 +62,19 @@ export class ItemsController {
     const repository = this.service.getRepository(schema);
     return repository.findById(id);
   }
+
+  @Get(':schema/search/list')
+  @Bind(Param('schema'), Query(PageablePipe))
+  list(schema, { page, size, sort, ...rest }) {
+    const repository = this.service.getRepository(schema);
+    const filter = repository.filter(rest);
+    return repository
+      .findAll(page, size, sort, filter)
+      .then(({ content, totalElements }) => ({
+        content,
+        page: {
+          totalElements
+        }
+      }));
+  }
 }

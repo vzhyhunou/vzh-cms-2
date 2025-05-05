@@ -86,6 +86,29 @@ describe('ItemsController (e2e)', () => {
     expect(result).toMatchObject([admin, manager]);
   });
 
+  it('/items/user/search/list (GET)', async () => {
+    const items = itemsRepository.create([{ id: 'admin' }, { id: 'manager' }]);
+    await itemsRepository.save(items);
+    await request(app.getHttpServer())
+      .get('/api/items/user/search/list?id=d&page=0&size=1&sort=id%2CASC')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          content: [{ id: 'admin' }],
+          page: { totalElements: 1 }
+        });
+      });
+    await request(app.getHttpServer())
+      .get('/api/items/user/search/list?id=d&page=1&size=1&sort=id%2CASC')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          content: [],
+          page: { totalElements: 1 }
+        });
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

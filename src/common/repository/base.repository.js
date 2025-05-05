@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { Repository, Like, Equal } from 'typeorm';
 
 Repository.prototype.getRelationNames = function () {
   return this.metadata.relations.map(({ propertyName }) => propertyName);
@@ -33,4 +33,19 @@ Repository.prototype.findAll = async function (page, size, order, options) {
     content,
     totalElements
   }));
+};
+
+Repository.prototype.filter = function (params) {
+  return {
+    where: Object.fromEntries(
+      Object.entries(params).map(([k, v]) => {
+        const column = this.metadata.findColumnWithPropertyName(k);
+        const type = this.manager.connection.driver.normalizeType(column);
+        return [
+          k,
+          type === 'varchar' || type === 'text' ? Like(`%${v}%`) : Equal(v)
+        ];
+      })
+    )
+  };
 };

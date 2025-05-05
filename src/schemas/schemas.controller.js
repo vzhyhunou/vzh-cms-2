@@ -70,12 +70,10 @@ export class SchemasController {
 
   @Get('search/list')
   @Bind(Query(PageablePipe))
-  list({ id, page, size, sort }) {
+  list({ page, size, sort, ...rest }) {
+    const filter = this.repository.filter(rest);
     return this.repository
-      .findAll(page, size, sort, {
-        select: { id: true },
-        where: id ? { id: Like(`%${id}%`) } : {}
-      })
+      .findAll(page, size, sort, filter)
       .then(({ content, totalElements }) => ({
         content,
         page: {
