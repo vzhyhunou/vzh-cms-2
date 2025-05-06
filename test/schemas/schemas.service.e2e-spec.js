@@ -25,22 +25,19 @@ describe('SchemasService (e2e)', () => {
 
   describe('save()', () => {
     it('should save item', async () => {
-      let entity = repository.create(schema('user'));
-      await repository.save(entity);
+      await repository.save(schema('user'));
       await subj.initialize();
 
-      entity = await repository.find();
+      let entity = await repository.find();
       expect(entity).toMatchObject([{ id: 'user' }]);
 
       let itemsRepository = subj.getRepository('user');
-      entity = itemsRepository.create({ id: 'admin' });
-      await itemsRepository.save(entity);
+      await itemsRepository.save({ id: 'admin' });
 
       entity = await itemsRepository.find();
       expect(entity).toMatchObject([{ id: 'admin' }]);
 
-      entity = repository.create(schema('page'));
-      await repository.save(entity);
+      await repository.save(schema('page'));
       await subj.initialize();
 
       entity = await repository.find();
@@ -51,8 +48,7 @@ describe('SchemasService (e2e)', () => {
       //expect(entity).toMatchObject([{ id: 'admin' }]);
 
       itemsRepository = subj.getRepository('page');
-      entity = itemsRepository.create({ id: 'home' });
-      await itemsRepository.save(entity);
+      await itemsRepository.save({ id: 'home' });
 
       entity = await itemsRepository.find();
       expect(entity).toMatchObject([{ id: 'home' }]);

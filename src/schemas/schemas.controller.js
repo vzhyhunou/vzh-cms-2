@@ -16,7 +16,9 @@ import { Schema } from './schema.entity';
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
 
-@Controller('api/schemas')
+const SCHEMA = 'schema';
+
+@Controller('api')
 @Dependencies(getRepositoryToken(Schema), SchemasService)
 export class SchemasController {
   constructor(repository, service) {
@@ -24,36 +26,48 @@ export class SchemasController {
     this.service = service;
   }
 
-  @Post()
-  @Bind(Body())
-  async create(dto) {
-    const entity = this.repository.create(dto);
-    const result = await this.repository.save(entity);
+  getRepository(resource) {
+    return resource === SCHEMA
+      ? this.repository
+      : this.service.getRepository(resource);
+  }
+
+  initialize(resource) {
+    return resource === SCHEMA && this.service.initialize();
+  }
+
+  @Post(':resource')
+  @Bind(Param('resource'), Body())
+  async create(resource, dto) {
+    const repository = this.getRepository(resource);
+    const result = await repository.save(dto);
     await this.service.initialize();
     return result;
   }
 
-  @Put(':id')
-  @Bind(Body())
-  async update(dto) {
-    const entity = this.repository.create(dto);
-    const result = await this.repository.save(entity);
+  @Put(':resource/:id')
+  @Bind(Param('resource'), Body())
+  async update(resource, dto) {
+    const repository = this.getRepository(resource);
+    const result = await repository.save(dto);
     await this.service.initialize();
     return result;
   }
 
-  @Delete(':id')
-  @Bind(Param('id'))
-  async remove(id) {
-    await this.repository.remove(id);
+  @Delete(':resource/:id')
+  @Bind(Param('resource'), Param('id'))
+  async remove(resource, id) {
+    const repository = this.getRepository(resource);
+    await repository.remove({ [repository.getPrimaryColumnName()]: id });
     await this.service.initialize();
   }
 
-  @Get()
-  @Bind(Query(PageablePipe))
-  findAll({ page, size, sort, ...rest }) {
-    const filter = this.repository.filter(rest);
-    return this.repository
+  @Get(':resource')
+  @Bind(Param('resource'), Query(PageablePipe))
+  findAll(resource, { page, size, sort, ...rest }) {
+    const repository = this.getRepository(resource);
+    const filter = repository.filter(rest);
+    return repository
       .findAll(page, size, sort, filter)
       .then(({ content, totalElements }) => ({
         content,
@@ -63,9 +77,10 @@ export class SchemasController {
       }));
   }
 
-  @Get(':id')
-  @Bind(Param('id'))
-  findById(id) {
-    return this.repository.findById(id);
+  @Get(':resource/:id')
+  @Bind(Param('resource'), Param('id'))
+  findById(resource, id) {
+    const repository = this.getRepository(resource);
+    return repository.findById(id);
   }
 }

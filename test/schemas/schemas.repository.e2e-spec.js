@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { getEntityManagerToken, getRepositoryToken } from '@nestjs/typeorm';
-import { Like } from 'typeorm';
 
 import { Schema } from '../../src/schemas/schema.entity';
 import schema from './schema.fixture';
@@ -27,8 +26,7 @@ describe('SchemasRepository', () => {
 
   describe('save()', () => {
     it('should create a schema', async () => {
-      const entity = manager.create(Schema, schema('user'));
-      await subj.save(entity);
+      await subj.save(schema('user'));
       const result = await manager.find(Schema);
       expect(result).toMatchObject([{ id: 'user' }]);
     });
@@ -36,9 +34,8 @@ describe('SchemasRepository', () => {
 
   describe('delete()', () => {
     it('should delete a schema', async () => {
-      const entity = manager.create(Schema, schema('user'));
-      await manager.save(entity);
-      await subj.remove(entity);
+      await manager.save(Schema, schema('user'));
+      await subj.remove({ id: 'user' });
       const result = await manager.find(Schema);
       expect(result).toHaveLength(0);
     });
@@ -46,8 +43,7 @@ describe('SchemasRepository', () => {
 
   describe('findAll()', () => {
     it('should return an array of schemas', async () => {
-      const entities = manager.create(Schema, [schema('user'), schema('page')]);
-      await manager.save(entities);
+      await manager.save(Schema, [schema('user'), schema('page')]);
       let result = await subj.findAll(0, 2);
       expect(result).toMatchObject({
         content: [{ id: 'user' }, { id: 'page' }],
@@ -58,17 +54,15 @@ describe('SchemasRepository', () => {
     });
 
     it('should return an empty array of schemas', async () => {
-      const entity = manager.create(Schema, schema('user'));
-      await manager.save(entity);
-      const options = { where: { id: Like('%a%') } };
+      await manager.save(Schema, schema('user'));
+      const options = subj.filter({ id: 'a' });
       const result = await subj.findAll(0, 1, {}, options);
       expect(result).toMatchObject({ content: [], totalElements: 0 });
     });
 
     it('should return a filtered array of schemas', async () => {
-      const entities = manager.create(Schema, [schema('user'), schema('page')]);
-      await manager.save(entities);
-      const options = { where: { id: Like('%uS%') } };
+      await manager.save(Schema, [schema('user'), schema('page')]);
+      const options = subj.filter({ id: 'uS' });
       let result = await subj.findAll(0, 1, {}, options);
       expect(result).toMatchObject({
         content: [{ id: 'user' }],
