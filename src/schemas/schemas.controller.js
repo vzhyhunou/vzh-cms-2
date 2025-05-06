@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 
 import { Schema } from './schema.entity';
-import { SchemaPipe } from './schema.pipe';
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
 
@@ -26,16 +25,18 @@ export class SchemasController {
   }
 
   @Post()
-  @Bind(Body(SchemaPipe))
-  async create(entity) {
+  @Bind(Body())
+  async create(dto) {
+    const entity = this.repository.create(dto);
     const result = await this.repository.save(entity);
     await this.service.initialize();
     return result;
   }
 
   @Put(':id')
-  @Bind(Body(SchemaPipe))
-  async update(entity) {
+  @Bind(Body())
+  async update(dto) {
+    const entity = this.repository.create(dto);
     const result = await this.repository.save(entity);
     await this.service.initialize();
     return result;

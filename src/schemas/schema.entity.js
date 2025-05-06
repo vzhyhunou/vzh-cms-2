@@ -1,4 +1,4 @@
-import { Column, Entity, VersionColumn, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Schema {
@@ -7,7 +7,4 @@ export class Schema {
 
   @Column({ type: 'text' })
   value;
-
-  @VersionColumn()
-  version;
 }
