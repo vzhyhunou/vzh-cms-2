@@ -14,17 +14,17 @@ export class SchemasService {
   constructor(configService, repository) {
     this.options = configService.get('datasource');
     this.repository = repository;
-    this.initialize();
+    this.initialize(this.options.synchronize);
   }
 
-  async initialize() {
+  async initialize(synchronize = true) {
     const entities = await this.repository.find();
     this.schemas = new Map(
       entities.map(({ id, value }) => [id, new EntitySchema(JSON.parse(value))])
     );
     this.dataSource = new DataSource({
       ...this.options,
-      synchronize: true,
+      synchronize,
       entities: [...this.schemas.values()]
     });
     await this.dataSource.initialize();
