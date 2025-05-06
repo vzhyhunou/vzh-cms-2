@@ -11,7 +11,6 @@ import {
   Param,
   Query
 } from '@nestjs/common';
-import { Like } from 'typeorm';
 
 import { Schema } from './schema.entity';
 import { SchemaPipe } from './schema.pipe';
@@ -51,9 +50,10 @@ export class SchemasController {
 
   @Get()
   @Bind(Query(PageablePipe))
-  findAll({ page, size, sort }) {
+  findAll({ page, size, sort, ...rest }) {
+    const filter = this.repository.filter(rest);
     return this.repository
-      .findAll(page, size, sort)
+      .findAll(page, size, sort, filter)
       .then(({ content, totalElements }) => ({
         content,
         page: {
@@ -66,19 +66,5 @@ export class SchemasController {
   @Bind(Param('id'))
   findById(id) {
     return this.repository.findById(id);
-  }
-
-  @Get('search/list')
-  @Bind(Query(PageablePipe))
-  list({ page, size, sort, ...rest }) {
-    const filter = this.repository.filter(rest);
-    return this.repository
-      .findAll(page, size, sort, filter)
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
   }
 }

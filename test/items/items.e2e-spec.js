@@ -34,12 +34,21 @@ describe('ItemsController (e2e)', () => {
     const items = [{ id: 'admin' }, { id: 'manager' }];
     await itemsRepository.save(items);
     await request(app.getHttpServer())
-      .get('/api/items/user?page=0&size=10&sort=id%2CASC')
+      .get('/api/items/user?id=d&page=0&size=1&sort=id%2CASC')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({
-          content: items,
-          page: { totalElements: 2 }
+          content: [{ id: 'admin' }],
+          page: { totalElements: 1 }
+        });
+      });
+    await request(app.getHttpServer())
+      .get('/api/items/user?id=d&page=1&size=1&sort=id%2CASC')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          content: [],
+          page: { totalElements: 1 }
         });
       });
   });
@@ -84,29 +93,6 @@ describe('ItemsController (e2e)', () => {
       .expect(200);
     const result = await itemsRepository.find();
     expect(result).toMatchObject([admin, manager]);
-  });
-
-  it('/items/user/search/list (GET)', async () => {
-    const items = itemsRepository.create([{ id: 'admin' }, { id: 'manager' }]);
-    await itemsRepository.save(items);
-    await request(app.getHttpServer())
-      .get('/api/items/user/search/list?id=d&page=0&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [{ id: 'admin' }],
-          page: { totalElements: 1 }
-        });
-      });
-    await request(app.getHttpServer())
-      .get('/api/items/user/search/list?id=d&page=1&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [],
-          page: { totalElements: 1 }
-        });
-      });
   });
 
   afterEach(async () => {

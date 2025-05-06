@@ -27,12 +27,21 @@ describe('SchemasController (e2e)', () => {
     const entities = repository.create([schema('page'), schema('user')]);
     await repository.save(entities);
     await request(app.getHttpServer())
-      .get('/api/schemas?page=0&size=10&sort=id%2CASC')
+      .get('/api/schemas?id=s&page=0&size=1&sort=id%2CASC')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({
-          content: entities,
-          page: { totalElements: 2 }
+          content: [{ id: 'user' }],
+          page: { totalElements: 1 }
+        });
+      });
+    await request(app.getHttpServer())
+      .get('/api/schemas?id=s&page=1&size=1&sort=id%2CASC')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          content: [],
+          page: { totalElements: 1 }
         });
       });
   });
@@ -88,29 +97,6 @@ describe('SchemasController (e2e)', () => {
       .expect(200);
     const result = await repository.find();
     expect(result).toMatchObject([user, page]);
-  });
-
-  it('/schemas/search/list (GET)', async () => {
-    const entities = repository.create([schema('user'), schema('page')]);
-    await repository.save(entities);
-    await request(app.getHttpServer())
-      .get('/api/schemas/search/list?id=s&page=0&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [{ id: 'user' }],
-          page: { totalElements: 1 }
-        });
-      });
-    await request(app.getHttpServer())
-      .get('/api/schemas/search/list?id=s&page=1&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [],
-          page: { totalElements: 1 }
-        });
-      });
   });
 
   afterEach(async () => {

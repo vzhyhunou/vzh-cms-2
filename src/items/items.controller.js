@@ -44,10 +44,11 @@ export class ItemsController {
 
   @Get(':schema')
   @Bind(Param('schema'), Query(PageablePipe))
-  findAll(schema, { page, size, sort }) {
+  findAll(schema, { page, size, sort, ...rest }) {
     const repository = this.service.getRepository(schema);
+    const filter = repository.filter(rest);
     return repository
-      .findAll(page, size, sort)
+      .findAll(page, size, sort, filter)
       .then(({ content, totalElements }) => ({
         content,
         page: {
@@ -61,20 +62,5 @@ export class ItemsController {
   findById(schema, id) {
     const repository = this.service.getRepository(schema);
     return repository.findById(id);
-  }
-
-  @Get(':schema/search/list')
-  @Bind(Param('schema'), Query(PageablePipe))
-  list(schema, { page, size, sort, ...rest }) {
-    const repository = this.service.getRepository(schema);
-    const filter = repository.filter(rest);
-    return repository
-      .findAll(page, size, sort, filter)
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
   }
 }
