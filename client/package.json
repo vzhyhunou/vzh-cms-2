@@ -39,12 +39,5 @@
   "files": [
     "package.json",
     "lib"
-  ],
-  "exports": {
-    ".": "./lib/index.js",
-    "./provider/builder/fake": "./lib/provider/builder/fake.js",
-    "./provider/builder/back": "./lib/provider/builder/back.js",
-    "./provider/messages/en": "./lib/provider/messages/en.js",
-    "./provider/messages/ru": "./lib/provider/messages/ru.js"
-  }
+  ]
 }
