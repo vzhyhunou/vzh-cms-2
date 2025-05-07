@@ -9,7 +9,9 @@ import {
   Post,
   Bind,
   Param,
-  Query
+  Query,
+  HttpException,
+  HttpStatus
 } from '@nestjs/common';
 
 import { Schema } from './schema.entity';
@@ -27,9 +29,14 @@ export class SchemasController {
   }
 
   getRepository(resource) {
-    return resource === SCHEMA
-      ? this.repository
-      : this.service.getRepository(resource);
+    if (resource === SCHEMA) {
+      return this.repository;
+    }
+    const repository = this.service.getRepository(resource);
+    if (repository) {
+      return repository;
+    }
+    throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
   }
 
   initialize(resource) {

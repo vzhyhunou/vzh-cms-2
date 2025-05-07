@@ -31,6 +31,7 @@ export class SchemasService {
   }
 
   getRepository(id) {
-    return this.dataSource.getRepository(this.schemas.get(id));
+    const schema = this.schemas.get(id);
+    return schema && this.dataSource.getRepository(schema);
   }
 }
