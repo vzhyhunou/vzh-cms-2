@@ -16,8 +16,6 @@ import {
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
 
-const SCHEMA = 'schema';
-
 @Controller('api')
 @Dependencies(SchemasService)
 export class SchemasController {
@@ -33,16 +31,12 @@ export class SchemasController {
     throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
   }
 
-  async initialize(resource) {
-    resource === SCHEMA && (await this.service.initialize());
-  }
-
   @Post(':resource')
   @Bind(Param('resource'), Body())
   async create(resource, dto) {
     const repository = this.getRepository(resource);
     const result = await repository.save(dto);
-    await this.initialize(resource);
+    await this.service.update(resource);
     return result;
   }
 
@@ -51,7 +45,7 @@ export class SchemasController {
   async update(resource, dto) {
     const repository = this.getRepository(resource);
     const result = await repository.save(dto);
-    await this.initialize(resource);
+    await this.service.update(resource);
     return result;
   }
 
@@ -59,8 +53,11 @@ export class SchemasController {
   @Bind(Param('resource'), Param('id'))
   async remove(resource, id) {
     const repository = this.getRepository(resource);
-    await repository.remove({ [repository.getPrimaryColumnName()]: id });
-    await this.initialize(resource);
+    const result = await repository.remove({
+      [repository.getPrimaryColumnName()]: id
+    });
+    await this.service.update(resource);
+    return result;
   }
 
   @Get(':resource')

@@ -32,11 +32,15 @@ export class SchemasService {
     await this.dataSource.initialize();
   }
 
-  getRepository(id) {
-    if (id === SCHEMA) {
+  getRepository(resource) {
+    if (resource === SCHEMA) {
       return this.repository;
     }
-    const schema = this.schemas.get(id);
+    const schema = this.schemas.get(resource);
     return schema && this.dataSource.getRepository(schema);
+  }
+
+  async update(resource) {
+    resource === SCHEMA && (await this.initialize());
   }
 }
