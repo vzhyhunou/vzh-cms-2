@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 
 import { Schema } from '../schemas/schema.entity';
 
+const SCHEMA = 'schema';
+
 @Injectable()
 @Dependencies(ConfigService, getRepositoryToken(Schema))
 export class SchemasService {
@@ -31,6 +33,9 @@ export class SchemasService {
   }
 
   getRepository(id) {
+    if (id === SCHEMA) {
+      return this.repository;
+    }
     const schema = this.schemas.get(id);
     return schema && this.dataSource.getRepository(schema);
   }

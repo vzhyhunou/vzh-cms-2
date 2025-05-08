@@ -1,4 +1,3 @@
-import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   Controller,
   Dependencies,
@@ -14,24 +13,19 @@ import {
   HttpStatus
 } from '@nestjs/common';
 
-import { Schema } from './schema.entity';
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
 
 const SCHEMA = 'schema';
 
 @Controller('api')
-@Dependencies(getRepositoryToken(Schema), SchemasService)
+@Dependencies(SchemasService)
 export class SchemasController {
-  constructor(repository, service) {
-    this.repository = repository;
+  constructor(service) {
     this.service = service;
   }
 
   getRepository(resource) {
-    if (resource === SCHEMA) {
-      return this.repository;
-    }
     const repository = this.service.getRepository(resource);
     if (repository) {
       return repository;
@@ -39,8 +33,8 @@ export class SchemasController {
     throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
   }
 
-  initialize(resource) {
-    return resource === SCHEMA && this.service.initialize();
+  async initialize(resource) {
+    resource === SCHEMA && (await this.service.initialize());
   }
 
   @Post(':resource')
@@ -48,7 +42,7 @@ export class SchemasController {
   async create(resource, dto) {
     const repository = this.getRepository(resource);
     const result = await repository.save(dto);
-    await this.service.initialize();
+    await this.initialize(resource);
     return result;
   }
 
@@ -57,7 +51,7 @@ export class SchemasController {
   async update(resource, dto) {
     const repository = this.getRepository(resource);
     const result = await repository.save(dto);
-    await this.service.initialize();
+    await this.initialize(resource);
     return result;
   }
 
@@ -66,7 +60,7 @@ export class SchemasController {
   async remove(resource, id) {
     const repository = this.getRepository(resource);
     await repository.remove({ [repository.getPrimaryColumnName()]: id });
-    await this.service.initialize();
+    await this.initialize(resource);
   }
 
   @Get(':resource')
