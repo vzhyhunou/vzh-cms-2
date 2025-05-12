@@ -4,6 +4,7 @@ import { EntitySchema, DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 
 import { Schema } from '../schemas/schema.entity';
+import customRepository from './schemas.repository';
 
 const SCHEMA = 'schema';
 
@@ -15,7 +16,7 @@ export class SchemasService {
 
   constructor(configService, repository) {
     this.options = configService.get('datasource');
-    this.repository = repository;
+    this.repository = repository.extend(customRepository(this));
     this.initialize(this.options.synchronize);
   }
 
@@ -38,9 +39,5 @@ export class SchemasService {
     }
     const schema = this.schemas.get(resource);
     return schema && this.dataSource.getRepository(schema);
-  }
-
-  async update(resource) {
-    resource === SCHEMA && (await this.initialize());
   }
 }

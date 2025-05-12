@@ -43,7 +43,6 @@ export class ImportService {
               f = transformer(JSON.parse(f));
               const repository = this.service.getRepository(resource);
               await repository.save(f);
-              await this.service.update(resource);
             }
           }
         }

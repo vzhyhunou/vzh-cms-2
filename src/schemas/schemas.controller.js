@@ -35,29 +35,23 @@ export class SchemasController {
   @Bind(Param('resource'), Body())
   async create(resource, dto) {
     const repository = this.getRepository(resource);
-    const result = await repository.save(dto);
-    await this.service.update(resource);
-    return result;
+    return repository.save(dto);
   }
 
   @Put(':resource/:id')
   @Bind(Param('resource'), Body())
   async update(resource, dto) {
     const repository = this.getRepository(resource);
-    const result = await repository.save(dto);
-    await this.service.update(resource);
-    return result;
+    return repository.save(dto);
   }
 
   @Delete(':resource/:id')
   @Bind(Param('resource'), Param('id'))
   async remove(resource, id) {
     const repository = this.getRepository(resource);
-    const result = await repository.remove({
+    return repository.remove({
       [repository.getPrimaryColumnName()]: id
     });
-    await this.service.update(resource);
-    return result;
   }
 
   @Get(':resource')
