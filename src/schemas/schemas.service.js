@@ -22,7 +22,7 @@ export class SchemasService {
   async initialize(synchronize = true) {
     const entities = await this.repository.find();
     this.schemas = new Map(
-      entities.map(({ id, value }) => [id, new EntitySchema(JSON.parse(value))])
+      entities.map(({ id, value }) => [id, new EntitySchema(value)])
     );
     this.dataSource = new DataSource({
       ...this.options,

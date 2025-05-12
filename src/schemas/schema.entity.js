@@ -5,6 +5,6 @@ export class Schema {
   @PrimaryColumn({ type: String })
   id;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'simple-json' })
   value;
 }

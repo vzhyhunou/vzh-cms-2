@@ -75,7 +75,7 @@ describe('SchemasController (e2e)', () => {
     await repository.save([user, page]);
     page = {
       id: 'page',
-      value: JSON.stringify({
+      value: {
         name: 'page',
         columns: {
           id: {
@@ -86,7 +86,7 @@ describe('SchemasController (e2e)', () => {
             type: 'varchar'
           }
         }
-      })
+      }
     };
     await request(app.getHttpServer())
       .put('/api/schema/page')
