@@ -49,3 +49,14 @@ Repository.prototype.filter = function (params) {
     )
   };
 };
+
+Repository.prototype.findByIndex = function (index) {
+  return this.findOne({
+    relations: Object.fromEntries(
+      this.getRelationNames().map((name) => [name, true])
+    ),
+    skip: index,
+    take: 1,
+    where: {}
+  });
+};

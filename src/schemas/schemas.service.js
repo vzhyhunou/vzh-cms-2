@@ -40,4 +40,8 @@ export class SchemasService {
     const schema = this.schemas.get(resource);
     return schema && this.dataSource.getRepository(schema);
   }
+
+  getResources() {
+    return this.schemas.keys();
+  }
 }

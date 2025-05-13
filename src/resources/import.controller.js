@@ -10,7 +10,7 @@ export class ImportController {
   }
 
   @Get()
-  export() {
+  imp() {
     this.importService.imp();
   }
 }
