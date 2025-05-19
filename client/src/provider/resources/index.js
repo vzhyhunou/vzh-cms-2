@@ -1,5 +1,5 @@
 import schema from './schema';
-import user from './user'
+import user from './user';
 
 export default {
   schema,
