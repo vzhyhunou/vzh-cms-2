@@ -21,8 +21,10 @@
 ## Getting Started
 ### Running
 - Download and install Node 17.9.1
-- Install packages: `npm install`
-- Build the project: `npm run build`
+- Install client packages: `npm --prefix client install`
+- Build client app: `npm --prefix client run build`
+- Install server packages: `npm install`
+- Build server app: `npm run build`
 - Run app: `node dist/main.js`
 ### Usage
 - Home page: http://localhost:8090
