@@ -1,4 +1,3 @@
-import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   Controller,
   Dependencies,
@@ -9,51 +8,59 @@ import {
   Post,
   Bind,
   Param,
-  Query
+  Query,
+  HttpException,
+  HttpStatus
 } from '@nestjs/common';
-import { Like } from 'typeorm';
 
-import { Schema } from './schema.entity';
-import { SchemaPipe } from './schema.pipe';
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
 
-@Controller('api/schemas')
-@Dependencies(getRepositoryToken(Schema), SchemasService)
+@Controller('api')
+@Dependencies(SchemasService)
 export class SchemasController {
-  constructor(repository, service) {
-    this.repository = repository;
+  constructor(service) {
     this.service = service;
   }
 
-  @Post()
-  @Bind(Body(SchemaPipe))
-  async create(entity) {
-    const result = await this.repository.save(entity);
-    await this.service.initialize();
-    return result;
+  getRepository(resource) {
+    const repository = this.service.getRepository(resource);
+    if (repository) {
+      return repository;
+    }
+    throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
   }
 
-  @Put(':id')
-  @Bind(Body(SchemaPipe))
-  async update(entity) {
-    const result = await this.repository.save(entity);
-    await this.service.initialize();
-    return result;
+  @Post(':resource')
+  @Bind(Param('resource'), Body())
+  async create(resource, dto) {
+    const repository = this.getRepository(resource);
+    return repository.save(dto);
   }
 
-  @Delete(':id')
-  @Bind(Param('id'))
-  async remove(id) {
-    await this.repository.remove(id);
-    await this.service.initialize();
+  @Put(':resource/:id')
+  @Bind(Param('resource'), Body())
+  async update(resource, dto) {
+    const repository = this.getRepository(resource);
+    return repository.save(dto);
   }
 
-  @Get()
-  @Bind(Query(PageablePipe))
-  findAll({ page, size, sort }) {
-    return this.repository
-      .findAll(page, size, sort)
+  @Delete(':resource/:id')
+  @Bind(Param('resource'), Param('id'))
+  async remove(resource, id) {
+    const repository = this.getRepository(resource);
+    return repository.remove({
+      [repository.getPrimaryColumnName()]: id
+    });
+  }
+
+  @Get(':resource')
+  @Bind(Param('resource'), Query(PageablePipe))
+  findAll(resource, { page, size, sort, ...rest }) {
+    const repository = this.getRepository(resource);
+    const filter = repository.filter(rest);
+    return repository
+      .findAll(page, size, sort, filter)
       .then(({ content, totalElements }) => ({
         content,
         page: {
@@ -62,25 +69,10 @@ export class SchemasController {
       }));
   }
 
-  @Get(':id')
-  @Bind(Param('id'))
-  findById(id) {
-    return this.repository.findById(id);
-  }
-
-  @Get('search/list')
-  @Bind(Query(PageablePipe))
-  list({ id, page, size, sort }) {
-    return this.repository
-      .findAll(page, size, sort, {
-        select: { id: true },
-        where: id ? { id: Like(`%${id}%`) } : {}
-      })
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
+  @Get(':resource/:id')
+  @Bind(Param('resource'), Param('id'))
+  findById(resource, id) {
+    const repository = this.getRepository(resource);
+    return repository.findById(id);
   }
 }

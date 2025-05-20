@@ -1,0 +1,15 @@
+{
+  "id": "user",
+  "value": {
+    "name": "user",
+    "columns": {
+      "id": {
+        "type": "varchar",
+        "primary": true
+      },
+      "password": {
+        "type": "varchar"
+      }
+    }
+  }
+}

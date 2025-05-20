@@ -1,6 +1,6 @@
 export default (id) => ({
   id,
-  value: JSON.stringify({
+  value: {
     name: id,
     columns: {
       id: {
@@ -12,5 +12,5 @@ export default (id) => ({
         nullable: true
       }
     }
-  })
+  }
 });

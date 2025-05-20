@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../datasource/configuration';
 import { Schema } from './schema.entity';
 import { SchemasController } from './schemas.controller';
-import '../common/repository/base.repository';
 import { SchemasService } from './schemas.service';
 
 @Module({

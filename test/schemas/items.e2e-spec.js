@@ -6,7 +6,7 @@ import schema from '../schemas/schema.fixture';
 import { Schema } from '../../src/schemas/schema.entity';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
-import { ItemsModule } from '../../src/items/items.module';
+import { SchemasModule } from '../../src/schemas/schemas.module';
 import { SchemasService } from '../../src/schemas/schemas.service';
 
 describe('ItemsController (e2e)', () => {
@@ -15,7 +15,7 @@ describe('ItemsController (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [ConfigModule, DataSourceModule, ItemsModule]
+      imports: [ConfigModule, DataSourceModule, SchemasModule]
     }).compile();
 
     const repository = moduleFixture.get(getRepositoryToken(Schema));
@@ -24,62 +24,67 @@ describe('ItemsController (e2e)', () => {
 
     await app.init();
 
-    const user = repository.create(schema('user'));
-    await repository.save(user);
+    await repository.save(schema('user'));
     await service.initialize();
     itemsRepository = service.getRepository('user');
   });
 
-  it('/items/user (GET)', async () => {
-    const items = [{ id: 'admin' }, { id: 'manager' }];
-    await itemsRepository.save(items);
+  it('/user (GET)', async () => {
+    await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
     await request(app.getHttpServer())
-      .get('/api/items/user?page=0&size=10&sort=id%2CASC')
+      .get('/api/user?id=d&page=0&size=1&sort=id%2CASC')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({
-          content: items,
-          page: { totalElements: 2 }
+          content: [{ id: 'admin' }],
+          page: { totalElements: 1 }
+        });
+      });
+    await request(app.getHttpServer())
+      .get('/api/user?id=d&page=1&size=1&sort=id%2CASC')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          content: [],
+          page: { totalElements: 1 }
         });
       });
   });
 
-  it('/items/user/:id (GET)', async () => {
+  it('/user/:id (GET)', async () => {
     const admin = { id: 'admin' };
-    await itemsRepository.save(admin);
     const manager = { id: 'manager' };
-    await itemsRepository.save(manager);
+    await itemsRepository.save([admin, manager]);
     await request(app.getHttpServer())
-      .get('/api/items/user/manager')
+      .get('/api/user/manager')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject(manager);
       });
   });
 
-  it('/items/user (POST)', async () => {
+  it('/user (POST)', async () => {
     const admin = { id: 'admin' };
     await itemsRepository.save(admin);
     const manager = { id: 'manager' };
     await request(app.getHttpServer())
-      .post('/api/items/user')
+      .post('/api/user')
       .send(manager)
       .expect(201);
     const result = await itemsRepository.find();
     expect(result).toMatchObject([admin, manager]);
   });
 
-  it('/items/user/:id (PUT)', async () => {
+  it('/user/:id (PUT)', async () => {
     const admin = { id: 'admin' };
-    await itemsRepository.save(admin);
     let manager = { id: 'manager', f: 'a' };
-    await itemsRepository.save(manager);
+    await itemsRepository.save([admin, manager]);
     manager = {
       id: 'manager',
       f: 'b'
     };
     await request(app.getHttpServer())
-      .put('/api/items/user/manager')
+      .put('/api/user/manager')
       .send(manager)
       .expect(200);
     const result = await itemsRepository.find();

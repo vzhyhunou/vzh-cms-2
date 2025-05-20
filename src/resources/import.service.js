@@ -1,0 +1,52 @@
+import { Dependencies, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import path from 'path';
+import fs from 'fs';
+import { SchemasService } from '../schemas/schemas.service';
+
+const SCHEMA = 'schema';
+
+@Injectable()
+@Dependencies(ConfigService, SchemasService)
+export class ImportService {
+  logger = new Logger(ImportService.name);
+
+  constructor(configService, service) {
+    this.root = configService.get('resources.imp.path');
+    this.service = service;
+  }
+
+  async imp() {
+    if (!fs.existsSync(this.root)) {
+      return;
+    }
+    this.logger.log('Import schemas');
+    await this.consume((f) => f, true);
+    this.logger.log('Import items without relations');
+    // eslint-disable-next-line no-unused-vars
+    await this.consume(({ relations, ...rest }) => rest);
+    this.logger.log('Import items');
+    await this.consume((f) => f);
+    this.logger.log('End import');
+  }
+
+  async consume(transformer, schemaOnly) {
+    for (const resource of fs.readdirSync(this.root)) {
+      if (schemaOnly ? resource === SCHEMA : resource !== SCHEMA) {
+        const resourcepath = path.join(this.root, resource);
+        const stat = fs.statSync(resourcepath);
+        if (stat.isDirectory()) {
+          for (const file of fs.readdirSync(resourcepath)) {
+            const filepath = path.join(resourcepath, file);
+            if (filepath.endsWith('.json')) {
+              let f = fs.readFileSync(filepath);
+              f = transformer(JSON.parse(f));
+              const repository = this.service.getRepository(resource);
+              await repository.save(f);
+            }
+          }
+        }
+      }
+    }
+  }
+}
