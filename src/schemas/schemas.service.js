@@ -15,7 +15,14 @@ export class SchemasService {
   }
 
   async onModuleInit() {
-    const repository = this.dataSource.getRepository(this.find(se.id));
+    const es = this.find(se.id);
+    const repository = this.dataSource.getRepository(es);
+    const entities = await repository.find();
+    const schemas = entities.map(({ value }) => new EntitySchema(value));
+    this.dataSource.options.entities = [
+      ...this.dataSource.options.entities,
+      ...schemas
+    ];
     await repository.save(se);
   }
 
