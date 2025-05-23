@@ -33,21 +33,21 @@ export class SchemasController {
 
   @Post(':resource')
   @Bind(Param('resource'), Body())
-  async create(resource, dto) {
+  create(resource, dto) {
     const repository = this.getRepository(resource);
     return repository.save(dto);
   }
 
   @Put(':resource/:id')
   @Bind(Param('resource'), Body())
-  async update(resource, dto) {
+  update(resource, dto) {
     const repository = this.getRepository(resource);
     return repository.save(dto);
   }
 
   @Delete(':resource/:id')
   @Bind(Param('resource'), Param('id'))
-  async remove(resource, id) {
+  remove(resource, id) {
     const repository = this.getRepository(resource);
     return repository.remove({
       [repository.getPrimaryColumnName()]: id

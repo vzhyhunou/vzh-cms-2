@@ -1,0 +1,15 @@
+{
+  "id": "schema",
+  "value": {
+    "name": "schema",
+    "columns": {
+      "id": {
+        "type": "varchar",
+        "primary": true
+      },
+      "value": {
+        "type": "simple-json"
+      }
+    }
+  }
+}

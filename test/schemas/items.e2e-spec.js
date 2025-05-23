@@ -1,15 +1,14 @@
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import request from 'supertest';
 
-import schema from '../schemas/schema.fixture';
-import { Schema } from '../../src/schemas/schema.entity';
+import schema from './schema.fixture';
+import se from '../../src/schemas/schema.entity.json';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import { SchemasModule } from '../../src/schemas/schemas.module';
 import { SchemasService } from '../../src/schemas/schemas.service';
 
-describe('ItemsController (e2e)', () => {
+describe('Items (e2e)', () => {
   let itemsRepository;
   let app;
 
@@ -18,15 +17,18 @@ describe('ItemsController (e2e)', () => {
       imports: [ConfigModule, DataSourceModule, SchemasModule]
     }).compile();
 
-    const repository = moduleFixture.get(getRepositoryToken(Schema));
     const service = moduleFixture.get(SchemasService);
     app = moduleFixture.createNestApplication();
 
     await app.init();
 
+    const repository = service.getRepository(se.id);
     await repository.save(schema('user'));
-    await service.initialize();
     itemsRepository = service.getRepository('user');
+  });
+
+  it('should be defined', () => {
+    expect(itemsRepository).toBeDefined();
   });
 
   it('/user (GET)', async () => {

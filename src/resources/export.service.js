@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import fs from 'fs';
 import moment from 'moment';
-import { SchemasService } from '../schemas/schemas.service';
 
-const SCHEMA = 'schema';
+import { SchemasService } from '../schemas/schemas.service';
+import se from '../schemas/schema.entity.json';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
@@ -20,17 +20,19 @@ export class ExportService {
   async exp() {
     const dir = this.folder();
     this.logger.log(`Start export ${dir} ...`);
-    for (const resource of [SCHEMA, ...this.service.getResources()]) {
+    for (const resource of this.service.getResources()) {
       const repository = this.service.getRepository(resource);
       for await (const item of this.findAll(repository)) {
         const resourcepath = path.join(dir, resource);
         fs.mkdirSync(resourcepath, { recursive: true });
         const id = repository.getId(item);
-        const filepath = path.join(resourcepath, `${id}.json`);
-        fs.writeFileSync(
-          filepath,
-          JSON.stringify(item, (key, value) => (value ? value : undefined), 2)
-        );
+        if (id !== se.id) {
+          const filepath = path.join(resourcepath, `${id}.json`);
+          fs.writeFileSync(
+            filepath,
+            JSON.stringify(item, (key, value) => (value ? value : undefined), 2)
+          );
+        }
       }
     }
     this.logger.log('End export');
