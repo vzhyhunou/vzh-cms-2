@@ -1,47 +1,66 @@
 import { Dependencies, Injectable } from '@nestjs/common';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { EntitySchema, DataSource } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
+import { getDataSourceToken } from '@nestjs/typeorm';
+import { EntitySchema } from 'typeorm';
 
-import { Schema } from '../schemas/schema.entity';
+import se from './schema.entity.json';
 import customRepository from './schemas.repository';
 
-const SCHEMA = 'schema';
-
 @Injectable()
-@Dependencies(ConfigService, getRepositoryToken(Schema))
+@Dependencies(getDataSourceToken())
 export class SchemasService {
-  schemas;
   dataSource;
 
-  constructor(configService, repository) {
-    this.options = configService.get('datasource');
-    this.repository = repository.extend(customRepository(this));
-    this.initialize(this.options.synchronize);
+  constructor(dataSource) {
+    this.dataSource = dataSource;
   }
 
-  async initialize(synchronize = true) {
-    const entities = await this.repository.find();
-    this.schemas = new Map(
-      entities.map(({ id, value }) => [id, new EntitySchema(value)])
+  async onModuleInit() {
+    const repository = this.dataSource.getRepository(this.find(se.id));
+    await repository.save(se);
+  }
+
+  find(resource) {
+    return this.dataSource.options.entities.find(
+      ({ options: { name } }) => resource === name
     );
-    this.dataSource = new DataSource({
-      ...this.options,
-      synchronize,
-      entities: [...this.schemas.values()]
-    });
-    await this.dataSource.initialize();
+  }
+
+  async save(dto) {
+    const schemas = (Array.isArray(dto) ? dto : [dto]).map(
+      ({ value }) => new EntitySchema(value)
+    );
+    this.dataSource.options.entities = [
+      ...this.dataSource.options.entities,
+      ...schemas
+    ];
+    await this.dataSource.buildMetadatas();
+    await this.dataSource.synchronize();
+  }
+
+  async remove(dto) {
+    const ids = (Array.isArray(dto) ? dto : [dto]).map(({ id }) => id);
+    this.dataSource.options.entities = this.dataSource.options.entities.filter(
+      ({ options: { name } }) => !ids.includes(name)
+    );
+    await this.dataSource.buildMetadatas();
+    await this.dataSource.synchronize();
   }
 
   getRepository(resource) {
-    if (resource === SCHEMA) {
-      return this.repository;
+    const es = this.find(resource);
+    if (!es) {
+      return;
     }
-    const schema = this.schemas.get(resource);
-    return schema && this.dataSource.getRepository(schema);
+    let repository = this.dataSource.getRepository(es);
+    if (resource === se.id) {
+      repository = repository.extend(customRepository(this));
+    }
+    return repository;
   }
 
   getResources() {
-    return this.schemas.keys();
+    return this.dataSource.options.entities.map(
+      ({ options: { name } }) => name
+    );
   }
 }

@@ -1,66 +1,68 @@
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule, getDataSourceToken } from '@nestjs/typeorm';
+import { EntitySchema } from 'typeorm';
 
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import schema from './schema.fixture';
-import { Schema } from '../../src/schemas/schema.entity';
-import { SchemasModule } from '../../src/schemas/schemas.module';
+import se from '../../src/schemas/schema.entity.json';
 import { SchemasService } from '../../src/schemas/schemas.service';
 
 describe('SchemasService (e2e)', () => {
-  let repository;
   let subj;
 
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [ConfigModule, DataSourceModule, SchemasModule]
+      imports: [
+        ConfigModule,
+        DataSourceModule,
+        TypeOrmModule.forFeature([new EntitySchema(se.value)])
+      ]
     }).compile();
 
-    const configService = moduleFixture.get(ConfigService);
-    repository = moduleFixture.get(getRepositoryToken(Schema));
-    subj = new SchemasService(configService, repository);
+    const dataSource = moduleFixture.get(getDataSourceToken());
+    subj = new SchemasService(dataSource);
+  });
+
+  it('should be defined', () => {
+    expect(subj).toBeDefined();
   });
 
   describe('save()', () => {
     it('should save item', async () => {
-      await repository.save(schema('user'));
-      await subj.initialize();
+      const repository = subj.getRepository(se.id);
+      entities = await repository.find();
+      expect(entities).toHaveLength(0);
 
-      let entity = await repository.find();
-      expect(entity).toMatchObject([{ id: 'user' }]);
+      await repository.save(schema('user'));
+      let entities = await repository.find();
+      expect(entities).toMatchObject([{ id: 'user' }]);
 
       let itemsRepository = subj.getRepository('user');
       await itemsRepository.save({ id: 'admin' });
-
-      entity = await itemsRepository.find();
-      expect(entity).toMatchObject([{ id: 'admin' }]);
+      entities = await itemsRepository.find();
+      expect(entities).toMatchObject([{ id: 'admin' }]);
 
       await repository.save(schema('page'));
-      await subj.initialize();
-
-      entity = await repository.find();
-      expect(entity).toMatchObject([{ id: 'user' }, { id: 'page' }]);
+      entities = await repository.find();
+      expect(entities).toMatchObject([{ id: 'user' }, { id: 'page' }]);
 
       itemsRepository = subj.getRepository('user');
-      entity = await itemsRepository.find();
-      //expect(entity).toMatchObject([{ id: 'admin' }]);
+      entities = await itemsRepository.find();
+      expect(entities).toMatchObject([{ id: 'admin' }]);
 
       itemsRepository = subj.getRepository('page');
       await itemsRepository.save({ id: 'home' });
-
-      entity = await itemsRepository.find();
-      expect(entity).toMatchObject([{ id: 'home' }]);
+      entities = await itemsRepository.find();
+      expect(entities).toMatchObject([{ id: 'home' }]);
 
       await repository.remove({ id: 'user' });
-      await subj.initialize();
+      entities = await repository.find();
+      expect(entities).toMatchObject([{ id: 'page' }]);
 
-      entity = await repository.find();
-      expect(entity).toMatchObject([{ id: 'page' }]);
-
-      entity = await itemsRepository.find();
-      //expect(entity).toMatchObject([{ id: 'home' }]);
+      itemsRepository = subj.getRepository('page');
+      entities = await itemsRepository.find();
+      expect(entities).toMatchObject([{ id: 'home' }]);
     });
   });
 });

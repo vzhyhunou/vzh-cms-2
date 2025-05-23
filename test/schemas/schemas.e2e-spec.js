@@ -1,14 +1,14 @@
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import request from 'supertest';
 
 import schema from './schema.fixture';
-import { Schema } from '../../src/schemas/schema.entity';
+import se from '../../src/schemas/schema.entity.json';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import { SchemasModule } from '../../src/schemas/schemas.module';
+import { SchemasService } from '../../src/schemas/schemas.service';
 
-describe('SchemasController (e2e)', () => {
+describe('Schemas (e2e)', () => {
   let repository;
   let app;
 
@@ -17,25 +17,31 @@ describe('SchemasController (e2e)', () => {
       imports: [ConfigModule, DataSourceModule, SchemasModule]
     }).compile();
 
-    repository = moduleFixture.get(getRepositoryToken(Schema));
+    const service = moduleFixture.get(SchemasService);
     app = moduleFixture.createNestApplication();
 
     await app.init();
+
+    repository = service.getRepository(se.id);
+  });
+
+  it('should be defined', () => {
+    expect(repository).toBeDefined();
   });
 
   it('/schema (GET)', async () => {
     await repository.save([schema('page'), schema('user')]);
     await request(app.getHttpServer())
-      .get('/api/schema?id=s&page=0&size=1&sort=id%2CASC')
+      .get('/api/schema?id=g&page=0&size=1&sort=id%2CASC')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({
-          content: [{ id: 'user' }],
+          content: [{ id: 'page' }],
           page: { totalElements: 1 }
         });
       });
     await request(app.getHttpServer())
-      .get('/api/schema?id=s&page=1&size=1&sort=id%2CASC')
+      .get('/api/schema?id=g&page=1&size=1&sort=id%2CASC')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({
@@ -66,7 +72,7 @@ describe('SchemasController (e2e)', () => {
       .send(page)
       .expect(201);
     const result = await repository.find();
-    expect(result).toMatchObject([user, page]);
+    expect(result).toMatchObject([se, user, page]);
   });
 
   it('/schema/:id (PUT)', async () => {
@@ -93,7 +99,7 @@ describe('SchemasController (e2e)', () => {
       .send(page)
       .expect(200);
     const result = await repository.find();
-    expect(result).toMatchObject([user, page]);
+    expect(result).toMatchObject([se, user, page]);
   });
 
   afterEach(async () => {
