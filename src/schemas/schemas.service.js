@@ -1,6 +1,6 @@
 import { Dependencies, Injectable } from '@nestjs/common';
 import { getDataSourceToken } from '@nestjs/typeorm';
-import { EntitySchema } from 'typeorm';
+import { EntitySchema, Not } from 'typeorm';
 
 import se from './schema.entity.json';
 import customRepository from './schemas.repository';
@@ -17,7 +17,9 @@ export class SchemasService {
   async onModuleInit() {
     const es = this.find(se.id);
     const repository = this.dataSource.getRepository(es);
-    const entities = await repository.find();
+    const entities = await repository.findBy({
+      [repository.getPrimaryColumnName()]: Not(se.id)
+    });
     const schemas = entities.map(({ value }) => new EntitySchema(value));
     this.dataSource.options.entities = [
       ...this.dataSource.options.entities,
@@ -33,9 +35,12 @@ export class SchemasService {
   }
 
   async save(dto) {
-    const schemas = (Array.isArray(dto) ? dto : [dto]).map(
-      ({ value }) => new EntitySchema(value)
+    const list = Array.isArray(dto) ? dto : [dto];
+    const ids = list.map(({ id }) => id);
+    this.dataSource.options.entities = this.dataSource.options.entities.filter(
+      ({ options: { name } }) => !ids.includes(name)
     );
+    const schemas = list.map(({ value }) => new EntitySchema(value));
     this.dataSource.options.entities = [
       ...this.dataSource.options.entities,
       ...schemas
@@ -45,7 +50,8 @@ export class SchemasService {
   }
 
   async remove(dto) {
-    const ids = (Array.isArray(dto) ? dto : [dto]).map(({ id }) => id);
+    const list = Array.isArray(dto) ? dto : [dto];
+    const ids = list.map(({ id }) => id);
     this.dataSource.options.entities = this.dataSource.options.entities.filter(
       ({ options: { name } }) => !ids.includes(name)
     );
