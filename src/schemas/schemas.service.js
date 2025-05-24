@@ -1,79 +1,52 @@
 import { Dependencies, Injectable } from '@nestjs/common';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import { EntitySchema, Not } from 'typeorm';
 
-import se from './schema.entity.json';
+import entity from './schema.entity.json';
 import customRepository from './schemas.repository';
+import { DataSourceService } from '../datasource/datasource.service';
 
 @Injectable()
-@Dependencies(getDataSourceToken())
+@Dependencies(DataSourceService)
 export class SchemasService {
-  dataSource;
+  service;
 
-  constructor(dataSource) {
-    this.dataSource = dataSource;
+  constructor(service) {
+    this.service = service;
   }
 
   async onModuleInit() {
-    const es = this.find(se.id);
-    const repository = this.dataSource.getRepository(es);
-    const entities = await repository.findBy({
-      [repository.getPrimaryColumnName()]: Not(se.id)
-    });
-    const schemas = entities.map(({ value }) => new EntitySchema(value));
-    this.dataSource.options.entities = [
-      ...this.dataSource.options.entities,
-      ...schemas
-    ];
-    await repository.save(se);
-  }
-
-  find(resource) {
-    return this.dataSource.options.entities.find(
-      ({ options: { name } }) => resource === name
-    );
+    const repository = this.service.getRepository(entity.id);
+    await repository.save(entity);
+    const list = await repository.find();
+    const values = list.map(({ value }) => value);
+    this.service.save(values);
   }
 
   async save(dto) {
     const list = Array.isArray(dto) ? dto : [dto];
-    const ids = list.map(({ id }) => id);
-    this.dataSource.options.entities = this.dataSource.options.entities.filter(
-      ({ options: { name } }) => !ids.includes(name)
-    );
-    const schemas = list.map(({ value }) => new EntitySchema(value));
-    this.dataSource.options.entities = [
-      ...this.dataSource.options.entities,
-      ...schemas
-    ];
-    await this.dataSource.buildMetadatas();
-    await this.dataSource.synchronize();
+    const values = list.map(({ value }) => value);
+    this.service.save(values);
+    await this.service.synchronize();
   }
 
   async remove(dto) {
     const list = Array.isArray(dto) ? dto : [dto];
-    const ids = list.map(({ id }) => id);
-    this.dataSource.options.entities = this.dataSource.options.entities.filter(
-      ({ options: { name } }) => !ids.includes(name)
-    );
-    await this.dataSource.buildMetadatas();
-    await this.dataSource.synchronize();
+    const values = list.map(({ value }) => value);
+    this.service.remove(values);
+    await this.service.synchronize();
   }
 
   getRepository(resource) {
-    const es = this.find(resource);
-    if (!es) {
+    let repository = this.service.getRepository(resource);
+    if (!repository) {
       return;
     }
-    let repository = this.dataSource.getRepository(es);
-    if (resource === se.id) {
+    if (resource === entity.id) {
       repository = repository.extend(customRepository(this));
     }
     return repository;
   }
 
   getResources() {
-    return this.dataSource.options.entities.map(
-      ({ options: { name } }) => name
-    );
+    return this.service.getResources();
   }
 }

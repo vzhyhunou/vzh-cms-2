@@ -2,14 +2,17 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EntitySchema } from 'typeorm';
 
-import se from './schema.entity.json';
+import entity from './schema.entity.json';
 import { SchemasController } from './schemas.controller';
+import { DataSourceModule } from '../datasource/datasource.module';
 import { SchemasService } from './schemas.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([new EntitySchema(se.value)])],
+  imports: [
+    TypeOrmModule.forFeature([new EntitySchema(entity.value)]),
+    DataSourceModule
+  ],
   controllers: [SchemasController],
-  providers: [SchemasService],
-  exports: [SchemasService]
+  providers: [SchemasService]
 })
 export class SchemasModule {}
