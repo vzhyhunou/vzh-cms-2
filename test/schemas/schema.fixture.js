@@ -1,6 +1,6 @@
 export default (id) => ({
   id,
-  value: {
+  entity: {
     name: id,
     columns: {
       id: {

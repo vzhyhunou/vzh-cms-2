@@ -1,13 +1,13 @@
 {
   "id": "schema",
-  "value": {
+  "entity": {
     "name": "schema",
     "columns": {
       "id": {
         "type": "varchar",
         "primary": true
       },
-      "value": {
+      "entity": {
         "type": "simple-json"
       }
     }

@@ -80,7 +80,7 @@ describe('Schemas (e2e)', () => {
     await repository.save([user, page]);
     page = {
       id: 'page',
-      value: {
+      entity: {
         name: 'page',
         columns: {
           id: {

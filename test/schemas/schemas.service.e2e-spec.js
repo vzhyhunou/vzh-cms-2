@@ -5,7 +5,7 @@ import { EntitySchema } from 'typeorm';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import schema from './schema.fixture';
-import se from '../../src/schemas/schema.entity.json';
+import { id, entity } from '../../src/schemas/schema.entity.json';
 import { SchemasService } from '../../src/schemas/schemas.service';
 import { DataSourceService } from '../../src/datasource/datasource.service';
 
@@ -17,7 +17,7 @@ describe('SchemasService (e2e)', () => {
       imports: [
         ConfigModule,
         DataSourceModule,
-        TypeOrmModule.forFeature([new EntitySchema(se.value)])
+        TypeOrmModule.forFeature([new EntitySchema(entity)])
       ]
     }).compile();
 
@@ -31,7 +31,7 @@ describe('SchemasService (e2e)', () => {
 
   describe('save()', () => {
     it('should save item', async () => {
-      const repository = subj.getRepository(se.id);
+      const repository = subj.getRepository(id);
       entities = await repository.find();
       expect(entities).toHaveLength(0);
 

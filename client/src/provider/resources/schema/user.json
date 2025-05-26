@@ -1,6 +1,6 @@
 {
   "id": "user",
-  "value": {
+  "entity": {
     "name": "user",
     "columns": {
       "id": {

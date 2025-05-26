@@ -17,20 +17,20 @@ export class SchemasService {
     const repository = this.service.getRepository(entity.id);
     await repository.save(entity);
     const list = await repository.find();
-    const values = list.map(({ value }) => value);
+    const values = list.map(({ entity }) => entity);
     this.service.save(values);
   }
 
   async save(dto) {
     const list = Array.isArray(dto) ? dto : [dto];
-    const values = list.map(({ value }) => value);
+    const values = list.map(({ entity }) => entity);
     this.service.save(values);
     await this.service.synchronize();
   }
 
   async remove(dto) {
     const list = Array.isArray(dto) ? dto : [dto];
-    const values = list.map(({ value }) => value);
+    const values = list.map(({ entity }) => entity);
     this.service.remove(values);
     await this.service.synchronize();
   }
