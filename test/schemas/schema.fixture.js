@@ -12,5 +12,6 @@ export default (id) => ({
         nullable: true
       }
     }
-  }
+  },
+  list: ''
 });
