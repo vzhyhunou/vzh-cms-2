@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { config } from './configuration';
+import { DataSourceService } from './datasource.service';
 
 @Module({
   imports: [
@@ -11,6 +12,8 @@ import { config } from './configuration';
       imports: [ConfigModule.forFeature(config)],
       useFactory: (configService) => configService.get('datasource')
     })
-  ]
+  ],
+  providers: [DataSourceService],
+  exports: [DataSourceService]
 })
 export class DataSourceModule {}

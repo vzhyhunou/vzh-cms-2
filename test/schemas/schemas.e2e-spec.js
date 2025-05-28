@@ -3,7 +3,6 @@ import request from 'supertest';
 
 import schema from './schema.fixture';
 import se from '../../src/schemas/schema.entity.json';
-import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import { SchemasModule } from '../../src/schemas/schemas.module';
 import { SchemasService } from '../../src/schemas/schemas.service';
@@ -14,7 +13,7 @@ describe('Schemas (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [ConfigModule, DataSourceModule, SchemasModule]
+      imports: [ConfigModule, SchemasModule]
     }).compile();
 
     const service = moduleFixture.get(SchemasService);
@@ -81,7 +80,7 @@ describe('Schemas (e2e)', () => {
     await repository.save([user, page]);
     page = {
       id: 'page',
-      value: {
+      entity: {
         name: 'page',
         columns: {
           id: {
