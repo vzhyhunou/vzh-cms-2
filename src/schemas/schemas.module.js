@@ -13,6 +13,7 @@ import { SchemasService } from './schemas.service';
     DataSourceModule
   ],
   controllers: [SchemasController],
-  providers: [SchemasService]
+  providers: [SchemasService],
+  exports: [SchemasService]
 })
 export class SchemasModule {}

@@ -9,7 +9,11 @@
       },
       "entity": {
         "type": "simple-json"
+      },
+      "list": {
+        "type": "text"
       }
     }
-  }
+  },
+  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}><Datagrid rowClick={false}><TextField source=\"id\"/><EditButton/></Datagrid></List>"
 }
