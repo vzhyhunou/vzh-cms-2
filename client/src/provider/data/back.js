@@ -23,6 +23,18 @@ export default () => {
         data: content,
         total: page.totalElements
       }));
-    }
+    },
+    getOne: (resource, { id, options }) =>
+      httpClient(`${API_URL}/${resource}/${id}`, options).then(({ json }) => ({
+        data: json
+      })),
+    update: (resource, { id, data, options }) =>
+      httpClient(`${API_URL}/${resource}/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        ...options
+      }).then(({ json }) => ({
+        data: json
+      }))
   };
 };

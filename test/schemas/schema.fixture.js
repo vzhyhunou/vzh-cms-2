@@ -13,5 +13,6 @@ export default (id) => ({
       }
     }
   },
-  list: ''
+  list: '',
+  edit: ''
 });

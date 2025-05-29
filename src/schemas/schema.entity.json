@@ -12,8 +12,12 @@
       },
       "list": {
         "type": "text"
+      },
+      "edit": {
+        "type": "text"
       }
     }
   },
-  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}><Datagrid rowClick={false}><TextField source=\"id\"/><EditButton/></Datagrid></List>"
+  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <EditButton/>\n </Datagrid>\n</List>",
+  "edit": "<Edit>\n <TabbedForm><FormTab label=\"Entity\">\n  <JsonInput multiline source=\"entity\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </FormTab><FormTab label=\"List\">\n  <TextInput multiline source=\"list\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </FormTab><FormTab label=\"Edit\">\n  <TextInput multiline source=\"edit\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </FormTab></TabbedForm>\n</Edit>"
 }

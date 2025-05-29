@@ -30,7 +30,7 @@ export class ExportService {
           const filepath = path.join(resourcepath, `${id}.json`);
           fs.writeFileSync(
             filepath,
-            JSON.stringify(item, (key, value) => (value ? value : undefined), 2)
+            JSON.stringify(item, (k, v) => (v ? v : undefined), 2)
           );
         }
       }

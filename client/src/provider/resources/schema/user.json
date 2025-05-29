@@ -12,5 +12,6 @@
       }
     }
   },
-  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}><Datagrid rowClick={false}><TextField source=\"id\"/><EditButton/></Datagrid></List>"
+  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <EditButton/>\n  </Datagrid>\n</List>",
+  "edit": "<Edit>\n <TabbedForm><FormTab label=\"General\">\n  <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n </FormTab></TabbedForm>\n</Edit>"
 }

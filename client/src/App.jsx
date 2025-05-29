@@ -25,8 +25,12 @@ const App = () => {
 
   const resources = Object.fromEntries(
     data
-      .map(({ id, list }) => ({ id, list: <Parser content={list} /> }))
-      .map(({ id, list }) => [id, { list }])
+      .map(({ id, list, edit }) => ({
+        id,
+        list: <Parser content={list} />,
+        edit: <Parser content={edit} />
+      }))
+      .map(({ id, list, edit }) => [id, { list, edit }])
   );
 
   return <Core {...{ resources }}></Core>;
