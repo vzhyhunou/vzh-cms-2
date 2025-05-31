@@ -9,7 +9,7 @@ import { SchemasService } from './schemas.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([new EntitySchema(entity)]),
+    TypeOrmModule.forFeature([new EntitySchema(JSON.parse(entity))]),
     DataSourceModule
   ],
   controllers: [SchemasController],

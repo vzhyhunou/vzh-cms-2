@@ -1,23 +1,6 @@
 {
   "id": "schema",
-  "entity": {
-    "name": "schema",
-    "columns": {
-      "id": {
-        "type": "varchar",
-        "primary": true
-      },
-      "entity": {
-        "type": "simple-json"
-      },
-      "list": {
-        "type": "text"
-      },
-      "edit": {
-        "type": "text"
-      }
-    }
-  },
+  "entity": "{\n  \"name\": \"schema\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"varchar\",\n      \"primary\": true\n    },\n    \"entity\": {\n      \"type\": \"text\"\n    },\n    \"list\": {\n      \"type\": \"text\"\n    },\n    \"edit\": {\n      \"type\": \"text\"\n    }\n  }\n}",
   "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <EditButton/>\n </Datagrid>\n</List>",
-  "edit": "<Edit>\n <TabbedForm><FormTab label=\"Entity\">\n  <JsonInput multiline source=\"entity\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </FormTab><FormTab label=\"List\">\n  <TextInput multiline source=\"list\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </FormTab><FormTab label=\"Edit\">\n  <TextInput multiline source=\"edit\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </FormTab></TabbedForm>\n</Edit>"
+  "edit": "<Edit>\n <TabbedForm>\n  <FormTab label=\"Entity\">\n   <TextInput multiline source=\"entity\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n  <FormTab label=\"List\">\n   <TextInput multiline source=\"list\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n  <FormTab label=\"Edit\">\n   <TextInput multiline source=\"edit\" label=\"\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n </TabbedForm>\n</Edit>"
 }

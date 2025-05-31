@@ -17,7 +17,7 @@ describe('SchemasService (e2e)', () => {
       imports: [
         ConfigModule,
         DataSourceModule,
-        TypeOrmModule.forFeature([new EntitySchema(entity)])
+        TypeOrmModule.forFeature([new EntitySchema(JSON.parse(entity))])
       ]
     }).compile();
 

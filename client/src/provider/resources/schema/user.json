@@ -1,17 +1,6 @@
 {
   "id": "user",
-  "entity": {
-    "name": "user",
-    "columns": {
-      "id": {
-        "type": "varchar",
-        "primary": true
-      },
-      "password": {
-        "type": "varchar"
-      }
-    }
-  },
-  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <EditButton/>\n  </Datagrid>\n</List>",
-  "edit": "<Edit>\n <TabbedForm><FormTab label=\"General\">\n  <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n </FormTab></TabbedForm>\n</Edit>"
+  "entity": "{\n  \"name\": \"user\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"varchar\",\n      \"primary\": true\n    },\n      \"password\": {\n      \"type\": \"varchar\"\n    }\n  }\n}",
+  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <EditButton/>\n </Datagrid>\n</List>",
+  "edit": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n </TabbedForm>\n</Edit>"
 }

@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 
 import schema from './schema.fixture';
-import se from '../../src/schemas/schema.entity.json';
+import entity from '../../src/schemas/schema.entity.json';
 import { ConfigModule } from '../../src/config/config.module';
 import { SchemasModule } from '../../src/schemas/schemas.module';
 import { SchemasService } from '../../src/schemas/schemas.service';
@@ -21,7 +21,7 @@ describe('Schemas (e2e)', () => {
 
     await app.init();
 
-    repository = service.getRepository(se.id);
+    repository = service.getRepository(entity.id);
   });
 
   it('should be defined', () => {
@@ -71,7 +71,7 @@ describe('Schemas (e2e)', () => {
       .send(page)
       .expect(201);
     const result = await repository.find();
-    expect(result).toMatchObject([se, user, page]);
+    expect(result).toMatchObject([entity, user, page]);
   });
 
   it('/schema/:id (PUT)', async () => {
@@ -80,25 +80,15 @@ describe('Schemas (e2e)', () => {
     await repository.save([user, page]);
     page = {
       id: 'page',
-      entity: {
-        name: 'page',
-        columns: {
-          id: {
-            type: 'varchar',
-            primary: true
-          },
-          a: {
-            type: 'varchar'
-          }
-        }
-      }
+      entity:
+        '{"name": "page", "columns": {"id": {"type": "varchar", "primary": true}, "a": {"type": "varchar"}}}'
     };
     await request(app.getHttpServer())
       .put('/api/schema/page')
       .send(page)
       .expect(200);
     const result = await repository.find();
-    expect(result).toMatchObject([se, user, page]);
+    expect(result).toMatchObject([entity, user, page]);
   });
 
   afterEach(async () => {

@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 
 import schema from './schema.fixture';
-import se from '../../src/schemas/schema.entity.json';
+import entity from '../../src/schemas/schema.entity.json';
 import { ConfigModule } from '../../src/config/config.module';
 import { SchemasModule } from '../../src/schemas/schemas.module';
 import { SchemasService } from '../../src/schemas/schemas.service';
@@ -21,7 +21,7 @@ describe('Items (e2e)', () => {
 
     await app.init();
 
-    const repository = service.getRepository(se.id);
+    const repository = service.getRepository(entity.id);
     await repository.save(schema('user'));
     itemsRepository = service.getRepository('user');
   });

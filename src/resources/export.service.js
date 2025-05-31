@@ -5,7 +5,7 @@ import fs from 'fs';
 import moment from 'moment';
 
 import { SchemasService } from '../schemas/schemas.service';
-import se from '../schemas/schema.entity.json';
+import entity from '../schemas/schema.entity.json';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
@@ -26,7 +26,7 @@ export class ExportService {
         const resourcepath = path.join(dir, resource);
         fs.mkdirSync(resourcepath, { recursive: true });
         const id = repository.getId(item);
-        if (id !== se.id) {
+        if (id !== entity.id) {
           const filepath = path.join(resourcepath, `${id}.json`);
           fs.writeFileSync(
             filepath,

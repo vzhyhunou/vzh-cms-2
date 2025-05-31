@@ -21,13 +21,13 @@ describe('SchemasRepository', () => {
       imports: [
         ConfigModule,
         DataSourceModule,
-        TypeOrmModule.forFeature([new EntitySchema(entity)])
+        TypeOrmModule.forFeature([new EntitySchema(JSON.parse(entity))])
       ]
     }).compile();
 
     manager = moduleFixture.get(getEntityManagerToken());
     const dataSource = moduleFixture.get(getDataSourceToken());
-    subj = dataSource.getRepository(new EntitySchema(entity));
+    subj = dataSource.getRepository(new EntitySchema(JSON.parse(entity)));
   });
 
   it('should be defined', () => {
@@ -37,23 +37,23 @@ describe('SchemasRepository', () => {
   describe('save()', () => {
     it('should create a schema', async () => {
       await subj.save(schema('user'));
-      const result = await manager.find(new EntitySchema(entity));
+      const result = await manager.find(new EntitySchema(JSON.parse(entity)));
       expect(result).toMatchObject([{ id: 'user' }]);
     });
   });
 
   describe('delete()', () => {
     it('should delete a schema', async () => {
-      await manager.save(new EntitySchema(entity), schema('user'));
+      await manager.save(new EntitySchema(JSON.parse(entity)), schema('user'));
       await subj.remove({ id: 'user' });
-      const result = await manager.find(new EntitySchema(entity));
+      const result = await manager.find(new EntitySchema(JSON.parse(entity)));
       expect(result).toHaveLength(0);
     });
   });
 
   describe('findAll()', () => {
     it('should return an array of schemas', async () => {
-      await manager.save(new EntitySchema(entity), [
+      await manager.save(new EntitySchema(JSON.parse(entity)), [
         schema('user'),
         schema('page')
       ]);
@@ -67,14 +67,14 @@ describe('SchemasRepository', () => {
     });
 
     it('should return an empty array of schemas', async () => {
-      await manager.save(new EntitySchema(entity), schema('user'));
+      await manager.save(new EntitySchema(JSON.parse(entity)), schema('user'));
       const options = subj.filter({ id: 'a' });
       const result = await subj.findAll(0, 1, {}, options);
       expect(result).toMatchObject({ content: [], totalElements: 0 });
     });
 
     it('should return a filtered array of schemas', async () => {
-      await manager.save(new EntitySchema(entity), [
+      await manager.save(new EntitySchema(JSON.parse(entity)), [
         schema('user'),
         schema('page')
       ]);
