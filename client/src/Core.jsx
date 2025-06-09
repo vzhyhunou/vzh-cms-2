@@ -15,6 +15,7 @@ export default ({ resources, children }) => (
         <>
           <CustomRoutes noLayout>
             <Route path="admin">
+              <Route path="" element={<Layout/>}/>
               {access.map(([k, v]) => (
                 <Route key={k} path={`${k}/*`} element={<Layout>{v}</Layout>} />
               ))}
