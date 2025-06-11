@@ -7,7 +7,7 @@ import {
 import { EntitySchema } from 'typeorm';
 
 import schema from './schema.fixture';
-import { entity } from '../../src/schemas/schema.entity.json';
+import { id, entities } from '../../src/schemas/schema.entity.json';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import '../../src/common/repository/base.repository';
@@ -21,13 +21,15 @@ describe('SchemasRepository', () => {
       imports: [
         ConfigModule,
         DataSourceModule,
-        TypeOrmModule.forFeature([new EntitySchema(JSON.parse(entity))])
+        TypeOrmModule.forFeature(
+          entities.map((e) => new EntitySchema(JSON.parse(e)))
+        )
       ]
     }).compile();
 
     manager = moduleFixture.get(getEntityManagerToken());
     const dataSource = moduleFixture.get(getDataSourceToken());
-    subj = dataSource.getRepository(new EntitySchema(JSON.parse(entity)));
+    subj = dataSource.getRepository(id);
   });
 
   it('should be defined', () => {
@@ -37,26 +39,23 @@ describe('SchemasRepository', () => {
   describe('save()', () => {
     it('should create a schema', async () => {
       await subj.save(schema('user'));
-      const result = await manager.find(new EntitySchema(JSON.parse(entity)));
+      const result = await manager.find(id);
       expect(result).toMatchObject([{ id: 'user' }]);
     });
   });
 
   describe('delete()', () => {
     it('should delete a schema', async () => {
-      await manager.save(new EntitySchema(JSON.parse(entity)), schema('user'));
+      await manager.save(id, schema('user'));
       await subj.remove({ id: 'user' });
-      const result = await manager.find(new EntitySchema(JSON.parse(entity)));
+      const result = await manager.find(id);
       expect(result).toHaveLength(0);
     });
   });
 
   describe('findAll()', () => {
     it('should return an array of schemas', async () => {
-      await manager.save(new EntitySchema(JSON.parse(entity)), [
-        schema('user'),
-        schema('page')
-      ]);
+      await manager.save(id, [schema('user'), schema('page')]);
       let result = await subj.findAll(0, 2);
       expect(result).toMatchObject({
         content: [{ id: 'user' }, { id: 'page' }],
@@ -67,17 +66,14 @@ describe('SchemasRepository', () => {
     });
 
     it('should return an empty array of schemas', async () => {
-      await manager.save(new EntitySchema(JSON.parse(entity)), schema('user'));
+      await manager.save(id, schema('user'));
       const options = subj.filter({ id: 'a' });
       const result = await subj.findAll(0, 1, {}, options);
       expect(result).toMatchObject({ content: [], totalElements: 0 });
     });
 
     it('should return a filtered array of schemas', async () => {
-      await manager.save(new EntitySchema(JSON.parse(entity)), [
-        schema('user'),
-        schema('page')
-      ]);
+      await manager.save(id, [schema('user'), schema('page')]);
       const options = subj.filter({ id: 'uS' });
       let result = await subj.findAll(0, 1, {}, options);
       expect(result).toMatchObject({

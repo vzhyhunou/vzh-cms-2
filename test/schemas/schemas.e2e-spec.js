@@ -80,8 +80,9 @@ describe('Schemas (e2e)', () => {
     await repository.save([user, page]);
     page = {
       id: 'page',
-      entity:
+      entities: [
         '{"name": "page", "columns": {"id": {"type": "varchar", "primary": true}, "a": {"type": "varchar"}}}'
+      ]
     };
     await request(app.getHttpServer())
       .put('/api/schema/page')

@@ -5,7 +5,7 @@ import { EntitySchema } from 'typeorm';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import schema from './schema.fixture';
-import { id, entity } from '../../src/schemas/schema.entity.json';
+import { id, entities } from '../../src/schemas/schema.entity.json';
 import { SchemasService } from '../../src/schemas/schemas.service';
 import { DataSourceService } from '../../src/datasource/datasource.service';
 
@@ -17,7 +17,9 @@ describe('SchemasService (e2e)', () => {
       imports: [
         ConfigModule,
         DataSourceModule,
-        TypeOrmModule.forFeature([new EntitySchema(JSON.parse(entity))])
+        TypeOrmModule.forFeature(
+          entities.map((e) => new EntitySchema(JSON.parse(e)))
+        )
       ]
     }).compile();
 
