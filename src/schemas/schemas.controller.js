@@ -15,6 +15,7 @@ import {
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
+import entity from './schema.entity.json';
 
 @Controller('api')
 @Dependencies(SchemasService)
@@ -71,8 +72,35 @@ export class SchemasController {
 
   @Get(':resource/:id')
   @Bind(Param('resource'), Param('id'))
-  findById(resource, id) {
+  async findById(resource, id) {
     const repository = this.getRepository(resource);
-    return repository.findById(id);
+    const schema = await repository.findById(id);
+    if (!schema) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return schema;
+  }
+
+  @Get(':resource/component/:name')
+  @Bind(Param('resource'), Param('name'), Query())
+  async search(resource, name, params) {
+    const repository = this.getRepository(entity.id);
+    const schema = await repository.findByComponent(resource, name);
+
+    if (!schema) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    const { findOne, findOptions, element, title } = schema.components[0];
+    const itemsRepository = this.getRepository(resource);
+    const content = await itemsRepository[findOne ? 'findOne' : 'find'](
+      new Function('params', `return ${findOptions}`)(params)
+    );
+
+    if (!content) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    return { content, element, title };
   }
 }

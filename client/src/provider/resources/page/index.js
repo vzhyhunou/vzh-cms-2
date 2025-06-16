@@ -1,3 +1,4 @@
 import none from './none.json';
+import home from './home.json';
 
-export default [none];
+export default [none, home];

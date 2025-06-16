@@ -1,8 +1,23 @@
 {
   "id": "page",
   "entities": [
-    "{\n  \"name\": \"page\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"varchar\",\n      \"primary\": true\n    },\n    \"title\": {\n      \"type\": \"varchar\"\n    },\n    \"content\": {\n      \"type\": \"text\"\n    }\n  }\n}"
+    "{\n  \"name\": \"page\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"varchar\",\n      \"primary\": true\n    },\n    \"title\": {\n      \"type\": \"varchar\"\n    },\n    \"body\": {\n      \"type\": \"text\"\n    }\n  }\n}"
   ],
   "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <TextField source=\"title\"/>\n  <EditButton/>\n </Datagrid>\n</List>",
-  "edit": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"content\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n </TabbedForm>\n</Edit>"
+  "edit": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n </TabbedForm>\n</Edit>",
+  "components": [
+    {
+      "name": "one",
+      "findOne": true,
+      "findOptions": "{\n  \"select\": {\n    \"title\": true,\n    \"body\": true\n  },\n  \"where\": {\n    \"id\": params.id\n  }\n}",
+      "element": "<div dangerouslySetInnerHTML={{__html: content.body}}/>",
+      "title": "content.title"
+    },
+    {
+      "name": "menu",
+      "findOne": false,
+      "findOptions": "{\n  \"select\": {\n    \"id\": true,\n    \"title\": true\n  }\n}",
+      "element": "<ul>{content.map(i => <li><a href={i.id}>{i.title}</a></li>)}</ul>"
+    }
+  ]
 }

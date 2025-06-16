@@ -12,5 +12,16 @@ export default (service) => ({
     const result = await Repository.prototype.remove.call(this, dto);
     await service.remove(dto);
     return result;
+  },
+  findByComponent(resource, name) {
+    return this.findOne({
+      select: {
+        id: true
+      },
+      relations: {
+        components: true
+      },
+      where: { id: resource, components: { name } }
+    });
   }
 });

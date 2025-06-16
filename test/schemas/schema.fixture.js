@@ -7,14 +7,18 @@ export default (id) => ({
         "id": {
           "type": "varchar",
           "primary": true
-        },
-        "f": {
-          "type": "varchar",
-          "nullable": true
         }
       }
     }`
   ],
   list: '',
-  edit: ''
+  edit: '',
+  components: [
+    {
+      name: `${id}`,
+      findOne: false,
+      findOptions: '{}',
+      element: ''
+    }
+  ]
 });

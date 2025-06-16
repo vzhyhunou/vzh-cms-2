@@ -81,8 +81,7 @@ describe('Items (e2e)', () => {
     let manager = { id: 'manager', f: 'a' };
     await itemsRepository.save([admin, manager]);
     manager = {
-      id: 'manager',
-      f: 'b'
+      id: 'manager'
     };
     await request(app.getHttpServer())
       .put('/api/user/manager')

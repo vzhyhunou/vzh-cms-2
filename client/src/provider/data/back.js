@@ -35,6 +35,13 @@ export default () => {
         ...options
       }).then(({ json }) => ({
         data: json
+      })),
+    getComponent: (resource, { name, params, options }) =>
+      httpClient(
+        `${API_URL}/${resource}/component/${name}${params ? `?${stringify(params)}` : ''}`,
+        options
+      ).then(({ json }) => ({
+        data: json
       }))
   };
 };
