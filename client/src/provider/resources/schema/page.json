@@ -10,7 +10,7 @@
       "name": "one",
       "findOne": true,
       "findOptions": "{\n  \"select\": {\n    \"title\": true,\n    \"body\": true\n  },\n  \"where\": {\n    \"id\": params.id\n  }\n}",
-      "element": "<div dangerouslySetInnerHTML={{__html: content.body}}/>",
+      "element": "<Parser jsx={content.body}/>",
       "title": "content.title"
     },
     {

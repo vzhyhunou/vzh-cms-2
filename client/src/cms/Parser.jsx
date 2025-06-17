@@ -3,11 +3,11 @@ import JsxParser from 'react-jsx-parser';
 
 import Component from './Component';
 
-export default ({ jsx, bindings }) => {
+const Parser = ({ jsx, bindings }) => {
   return (
     <JsxParser
       {...{ bindings }}
-      components={{ Component }}
+      components={{ Parser, Component }}
       jsx={jsx.replaceAll(/\n\s*/g, '')}
       renderInWrapper={false}
       autoCloseVoidElements={true}
@@ -15,3 +15,5 @@ export default ({ jsx, bindings }) => {
     />
   );
 };
+
+export default Parser;
