@@ -8,19 +8,21 @@ import Component from './cms/Component';
 export default ({ config }) => (
   <Context {...config}>
     <Admin>
-      <Route
-        path=""
-        element={<Component resource="page" name="one" id="home" titled />}
-      />
-      <Route path=":resource/:id" element={<Component name="one" titled />} />
-      <Route
-        path=":id"
-        element={<Component resource="page" name="one" titled />}
-      />
-      <Route
-        path="*"
-        element={<Component resource="page" name="one" id="none" titled />}
-      />
+      <Route element={<Component resource="page" name="one" id="layout" />}>
+        <Route
+          path=""
+          element={<Component resource="page" name="one" id="home" titled />}
+        />
+        <Route path=":resource/:id" element={<Component name="one" titled />} />
+        <Route
+          path=":id"
+          element={<Component resource="page" name="one" titled />}
+        />
+        <Route
+          path="*"
+          element={<Component resource="page" name="one" id="none" titled />}
+        />
+      </Route>
     </Admin>
   </Context>
 );
