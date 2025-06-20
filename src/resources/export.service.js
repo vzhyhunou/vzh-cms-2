@@ -20,12 +20,14 @@ export class ExportService {
   async exp() {
     const dir = this.folder();
     this.logger.log(`Start export ${dir} ...`);
-    for (const resource of this.service.getResources()) {
-      const repository = this.service.getRepository(resource);
-      for await (const item of this.findAll(repository)) {
+    const repository = this.service.getRepository(entity.id);
+    const schemas = await repository.find();
+    for (const resource of schemas.map(({ id }) => id)) {
+      const itemRepository = this.service.getRepository(resource);
+      for await (const item of this.findAll(itemRepository)) {
         const resourcepath = path.join(dir, resource);
         fs.mkdirSync(resourcepath, { recursive: true });
-        const id = repository.getId(item);
+        const id = itemRepository.getId(item);
         if (id !== entity.id) {
           const filepath = path.join(resourcepath, `${id}.json`);
           fs.writeFileSync(

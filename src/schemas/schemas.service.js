@@ -49,8 +49,4 @@ export class SchemasService {
     }
     return repository;
   }
-
-  getResources() {
-    return this.service.getResources();
-  }
 }

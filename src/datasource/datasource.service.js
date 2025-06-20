@@ -38,10 +38,4 @@ export class DataSourceService {
     );
     return entity && this.dataSource.getRepository(entity);
   }
-
-  getResources() {
-    return this.dataSource.options.entities.map(
-      ({ options: { name } }) => name
-    );
-  }
 }

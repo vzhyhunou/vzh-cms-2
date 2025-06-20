@@ -4,8 +4,7 @@ import path from 'path';
 import fs from 'fs';
 
 import { SchemasService } from '../schemas/schemas.service';
-
-const SCHEMA = 'schema';
+import entity from '../schemas/schema.entity.json';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
@@ -23,18 +22,18 @@ export class ImportService {
     }
     this.logger.log('Import schemas');
     await this.consume(
-      (resource) => resource === SCHEMA,
+      (resource) => resource === entity.id,
       (f) => f
     );
     this.logger.log('Import items without relations');
     await this.consume(
-      (resource) => resource !== SCHEMA,
+      (resource) => resource !== entity.id,
       // eslint-disable-next-line no-unused-vars
       ({ relations, ...rest }) => rest
     );
     this.logger.log('Import items');
     await this.consume(
-      (resource) => resource !== SCHEMA,
+      (resource) => resource !== entity.id,
       (f) => f
     );
     this.logger.log('End import');
