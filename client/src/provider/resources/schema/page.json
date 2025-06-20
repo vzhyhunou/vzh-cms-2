@@ -4,7 +4,8 @@
     "{\n  \"name\": \"page\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"varchar\",\n      \"primary\": true\n    },\n    \"title\": {\n      \"type\": \"varchar\",\n      \"nullable\": true\n    },\n    \"body\": {\n      \"type\": \"text\"\n    }\n  }\n}"
   ],
   "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <TextField source=\"title\"/>\n  <EditButton/>\n </Datagrid>\n</List>",
-  "edit": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n </TabbedForm>\n</Edit>",
+  "create": "<Create>\n <SimpleForm>\n  <TextInput source=\"id\" validate={[required()]}/>\n  <TextInput source=\"title\"/>\n  <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </SimpleForm>\n</Create>",
+  "edit": "<Edit>\n <SimpleForm>\n  <TextInput source=\"title\"/>\n  <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </SimpleForm>\n</Edit>",
   "components": [
     {
       "name": "one",

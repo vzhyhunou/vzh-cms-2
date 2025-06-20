@@ -12,6 +12,7 @@ export default (id) => ({
     }`
   ],
   list: '',
+  create: '',
   edit: '',
   components: [
     {

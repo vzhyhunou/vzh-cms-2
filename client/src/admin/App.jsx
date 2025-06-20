@@ -23,39 +23,39 @@ export default ({ children }) => {
     return;
   }
 
-  const resources = Object.fromEntries(
-    data
-      .map(({ id, list, edit }) => ({
-        id,
-        list: <Parser jsx={list} />,
-        edit: <Parser jsx={edit} />
-      }))
-      .map(({ id, list, edit }) => [id, { list, edit }])
-  );
+  const resources = data.map(({ id, list, create, edit }) => ({
+    id,
+    ...Object.fromEntries(
+      Object.entries({ list, create, edit }).map(([k, v]) => [
+        k,
+        <Parser jsx={v} />
+      ])
+    )
+  }));
 
   return (
     <Admin basename="/admin" {...{ dataProvider }}>
       {() => {
-        const access = Object.entries(resources).map(([k, v]) => [
-          k,
-          <Resource key={k} name={k} {...v} />
-        ]);
+        const access = resources.map(({ id, ...rest }) => ({
+          id,
+          resource: <Resource key={id} name={id} {...rest} />
+        }));
         return (
           <>
             <CustomRoutes noLayout>
               <Route path="admin">
                 <Route path="" element={<Layout />} />
-                {access.map(([k, v]) => (
+                {access.map(({ id, resource }) => (
                   <Route
-                    key={k}
-                    path={`${k}/*`}
-                    element={<Layout>{v}</Layout>}
+                    key={id}
+                    path={`${id}/*`}
+                    element={<Layout>{resource}</Layout>}
                   />
                 ))}
               </Route>
               {children}
             </CustomRoutes>
-            {access.map(([k, v]) => v)}
+            {access.map(({ resource }) => resource)}
           </>
         );
       }}
