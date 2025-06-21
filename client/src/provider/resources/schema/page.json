@@ -1,25 +1,25 @@
 {
   "id": "page",
   "entities": [
-    "{\n  \"name\": \"page\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"varchar\",\n      \"primary\": true\n    },\n    \"title\": {\n      \"type\": \"varchar\",\n      \"nullable\": true\n    },\n    \"body\": {\n      \"type\": \"text\"\n    }\n  }\n}"
+    "{\n  \"name\": \"page\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"varchar\",\n      \"primary\": true\n    },\n    \"title\": {\n      \"type\": \"varchar\",\n      \"nullable\": true\n    },\n    \"body\": {\n      \"type\": \"text\"\n    }\n  },\n  \"relations\": {\n    \"tags\": {\n      \"type\": \"one-to-many\",\n      \"target\": \"pageTag\",\n      \"cascade\": true,\n      \"inverseSide\": \"page\"\n    }\n  }\n}",
+    "{\n  \"name\": \"pageTag\",\n  \"columns\": {\n    \"id\": {\n      \"type\": \"int\",\n      \"primary\": true,\n      \"generated\": true\n    },\n    \"name\": {\n      \"type\": \"varchar\"\n    },\n    \"start\": {\n      \"type\": \"date\",\n      \"nullable\": true\n    },\n    \"end\": {\n      \"type\": \"date\",\n      \"nullable\": true\n    }\n  },\n  \"relations\": {\n    \"page\": {\n      \"type\": \"many-to-one\",\n      \"target\": \"page\",\n      \"onDelete\": \"CASCADE\",\n      \"inverseSide\": \"tags\"\n    }\n  }\n}"
   ],
-  "list": "<List filters={[<TextInput source=\"id\" alwaysOn/>]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <TextField source=\"title\"/>\n  <EditButton/>\n </Datagrid>\n</List>",
-  "create": "<Create>\n <SimpleForm>\n  <TextInput source=\"id\" validate={[required()]}/>\n  <TextInput source=\"title\"/>\n  <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </SimpleForm>\n</Create>",
-  "edit": "<Edit>\n <SimpleForm>\n  <TextInput source=\"title\"/>\n  <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n </SimpleForm>\n</Edit>",
+  "list": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <TextInput source=\"title\"/>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <FunctionField source=\"id\" render={record =>\n   <Transform expression={'{path: `/${id}`, id}'} id={record.id}>\n    {value => <Link to={value.path}>{value.id}</Link>}\n   </Transform>\n  }/>\n  <TextField source=\"title\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\" />\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>",
+  "create": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required()]}/>\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" validate={[required()]} choices={[\n      {id: 'MENU', name: 'MENU'},\n      {id: 'PUBLISHED', name: 'PUBLISHED'}\n     ]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>",
+  "edit": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" validate={[required()]} choices={[\n      {id: 'MENU', name: 'MENU'},\n      {id: 'PUBLISHED', name: 'PUBLISHED'}\n     ]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>",
   "components": [
     {
       "name": "one",
       "findOne": true,
-      "findOptions": "{\n  \"select\": {\n    \"title\": true,\n    \"body\": true\n  },\n  \"where\": {\n    \"id\": params.id\n  }\n}",
+      "findOptions": "{\n  \"where\": {\n    \"id\": params.id,\n    \"tags\": {\n      \"name\": \"PUBLISHED\",\n      \"start\": Raw((alias) => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      \"end\": Raw((alias) => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
       "element": "<Parser jsx={content.body}/>",
       "title": "content.title"
     },
     {
       "name": "menu",
       "findOne": false,
-      "findOptions": "{\n  \"select\": {\n    \"id\": true,\n    \"title\": true\n  }\n}",
-      "transform": "content.map(({id, title}) => ({path: `/${id}`, title}))",
-      "element": "<List>\n {content.map(i =>\n  <Link to={i.path}>\n   <ListItem>\n    <ListItemText primary={i.title}/>\n   </ListItem>\n  </Link>\n )}\n</List>"
+      "findOptions": "{\n  \"select\": {\n    \"id\": true,\n    \"title\": true\n  },\n  \"where\": {\n    \"tags\": {\n      \"name\": \"MENU\",\n      \"start\": Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      \"end\": Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
+      "element": "<List>\n {content.map(record =>\n  <Transform expression={'{path: `/${id}`, title}'} id={record.id} title={record.title}>\n   {value =>\n    <Link to={value.path}>\n     <ListItem>\n      <ListItemText primary={value.title}/>\n     </ListItem>\n    </Link>\n   }\n  </Transform>\n )}\n</List>"
     }
   ]
 }

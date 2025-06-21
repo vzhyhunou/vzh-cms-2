@@ -12,6 +12,7 @@ import {
   HttpException,
   HttpStatus
 } from '@nestjs/common';
+import * as typeorm from 'typeorm';
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
@@ -91,11 +92,13 @@ export class SchemasController {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
 
-    const { findOne, findOptions, transform, element, title } =
-      schema.components[0];
+    const { findOne, findOptions, element, title } = schema.components[0];
     const itemsRepository = this.getRepository(resource);
     const content = await itemsRepository[findOne ? 'findOne' : 'find'](
-      new Function('params', `return ${findOptions}`)(params)
+      new Function('params', ...Object.keys(typeorm), `return ${findOptions}`)(
+        params,
+        ...Object.values(typeorm)
+      )
     );
 
     if (!content) {
@@ -103,9 +106,7 @@ export class SchemasController {
     }
 
     return {
-      content: transform
-        ? new Function('content', `return ${transform}`)(content)
-        : content,
+      content,
       element,
       title: new Function('content', `return ${title}`)(content)
     };

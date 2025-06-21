@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import Parser from './Parser';
-import useGetComponent from './useGetComponent';
+import useGetComponent from '../provider/data/useGetComponent';
 
 const Component = ({ resource, name, titled, ...rest }) => {
   const { '*': extra, resource: r, ...p } = useParams();

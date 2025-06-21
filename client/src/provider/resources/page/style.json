@@ -1,4 +1,9 @@
 {
   "id": "style",
+  "tags": [
+    {
+      "name": "PUBLISHED"
+    }
+  ],
   "body": "<GlobalStyles styles={{\n a: {\n  color: 'inherit',\n  textDecoration: 'none'\n }\n}}/>"
 }
