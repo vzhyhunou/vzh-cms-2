@@ -22,7 +22,7 @@ describe('SchemasRepository', () => {
         ConfigModule,
         DataSourceModule,
         TypeOrmModule.forFeature(
-          entities.map((e) => new EntitySchema(JSON.parse(e)))
+          entities.map((e) => new EntitySchema(new Function(`return ${e}`)()))
         )
       ]
     }).compile();

@@ -36,7 +36,9 @@ export class SchemasService {
   }
 
   parse(values) {
-    return values.flatMap(({ entities }) => entities.map((e) => JSON.parse(e)));
+    return values.flatMap(({ entities }) =>
+      entities.map((e) => new Function(`return ${e}`)())
+    );
   }
 
   getRepository(resource) {

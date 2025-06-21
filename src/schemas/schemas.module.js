@@ -10,7 +10,7 @@ import { SchemasService } from './schemas.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      entities.map((e) => new EntitySchema(JSON.parse(e)))
+      entities.map((e) => new EntitySchema(new Function(`return ${e}`)()))
     ),
     DataSourceModule
   ],

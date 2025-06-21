@@ -49,7 +49,7 @@ export class ImportService {
             const filepath = path.join(resourcepath, file);
             if (filepath.endsWith('.json')) {
               let f = fs.readFileSync(filepath);
-              f = JSON.parse(f);
+              f = new Function(`return ${f}`)();
               f = transformer(f);
               const repository = this.service.getRepository(resource);
               await repository.save(f);
