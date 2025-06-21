@@ -39,6 +39,9 @@ Repository.prototype.filter = function (params) {
   return {
     where: Object.fromEntries(
       Object.entries(params).map(([k, v]) => {
+        if (this.metadata.hasRelationWithPropertyPath(k)) {
+          return [k, new Function(`return ${v}`)()];
+        }
         const column = this.metadata.findColumnWithPropertyName(k);
         const type = this.manager.connection.driver.normalizeType(column);
         return [
