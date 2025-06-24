@@ -4,7 +4,8 @@ import path from 'path';
 import fs from 'fs';
 
 import { SchemasService } from '../schemas/schemas.service';
-import entity from '../schemas/schema.entity.json';
+
+const SCHEMA = 'schema';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
@@ -22,18 +23,18 @@ export class ImportService {
     }
     this.logger.log('Import schemas');
     await this.consume(
-      (resource) => resource === entity.id,
+      (resource) => resource === SCHEMA,
       (f) => f
     );
     this.logger.log('Import items without relations');
     await this.consume(
-      (resource) => resource !== entity.id,
+      (resource) => resource !== SCHEMA,
       // eslint-disable-next-line no-unused-vars
       ({ relations, ...rest }) => rest
     );
     this.logger.log('Import items');
     await this.consume(
-      (resource) => resource !== entity.id,
+      (resource) => resource !== SCHEMA,
       (f) => f
     );
     this.logger.log('End import');
@@ -45,13 +46,13 @@ export class ImportService {
         const resourcepath = path.join(this.root, resource);
         const stat = fs.statSync(resourcepath);
         if (stat.isDirectory()) {
+          const repository = this.service.getRepository(resource);
           for (const file of fs.readdirSync(resourcepath)) {
             const filepath = path.join(resourcepath, file);
             if (filepath.endsWith('.json')) {
               let f = fs.readFileSync(filepath);
               f = new Function(`return ${f}`)();
               f = transformer(f);
-              const repository = this.service.getRepository(resource);
               await repository.save(f);
             }
           }
