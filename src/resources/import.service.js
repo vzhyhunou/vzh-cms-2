@@ -27,10 +27,18 @@ export class ImportService {
       (f) => f
     );
     this.logger.log('Import items without relations');
+    const repository = this.service.getRepository(SCHEMA);
     await this.consume(
       (resource) => resource !== SCHEMA,
-      // eslint-disable-next-line no-unused-vars
-      ({ relations, ...rest }) => rest
+      async (f, resource) => {
+        const { entities } = await repository.findById(resource);
+        const { columns } = entities
+          .map((e) => new Function(`return ${e}`)())
+          .find(({ name }) => name === resource);
+        return Object.fromEntries(
+          Object.entries(f).filter(([k]) => Object.keys(columns).includes(k))
+        );
+      }
     );
     this.logger.log('Import items');
     await this.consume(
@@ -51,8 +59,8 @@ export class ImportService {
             const filepath = path.join(resourcepath, file);
             if (filepath.endsWith('.json')) {
               let f = fs.readFileSync(filepath);
-              f = new Function(`return ${f}`)();
-              f = transformer(f);
+              f = JSON.parse(f);
+              f = await transformer(f, resource);
               await repository.save(f);
             }
           }
