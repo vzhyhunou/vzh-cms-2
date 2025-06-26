@@ -12,11 +12,12 @@ import {
   HttpException,
   HttpStatus
 } from '@nestjs/common';
-import * as typeorm from 'typeorm';
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
 import entity from './schema.entity.json';
+
+const exception = new HttpException('Not Found', HttpStatus.NOT_FOUND);
 
 @Controller('api')
 @Dependencies(SchemasService)
@@ -30,7 +31,7 @@ export class SchemasController {
     if (repository) {
       return repository;
     }
-    throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    throw exception;
   }
 
   @Post(':resource')
@@ -61,7 +62,9 @@ export class SchemasController {
     if (ids.length) {
       return repository.findByIdIn(ids);
     }
-    const filter = repository.filter(rest);
+    const filter = Object.fromEntries(
+      Object.entries(rest).map(([k, v]) => [k, repository.options(v)])
+    );
     return repository
       .findAll(page, size, sort, filter)
       .then(({ content, totalElements }) => ({
@@ -78,7 +81,7 @@ export class SchemasController {
     const repository = this.getRepository(resource);
     const schema = await repository.findById(id);
     if (!schema) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+      throw exception;
     }
     return schema;
   }
@@ -90,20 +93,17 @@ export class SchemasController {
     const schema = await repository.findByComponent(resource, name);
 
     if (!schema) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+      throw exception;
     }
 
     const { findOne, findOptions, element, title } = schema.components[0];
     const itemsRepository = this.getRepository(resource);
     const content = await itemsRepository[findOne ? 'findOne' : 'find'](
-      new Function('params', ...Object.keys(typeorm), `return ${findOptions}`)(
-        params,
-        ...Object.values(typeorm)
-      )
+      repository.options(findOptions, { params })
     );
 
     if (!content) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+      throw exception;
     }
 
     return {

@@ -32,7 +32,9 @@ describe('Schemas (e2e)', () => {
     it('should return a page of schemas', async () => {
       await repository.save([schema('page'), schema('user')]);
       await request(app.getHttpServer())
-        .get('/api/schema?id=g&page=0&size=1&sort=id%2CASC')
+        .get(
+          '/api/schema?id=Like%28%27%25g%25%27%29&page=0&size=1&sort=id%2CASC'
+        )
         .expect(200)
         .expect(({ body }) => {
           expect(body).toMatchObject({
@@ -41,7 +43,9 @@ describe('Schemas (e2e)', () => {
           });
         });
       await request(app.getHttpServer())
-        .get('/api/schema?id=g&page=1&size=1&sort=id%2CASC')
+        .get(
+          '/api/schema?id=Like%28%27%25g%25%27%29&page=1&size=1&sort=id%2CASC'
+        )
         .expect(200)
         .expect(({ body }) => {
           expect(body).toMatchObject({

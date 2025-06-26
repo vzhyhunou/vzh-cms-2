@@ -1,4 +1,5 @@
-import { Repository, Like, Equal, In } from 'typeorm';
+import { Repository, In } from 'typeorm';
+import * as typeorm from 'typeorm';
 
 Repository.prototype.getRelationNames = function () {
   return this.metadata.relations.map(({ propertyName }) => propertyName);
@@ -32,40 +33,34 @@ Repository.prototype.findByIdIn = function (ids) {
   });
 };
 
-Repository.prototype.findAll = async function (page, size, order, options) {
+Repository.prototype.findAll = async function (page, size, order, filter) {
   return Promise.all([
     this.find({
       relations: Object.fromEntries(
         this.getRelationNames().map((name) => [name, true])
       ),
+      where: filter,
       skip: page * size,
       take: size,
-      order,
-      ...options
+      order
     }),
-    this.count(options)
+    this.count({ where: filter })
   ]).then(([content, totalElements]) => ({
     content,
     totalElements
   }));
 };
 
-Repository.prototype.filter = function (params) {
-  return {
-    where: Object.fromEntries(
-      Object.entries(params).map(([k, v]) => {
-        if (this.metadata.hasRelationWithPropertyPath(k)) {
-          return [k, new Function(`return ${v}`)()];
-        }
-        const column = this.metadata.findColumnWithPropertyName(k);
-        const type = this.manager.connection.driver.normalizeType(column);
-        return [
-          k,
-          type === 'varchar' || type === 'text' ? Like(`%${v}%`) : Equal(v)
-        ];
-      })
-    )
-  };
+Repository.prototype.options = function (value, params = {}) {
+  try {
+    return new Function(
+      ...Object.keys(params),
+      ...Object.keys(typeorm),
+      `return ${value}`
+    )(...Object.values(params), ...Object.values(typeorm));
+  } catch (e) {
+    return value;
+  }
 };
 
 Repository.prototype.findByIndex = function (index) {

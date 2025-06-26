@@ -67,20 +67,20 @@ describe('SchemasRepository', () => {
 
     it('should return an empty array of schemas', async () => {
       await manager.save(id, schema('user'));
-      const options = subj.filter({ id: 'a' });
-      const result = await subj.findAll(0, 1, {}, options);
+      const filter = { id: subj.options(`Like('%a%')`) };
+      const result = await subj.findAll(0, 1, {}, filter);
       expect(result).toMatchObject({ content: [], totalElements: 0 });
     });
 
     it('should return a filtered array of schemas', async () => {
       await manager.save(id, [schema('user'), schema('page')]);
-      const options = subj.filter({ id: 'uS' });
-      let result = await subj.findAll(0, 1, {}, options);
+      const filter = { id: subj.options(`Like('%uS%')`) };
+      let result = await subj.findAll(0, 1, {}, filter);
       expect(result).toMatchObject({
         content: [{ id: 'user' }],
         totalElements: 1
       });
-      result = await subj.findAll(1, 1, {}, options);
+      result = await subj.findAll(1, 1, {}, filter);
       expect(result).toMatchObject({ content: [], totalElements: 1 });
     });
   });
