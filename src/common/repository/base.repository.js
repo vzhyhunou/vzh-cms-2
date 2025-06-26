@@ -1,4 +1,4 @@
-import { Repository, Like, Equal } from 'typeorm';
+import { Repository, Like, Equal, In } from 'typeorm';
 
 Repository.prototype.getRelationNames = function () {
   return this.metadata.relations.map(({ propertyName }) => propertyName);
@@ -14,6 +14,21 @@ Repository.prototype.findById = function (id) {
       this.getRelationNames().map((name) => [name, true])
     ),
     where: { [this.getPrimaryColumnName()]: id }
+  });
+};
+
+Repository.prototype.removeById = function (id) {
+  return this.remove({
+    [this.getPrimaryColumnName()]: id
+  });
+};
+
+Repository.prototype.findByIdIn = function (ids) {
+  return this.find({
+    relations: Object.fromEntries(
+      this.getRelationNames().map((name) => [name, true])
+    ),
+    where: { [this.getPrimaryColumnName()]: In(ids) }
   });
 };
 

@@ -30,26 +30,38 @@ describe('Items (e2e)', () => {
     expect(itemsRepository).toBeDefined();
   });
 
-  it('/user (GET)', async () => {
-    await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
-    await request(app.getHttpServer())
-      .get('/api/user?id=d&page=0&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [{ id: 'admin' }],
-          page: { totalElements: 1 }
+  describe('/user (GET)', () => {
+    it('should return a page of users', async () => {
+      await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
+      await request(app.getHttpServer())
+        .get('/api/user?id=d&page=0&size=1&sort=id%2CASC')
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toMatchObject({
+            content: [{ id: 'admin' }],
+            page: { totalElements: 1 }
+          });
         });
-      });
-    await request(app.getHttpServer())
-      .get('/api/user?id=d&page=1&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [],
-          page: { totalElements: 1 }
+      await request(app.getHttpServer())
+        .get('/api/user?id=d&page=1&size=1&sort=id%2CASC')
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toMatchObject({
+            content: [],
+            page: { totalElements: 1 }
+          });
         });
-      });
+    });
+
+    it('should return an array of users', async () => {
+      await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
+      await request(app.getHttpServer())
+        .get('/api/user?ids=admin&ids=manager')
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toMatchObject([{ id: 'admin' }, { id: 'manager' }]);
+        });
+    });
   });
 
   it('/user/:id (GET)', async () => {

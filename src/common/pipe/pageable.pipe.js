@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PageablePipe {
-  transform({ page = 0, size = 20, sort = [], ...rest }) {
+  transform({ ids = [], page = 0, size = 20, sort = [], ...rest }) {
     return {
+      ids: Array.isArray(ids) ? ids : [ids],
       page,
       size,
       sort: Object.fromEntries(

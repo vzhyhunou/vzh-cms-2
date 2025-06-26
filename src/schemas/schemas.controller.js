@@ -51,15 +51,16 @@ export class SchemasController {
   @Bind(Param('resource'), Param('id'))
   remove(resource, id) {
     const repository = this.getRepository(resource);
-    return repository.remove({
-      [repository.getPrimaryColumnName()]: id
-    });
+    return repository.removeById(id);
   }
 
   @Get(':resource')
   @Bind(Param('resource'), Query(PageablePipe))
-  findAll(resource, { page, size, sort, ...rest }) {
+  findAll(resource, { ids, page, size, sort, ...rest }) {
     const repository = this.getRepository(resource);
+    if (ids.length) {
+      return repository.findByIdIn(ids);
+    }
     const filter = repository.filter(rest);
     return repository
       .findAll(page, size, sort, filter)

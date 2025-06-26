@@ -28,26 +28,38 @@ describe('Schemas (e2e)', () => {
     expect(repository).toBeDefined();
   });
 
-  it('/schema (GET)', async () => {
-    await repository.save([schema('page'), schema('user')]);
-    await request(app.getHttpServer())
-      .get('/api/schema?id=g&page=0&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [{ id: 'page' }],
-          page: { totalElements: 1 }
+  describe('/schema (GET)', () => {
+    it('should return a page of schemas', async () => {
+      await repository.save([schema('page'), schema('user')]);
+      await request(app.getHttpServer())
+        .get('/api/schema?id=g&page=0&size=1&sort=id%2CASC')
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toMatchObject({
+            content: [{ id: 'page' }],
+            page: { totalElements: 1 }
+          });
         });
-      });
-    await request(app.getHttpServer())
-      .get('/api/schema?id=g&page=1&size=1&sort=id%2CASC')
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          content: [],
-          page: { totalElements: 1 }
+      await request(app.getHttpServer())
+        .get('/api/schema?id=g&page=1&size=1&sort=id%2CASC')
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toMatchObject({
+            content: [],
+            page: { totalElements: 1 }
+          });
         });
-      });
+    });
+
+    it('should return an array of schemas', async () => {
+      await repository.save([schema('page'), schema('user')]);
+      await request(app.getHttpServer())
+        .get('/api/schema?ids=page&ids=user')
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toMatchObject([{ id: 'page' }, { id: 'user' }]);
+        });
+    });
   });
 
   it('/schema/:id (GET)', async () => {

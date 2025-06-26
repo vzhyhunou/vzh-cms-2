@@ -28,6 +28,12 @@ export default () => {
       httpClient(`${API_URL}/${resource}/${id}`, options).then(({ json }) => ({
         data: json
       })),
+    getMany: (resource, { ids, options }) =>
+      httpClient(`${API_URL}/${resource}?${stringify({ ids })}`, options).then(
+        ({ json }) => ({
+          data: json
+        })
+      ),
     update: (resource, { id, data, options }) =>
       httpClient(`${API_URL}/${resource}/${id}`, {
         method: 'PUT',
