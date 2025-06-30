@@ -57,13 +57,16 @@ export class SchemasController {
 
   @Get(':resource')
   @Bind(Param('resource'), Query(PageablePipe))
-  findAll(resource, { ids, page, size, sort, ...rest }) {
+  findAll(resource, { ids, page, size, sort, transform, ...rest }) {
     const repository = this.getRepository(resource);
     if (ids.length) {
       return repository.findByIdIn(ids);
     }
     const filter = Object.fromEntries(
-      Object.entries(rest).map(([k, v]) => [k, repository.options(v)])
+      Object.entries(rest).map(([k, v]) => [
+        k,
+        transform.includes(k) ? repository.options(v) : v
+      ])
     );
     return repository
       .findAll(page, size, sort, filter)

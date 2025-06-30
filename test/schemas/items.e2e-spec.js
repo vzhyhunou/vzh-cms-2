@@ -34,7 +34,9 @@ describe('Items (e2e)', () => {
     it('should return a page of users', async () => {
       await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
       await request(app.getHttpServer())
-        .get('/api/user?id=Like%28%27%25d%25%27%29&page=0&size=1&sort=id%2CASC')
+        .get(
+          '/api/user?id=Like%28%27%25d%25%27%29&transform=id&page=0&size=1&sort=id%2CASC'
+        )
         .expect(200)
         .expect(({ body }) => {
           expect(body).toMatchObject({
@@ -43,7 +45,9 @@ describe('Items (e2e)', () => {
           });
         });
       await request(app.getHttpServer())
-        .get('/api/user?id=Like%28%27%25d%25%27%29&page=1&size=1&sort=id%2CASC')
+        .get(
+          '/api/user?id=Like%28%27%25d%25%27%29&transform=id&page=1&size=1&sort=id%2CASC'
+        )
         .expect(200)
         .expect(({ body }) => {
           expect(body).toMatchObject({

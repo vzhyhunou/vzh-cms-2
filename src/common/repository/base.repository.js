@@ -52,15 +52,11 @@ Repository.prototype.findAll = async function (page, size, order, filter) {
 };
 
 Repository.prototype.options = function (value, params = {}) {
-  try {
-    return new Function(
-      ...Object.keys(params),
-      ...Object.keys(typeorm),
-      `return ${value}`
-    )(...Object.values(params), ...Object.values(typeorm));
-  } catch (e) {
-    return value;
-  }
+  return new Function(
+    ...Object.keys(params),
+    ...Object.keys(typeorm),
+    `return ${value}`
+  )(...Object.values(params), ...Object.values(typeorm));
 };
 
 Repository.prototype.findByIndex = function (index) {
