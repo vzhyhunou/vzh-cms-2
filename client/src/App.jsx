@@ -2,7 +2,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import Context from './Context';
-import Admin from './Admin';
+import Admin from './admin/App';
 import Component from './ui/Component';
 
 export default ({ config }) => (
