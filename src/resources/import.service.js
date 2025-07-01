@@ -24,7 +24,19 @@ export class ImportService {
     this.logger.log('Import schemas');
     await this.consume(
       (resource) => resource === SCHEMA,
-      (f) => f
+      (f) => f,
+      async (f) => {
+        const { data } = f;
+        if (!data) {
+          return;
+        }
+        for (const { name, rows } of data.map((e) =>
+          new Function(`return ${e}`)()
+        )) {
+          const repository = this.service.getRepository(name);
+          await repository.save(rows);
+        }
+      }
     );
     this.logger.log('Import items without relations');
     const repository = this.service.getRepository(SCHEMA);
@@ -38,17 +50,19 @@ export class ImportService {
         return Object.fromEntries(
           Object.entries(f).filter(([k]) => Object.keys(columns).includes(k))
         );
-      }
+      },
+      () => {}
     );
     this.logger.log('Import items');
     await this.consume(
       (resource) => resource !== SCHEMA,
-      (f) => f
+      (f) => f,
+      () => {}
     );
     this.logger.log('End import');
   }
 
-  async consume(filter, transformer) {
+  async consume(filter, transformer, post) {
     for (const resource of fs.readdirSync(this.root)) {
       if (filter(resource)) {
         const resourcepath = path.join(this.root, resource);
@@ -62,6 +76,7 @@ export class ImportService {
               f = JSON.parse(f);
               f = await transformer(f, resource);
               await repository.save(f);
+              await post(f);
             }
           }
         }

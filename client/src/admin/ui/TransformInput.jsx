@@ -10,6 +10,9 @@ export default ({ source, children, ...rest }) => {
   const val = useWatch({ name: NAME });
 
   useEffect(() => {
+    if (!source) {
+      return;
+    }
     if (!val) {
       setValue(NAME, [source]);
       return;
