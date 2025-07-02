@@ -1,4 +1,4 @@
-import { Repository, In } from 'typeorm';
+import { Repository, In, Not } from 'typeorm';
 import * as typeorm from 'typeorm';
 
 Repository.prototype.getRelationNames = function () {
@@ -30,6 +30,12 @@ Repository.prototype.findByIdIn = function (ids) {
       this.getRelationNames().map((name) => [name, true])
     ),
     where: { [this.getPrimaryColumnName()]: In(ids) }
+  });
+};
+
+Repository.prototype.removeByIdNotIn = function (ids) {
+  return this.remove({
+    [this.getPrimaryColumnName()]: Not(In(ids))
   });
 };
 

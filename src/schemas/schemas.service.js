@@ -17,27 +17,39 @@ export class SchemasService {
     const repository = this.service.getRepository(entity.id);
     await repository.save(entity);
     const list = await repository.find();
-    const values = this.parse(list);
-    this.service.save(values);
+    const entities = this.entities(list);
+    this.service.save(entities);
   }
 
   async save(dto) {
     const list = Array.isArray(dto) ? dto : [dto];
-    const values = this.parse(list);
-    this.service.save(values);
+    const entities = this.entities(list);
+    this.service.save(entities);
     await this.service.synchronize();
+    for (const { name, rows } of this.data(list)) {
+      const repository = this.service.getRepository(name);
+      await repository.save(rows);
+      const ids = rows.map((row) => repository.getId(row));
+      await repository.removeByIdNotIn(ids);
+    }
   }
 
   async remove(dto) {
     const list = Array.isArray(dto) ? dto : [dto];
-    const values = this.parse(list);
-    this.service.remove(values);
+    const entities = this.entities(list);
+    this.service.remove(entities);
     await this.service.synchronize();
   }
 
-  parse(values) {
-    return values.flatMap(({ entities }) =>
+  entities(list) {
+    return list.flatMap(({ entities }) =>
       entities.map((e) => new Function(`return ${e}`)())
+    );
+  }
+
+  data(list) {
+    return list.flatMap(({ data }) =>
+      data.map((e) => new Function(`return ${e}`)())
     );
   }
 

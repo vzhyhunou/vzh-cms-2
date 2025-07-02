@@ -98,7 +98,8 @@ describe('Schemas (e2e)', () => {
       id: 'page',
       entities: [
         '{"name": "page", "columns": {"id": {"type": "varchar", "primary": true}, "a": {"type": "varchar"}}}'
-      ]
+      ],
+      data: []
     };
     await request(app.getHttpServer())
       .put('/api/schema/page')

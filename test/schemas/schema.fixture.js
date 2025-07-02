@@ -11,6 +11,7 @@ export default (id) => ({
       }
     }`
   ],
+  data: [],
   list: '',
   create: '',
   edit: '',
