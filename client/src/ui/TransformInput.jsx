@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import Transform from './Transform';
+import TransformField from './TransformField';
 
 const NAME = 'transform';
 
@@ -22,5 +22,5 @@ export default ({ source, children, ...rest }) => {
     }
   }, [setValue, source, val]);
 
-  return <Transform {...{ source, ...rest }}>{children}</Transform>;
+  return <TransformField {...{ source, ...rest }}>{children}</TransformField>;
 };
