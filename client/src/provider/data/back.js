@@ -34,6 +34,14 @@ export default () => {
           data: json
         })
       ),
+    create: (resource, { data, options }) =>
+      httpClient(`${API_URL}/${resource}`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        ...options
+      }).then(({ json }) => ({
+        data: json
+      })),
     update: (resource, { id, data, options }) =>
       httpClient(`${API_URL}/${resource}/${id}`, {
         method: 'PUT',
