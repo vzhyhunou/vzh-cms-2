@@ -7,8 +7,6 @@ import { DataSourceService } from '../datasource/datasource.service';
 @Injectable()
 @Dependencies(DataSourceService)
 export class SchemasService {
-  service;
-
   constructor(service) {
     this.service = service;
   }
