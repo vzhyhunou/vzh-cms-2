@@ -10,24 +10,30 @@ import {
   Param,
   Query,
   HttpException,
-  HttpStatus
+  HttpStatus,
+  UploadedFiles,
+  UseInterceptors
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
+import { MultipartPipe } from '../common/pipe/multipart.pipe';
 import entity from './schema.entity.json';
+import { StorageService } from '../storage/storage.service';
 
 const exception = new HttpException('Not Found', HttpStatus.NOT_FOUND);
 
 @Controller('api')
-@Dependencies(SchemasService)
+@Dependencies(SchemasService, StorageService)
 export class SchemasController {
-  constructor(service) {
-    this.service = service;
+  constructor(schemasService, storageService) {
+    this.schemasService = schemasService;
+    this.storageService = storageService;
   }
 
   getRepository(resource) {
-    const repository = this.service.getRepository(resource);
+    const repository = this.schemasService.getRepository(resource);
     if (repository) {
       return repository;
     }
@@ -35,17 +41,21 @@ export class SchemasController {
   }
 
   @Post(':resource')
-  @Bind(Param('resource'), Body())
-  create(resource, dto) {
+  @UseInterceptors(FilesInterceptor('files'))
+  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles())
+  create(resource, dto, files) {
     const repository = this.getRepository(resource);
-    return repository.save(dto);
+    const transformed = this.storageService.replaceFilenames(dto, files);
+    return repository.save(transformed);
   }
 
   @Put(':resource/:id')
-  @Bind(Param('resource'), Body())
-  update(resource, dto) {
+  @UseInterceptors(FilesInterceptor('files'))
+  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles())
+  update(resource, dto, files) {
     const repository = this.getRepository(resource);
-    return repository.save(dto);
+    const transformed = this.storageService.replaceFilenames(dto, files);
+    return repository.save(transformed);
   }
 
   @Delete(':resource/:id')

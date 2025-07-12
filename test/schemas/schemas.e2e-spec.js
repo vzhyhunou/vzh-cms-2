@@ -84,7 +84,7 @@ describe('Schemas (e2e)', () => {
     const page = schema('page');
     await request(app.getHttpServer())
       .post('/api/schema')
-      .send(page)
+      .field('dto', JSON.stringify(page))
       .expect(201);
     const result = await repository.find({ relations: { components: true } });
     expect(result).toMatchObject([entity, user, page]);
@@ -103,7 +103,7 @@ describe('Schemas (e2e)', () => {
     };
     await request(app.getHttpServer())
       .put('/api/schema/page')
-      .send(page)
+      .field('dto', JSON.stringify(page))
       .expect(200);
     const result = await repository.find({ relations: { components: true } });
     expect(result).toMatchObject([entity, user, page]);

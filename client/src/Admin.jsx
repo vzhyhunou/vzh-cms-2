@@ -5,12 +5,15 @@ import * as admin from 'react-admin';
 
 import { useContextProvider } from './Context';
 import Parser from './ui/Parser';
+import addUploadFeature from './provider/data/upload';
 
 const SCHEMA = 'schema';
 
 export default ({ children }) => {
-  const { dataProvider } = useContextProvider();
-  const { getList } = dataProvider;
+  const contextProvider = useContextProvider();
+  const {
+    dataProvider: { getList }
+  } = contextProvider;
   const [data, setData] = useState();
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default ({ children }) => {
   }));
 
   return (
-    <Admin basename="/admin" {...{ dataProvider }}>
+    <Admin basename="/admin" dataProvider={addUploadFeature(contextProvider)}>
       {() => {
         const access = resources.map(({ id, ...rest }) => ({
           id,

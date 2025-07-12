@@ -86,7 +86,7 @@ describe('Items (e2e)', () => {
     const manager = { id: 'manager' };
     await request(app.getHttpServer())
       .post('/api/user')
-      .send(manager)
+      .field('dto', JSON.stringify(manager))
       .expect(201);
     const result = await itemsRepository.find();
     expect(result).toMatchObject([admin, manager]);
@@ -101,7 +101,7 @@ describe('Items (e2e)', () => {
     };
     await request(app.getHttpServer())
       .put('/api/user/manager')
-      .send(manager)
+      .field('dto', JSON.stringify(manager))
       .expect(200);
     const result = await itemsRepository.find();
     expect(result).toMatchObject([admin, manager]);

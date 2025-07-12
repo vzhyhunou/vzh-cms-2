@@ -37,7 +37,7 @@ export default () => {
     create: (resource, { data, options }) =>
       httpClient(`${API_URL}/${resource}`, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: data,
         ...options
       }).then(({ json }) => ({
         data: json
@@ -45,17 +45,19 @@ export default () => {
     update: (resource, { id, data, options }) =>
       httpClient(`${API_URL}/${resource}/${id}`, {
         method: 'PUT',
-        body: JSON.stringify(data),
+        body: data,
         ...options
       }).then(({ json }) => ({
         data: json
       })),
-    getComponent: (resource, { name, params, options }) =>
-      httpClient(
-        `${API_URL}/${resource}/component/${name}${params ? `?${stringify(params)}` : ''}`,
+    getComponent: (resource, { name, params, options }) => {
+      const s = stringify(params);
+      return httpClient(
+        `${API_URL}/${resource}/component/${name}${s ? `?${s}` : ''}`,
         options
       ).then(({ json }) => ({
         data: json
-      }))
+      }));
+    }
   };
 };
