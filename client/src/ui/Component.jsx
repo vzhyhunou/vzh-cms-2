@@ -20,7 +20,8 @@ const Component = ({ resource, name, titled, ...rest }) => {
   const { content, element, title } = data;
 
   if (titled) {
-    document.title = title;
+    // eslint-disable-next-line no-new-func
+    document.title = new Function('content', `return ${title}`)(content);
   }
 
   return <Parser jsx={element} bindings={{ content }} />;

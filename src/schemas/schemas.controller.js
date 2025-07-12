@@ -122,7 +122,7 @@ export class SchemasController {
     return {
       content,
       element,
-      title: new Function('content', `return ${title}`)(content)
+      title
     };
   }
 }
