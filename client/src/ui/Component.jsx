@@ -4,27 +4,20 @@ import { useParams } from 'react-router-dom';
 import Parser from './Parser';
 import useGetComponent from '../provider/data/useGetComponent';
 
-const Component = ({ resource, name, titled, ...rest }) => {
+const Component = ({ resource, name, ...rest }) => {
   const { '*': extra, resource: r, ...p } = useParams();
-  const props = { name, params: { ...p, ...rest } };
-  const { data, isLoading, error } = useGetComponent(resource || r, props);
+  const params = { ...p, ...rest };
+  const { data, isLoading, error } = useGetComponent(resource || r, { name });
 
   if (isLoading) {
     return null;
   }
 
   if (error && error.status === 404) {
-    return <Component resource="page" name="one" id="none" {...{ titled }} />;
+    return <Component resource="page" name="one" id="none" />;
   }
 
-  const { content, element, title } = data;
-
-  if (titled) {
-    // eslint-disable-next-line no-new-func
-    document.title = new Function('content', `return ${title}`)(content);
-  }
-
-  return <Parser jsx={element} bindings={{ content }} />;
+  return <Parser jsx={data} bindings={{ params }} />;
 };
 
 export default Component;

@@ -2,11 +2,11 @@ export default (id) => ({
   id,
   entities: [
     `{
-      "name": "${id}",
-      "columns": {
-        "id": {
-          "type": "varchar",
-          "primary": true
+      name: '${id}',
+      columns: {
+        id: {
+          type: 'varchar',
+          primary: true
         }
       }
     }`
@@ -15,11 +15,16 @@ export default (id) => ({
   list: '',
   create: '',
   edit: '',
+  contents: [
+    {
+      name: `content${id}`,
+      findOne: false,
+      findOptions: '{}'
+    }
+  ],
   components: [
     {
-      name: `${id}`,
-      findOne: false,
-      findOptions: '{}',
+      name: `component${id}`,
       element: ''
     }
   ]

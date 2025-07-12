@@ -13,6 +13,17 @@ export default (service) => ({
     await service.remove(dto);
     return result;
   },
+  findByContent(resource, name) {
+    return this.findOne({
+      select: {
+        id: true
+      },
+      relations: {
+        contents: true
+      },
+      where: { id: resource, contents: { name } }
+    });
+  },
   findByComponent(resource, name) {
     return this.findOne({
       select: {

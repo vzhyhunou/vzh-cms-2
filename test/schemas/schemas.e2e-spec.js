@@ -86,7 +86,9 @@ describe('Schemas (e2e)', () => {
       .post('/api/schema')
       .field('dto', JSON.stringify(page))
       .expect(201);
-    const result = await repository.find({ relations: { components: true } });
+    const result = await repository.find({
+      relations: { contents: true, components: true }
+    });
     expect(result).toMatchObject([entity, user, page]);
   });
 
@@ -97,7 +99,7 @@ describe('Schemas (e2e)', () => {
     page = {
       id: 'page',
       entities: [
-        '{"name": "page", "columns": {"id": {"type": "varchar", "primary": true}, "a": {"type": "varchar"}}}'
+        `{name: 'page', columns: {id: {type: 'varchar', primary: true}, a: {type: 'varchar'}}}`
       ],
       data: []
     };
@@ -105,7 +107,9 @@ describe('Schemas (e2e)', () => {
       .put('/api/schema/page')
       .field('dto', JSON.stringify(page))
       .expect(200);
-    const result = await repository.find({ relations: { components: true } });
+    const result = await repository.find({
+      relations: { contents: true, components: true }
+    });
     expect(result).toMatchObject([entity, user, page]);
   });
 

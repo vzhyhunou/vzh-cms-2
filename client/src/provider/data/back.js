@@ -50,14 +50,20 @@ export default () => {
       }).then(({ json }) => ({
         data: json
       })),
-    getComponent: (resource, { name, params, options }) => {
+    getContent: (resource, { name, params, options }) => {
       const s = stringify(params);
       return httpClient(
-        `${API_URL}/${resource}/component/${name}${s ? `?${s}` : ''}`,
+        `${API_URL}/${resource}/content/${name}${s ? `?${s}` : ''}`,
         options
       ).then(({ json }) => ({
         data: json
       }));
-    }
+    },
+    getComponent: (resource, { name, options }) =>
+      httpClient(`${API_URL}/${resource}/component/${name}`, options).then(
+        ({ body }) => ({
+          data: body
+        })
+      )
   };
 };

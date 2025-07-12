@@ -99,17 +99,17 @@ export class SchemasController {
     return schema;
   }
 
-  @Get(':resource/component/:name')
+  @Get(':resource/content/:name')
   @Bind(Param('resource'), Param('name'), Query())
-  async search(resource, name, params) {
+  async getContent(resource, name, params) {
     const repository = this.getRepository(entity.id);
-    const schema = await repository.findByComponent(resource, name);
+    const schema = await repository.findByContent(resource, name);
 
     if (!schema) {
       throw exception;
     }
 
-    const { findOne, findOptions, element, title } = schema.components[0];
+    const { findOne, findOptions } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
     const content = await itemsRepository[findOne ? 'findOne' : 'find'](
       repository.options(findOptions, { params })
@@ -119,10 +119,21 @@ export class SchemasController {
       throw exception;
     }
 
-    return {
-      content,
-      element,
-      title
-    };
+    return content;
+  }
+
+  @Get(':resource/component/:name')
+  @Bind(Param('resource'), Param('name'))
+  async getComponent(resource, name) {
+    const repository = this.getRepository(entity.id);
+    const schema = await repository.findByComponent(resource, name);
+
+    if (!schema) {
+      throw exception;
+    }
+
+    const { element } = schema.components[0];
+
+    return element;
   }
 }

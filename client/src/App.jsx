@@ -11,16 +11,13 @@ export default ({ config }) => (
       <Route element={<Component resource="page" name="one" id="layout" />}>
         <Route
           path=""
-          element={<Component resource="page" name="one" id="home" titled />}
+          element={<Component resource="page" name="one" id="home" />}
         />
-        <Route path=":resource/:id" element={<Component name="one" titled />} />
-        <Route
-          path=":id"
-          element={<Component resource="page" name="one" titled />}
-        />
+        <Route path=":resource/:id" element={<Component name="one" />} />
+        <Route path=":id" element={<Component resource="page" name="one" />} />
         <Route
           path="*"
-          element={<Component resource="page" name="one" id="none" titled />}
+          element={<Component resource="page" name="one" id="none" />}
         />
       </Route>
     </Admin>

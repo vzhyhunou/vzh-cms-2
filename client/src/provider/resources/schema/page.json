@@ -11,19 +11,26 @@
   "list": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <TransformInput expression=\"{parse: text => `Like('%${text}%')`, format: text => text ? text.replace(new RegExp(`.*%(.*)%.*`), '$1') : '', source}\" source=\"title\">\n  <TextInput/>\n </TransformInput>,\n <ReferenceInput source=\"tags\" reference=\"pageTagName\">\n  <TransformInput expression=\"{parse: text => `{name: '${text}'}`, format: text => text ? text.replace(new RegExp(`.*'(.*)'.*`), '$1') : ''}\" source=\"tags\">\n   <SelectInput/>\n  </TransformInput>\n </ReferenceInput>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <FunctionField source=\"id\" render={record =>\n   <TransformField expression=\"{to: `/${id}`}\" id={record.id}>\n    <Link>{record.id}</Link>\n   </TransformField>\n  }/>\n  <TextField source=\"title\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>",
   "create": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required()]}/>\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n   <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n    <TransformField expression={\"{onClick: ((value, {setValue}) => ({target: {title}}) => setValue('body', (value ? value : '') + `<img src=\\\"${title}\\\"/>`))(useWatch({name: 'body'}), useFormContext())}\"}>\n     <ImageField source=\"src\" title=\"title\"/>\n    </TransformField>\n   </ImageInput>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <ReferenceInput source=\"name\" reference=\"pageTagName\">\n      <SelectInput validate={[required()]}/>\n     </ReferenceInput>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>",
   "edit": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n   <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n    <TransformField expression={\"{onClick: ((value, {setValue}) => ({target: {title}}) => setValue('body', (value ? value : '') + `<img src=\\\"${title}\\\"/>`))(useWatch({name: 'body'}), useFormContext())}\"}>\n     <ImageField source=\"src\" title=\"title\"/>\n    </TransformField>\n   </ImageInput>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <ReferenceInput source=\"name\" reference=\"pageTagName\">\n      <SelectInput validate={[required()]}/>\n     </ReferenceInput>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>",
-  "components": [
+  "contents": [
     {
       "name": "one",
       "findOne": true,
-      "findOptions": "{\n  where: {\n    id: params.id,\n    tags: {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
-      "element": "<Parser jsx={content.body}/>",
-      "title": "content.title"
+      "findOptions": "{\n  where: {\n    id: params.id,\n    tags: {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
     },
     {
       "name": "menu",
       "findOne": false,
-      "findOptions": "{\n  select: {\n    id: true,\n    title: true\n  },\n  where: {\n    tags: {\n      name: 'MENU',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
-      "element": "<List>\n {content.map(record =>\n  <TransformField expression=\"{to: `/${id}`}\" id={record.id}>\n   <Link>\n    <ListItem>\n     <ListItemText primary={record.title}/>\n    </ListItem>\n   </Link>\n  </TransformField>\n )}\n</List>"
+      "findOptions": "{\n  select: {\n    id: true,\n    title: true\n  },\n  where: {\n    tags: {\n      name: 'MENU',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
+    }
+  ],
+  "components": [
+    {
+      "name": "one",
+      "element": "<Content resource=\"page\" name=\"one\" id={params.id}>\n {content =>\n  <Transform expression=\"[content.body, content.title && (document.title = content.title)]\" content={content}>\n   {body => <Parser jsx={body}/>}\n  </Transform>\n }\n</Content>"
+    },
+    {
+      "name": "menu",
+      "element": "<List>\n <Content resource=\"page\" name=\"menu\">\n  {record =>\n   <TransformField expression=\"{to: `/${id}`}\" id={record.id}>\n    <Link>\n     <ListItem>\n      <ListItemText primary={record.title}/>\n     </ListItem>\n    </Link>\n   </TransformField>\n  }\n </Content>\n</List>"
     }
   ]
 }
