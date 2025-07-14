@@ -1,4 +1,4 @@
-import { Repository, In, Not } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import * as typeorm from 'typeorm';
 
 Repository.prototype.getRelationNames = function () {
@@ -18,24 +18,12 @@ Repository.prototype.findById = function (id) {
   });
 };
 
-Repository.prototype.removeById = function (id) {
-  return this.remove({
-    [this.getPrimaryColumnName()]: id
-  });
-};
-
 Repository.prototype.findByIdIn = function (ids) {
   return this.find({
     relations: Object.fromEntries(
       this.getRelationNames().map((name) => [name, true])
     ),
     where: { [this.getPrimaryColumnName()]: In(ids) }
-  });
-};
-
-Repository.prototype.removeByIdNotIn = function (ids) {
-  return this.remove({
-    [this.getPrimaryColumnName()]: Not(In(ids))
   });
 };
 

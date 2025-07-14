@@ -60,9 +60,13 @@ export class SchemasController {
 
   @Delete(':resource/:id')
   @Bind(Param('resource'), Param('id'))
-  remove(resource, id) {
+  async remove(resource, id) {
     const repository = this.getRepository(resource);
-    return repository.removeById(id);
+    const item = await repository.findById(id);
+    if (!item) {
+      throw exception;
+    }
+    return repository.remove(item);
   }
 
   @Get(':resource')
@@ -92,11 +96,11 @@ export class SchemasController {
   @Bind(Param('resource'), Param('id'))
   async findById(resource, id) {
     const repository = this.getRepository(resource);
-    const schema = await repository.findById(id);
-    if (!schema) {
+    const item = await repository.findById(id);
+    if (!item) {
       throw exception;
     }
-    return schema;
+    return item;
   }
 
   @Get(':resource/content/:name')

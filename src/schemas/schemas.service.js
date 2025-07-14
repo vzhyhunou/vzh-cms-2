@@ -28,7 +28,11 @@ export class SchemasService {
       const repository = this.service.getRepository(name);
       await repository.save(rows);
       const ids = rows.map((row) => repository.getId(row));
-      await repository.removeByIdNotIn(ids);
+      const data = await repository.find();
+      const filtered = data.filter(
+        (row) => !ids.includes(repository.getId(row))
+      );
+      await repository.remove(filtered);
     }
   }
 

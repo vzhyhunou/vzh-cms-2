@@ -113,6 +113,14 @@ describe('Schemas (e2e)', () => {
     expect(result).toMatchObject([entity, user, page]);
   });
 
+  it('/schema/:id (DELETE)', async () => {
+    const user = schema('user');
+    await repository.save(user);
+    await request(app.getHttpServer()).delete('/api/schema/user').expect(200);
+    const result = await repository.findById('user');
+    expect(result).toBeNull();
+  });
+
   afterEach(async () => {
     await app.close();
   });

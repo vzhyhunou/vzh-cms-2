@@ -107,6 +107,14 @@ describe('Items (e2e)', () => {
     expect(result).toMatchObject([admin, manager]);
   });
 
+  it('/user/:id (DELETE)', async () => {
+    const admin = { id: 'admin' };
+    await itemsRepository.save(admin);
+    await request(app.getHttpServer()).delete('/api/user/admin').expect(200);
+    const result = await itemsRepository.findById('admin');
+    expect(result).toBeNull();
+  });
+
   afterEach(async () => {
     await app.close();
   });
