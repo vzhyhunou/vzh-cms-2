@@ -7,25 +7,23 @@ import moment from 'moment';
 import { SchemasService } from '../schemas/schemas.service';
 import entity from '../schemas/schema.entity.json';
 
-const SCHEMA = 'schema';
-
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
 export class ExportService {
   logger = new Logger(ExportService.name);
 
-  constructor(configService, service) {
+  constructor(configService, schemasService) {
     this.properties = configService.get('resources.exp');
-    this.service = service;
+    this.schemasService = schemasService;
   }
 
   async exp() {
     const dir = this.folder();
     this.logger.log(`Start export ${dir} ...`);
-    const repository = this.service.getRepository(SCHEMA);
+    const repository = this.schemasService.getRepository(entity.id);
     const schemas = await repository.find();
     for (const resource of schemas.map(({ id }) => id)) {
-      const itemRepository = this.service.getRepository(resource);
+      const itemRepository = this.schemasService.getRepository(resource);
       for await (const item of this.findAll(itemRepository)) {
         const resourcepath = path.join(dir, resource);
         fs.mkdirSync(resourcepath, { recursive: true });

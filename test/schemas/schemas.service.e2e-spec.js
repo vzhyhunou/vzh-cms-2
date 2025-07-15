@@ -23,8 +23,9 @@ describe('SchemasService (e2e)', () => {
       ]
     }).compile();
 
-    const service = moduleFixture.get(DataSourceService);
-    subj = new SchemasService(service);
+    const dataSourceService = moduleFixture.get(DataSourceService);
+    const storageService = { replaceFilenames: (dto) => dto };
+    subj = new SchemasService(dataSourceService, storageService);
   });
 
   it('should be defined', () => {
@@ -37,34 +38,31 @@ describe('SchemasService (e2e)', () => {
       entities = await repository.find();
       expect(entities).toHaveLength(0);
 
-      await repository.save(schema('user'));
+      await subj.save(id, schema('user'));
       let entities = await repository.find();
       expect(entities).toMatchObject([{ id: 'user' }]);
 
-      let itemsRepository = subj.getRepository('user');
-      await itemsRepository.save({ id: 'admin' });
-      entities = await itemsRepository.find();
+      const usersRepository = subj.getRepository('user');
+
+      await subj.save('user', { id: 'admin' });
+      entities = await usersRepository.find();
       expect(entities).toMatchObject([{ id: 'admin' }]);
 
-      await repository.save(schema('page'));
+      await subj.save('schema', schema('page'));
       entities = await repository.find();
       expect(entities).toMatchObject([{ id: 'user' }, { id: 'page' }]);
 
-      itemsRepository = subj.getRepository('user');
-      entities = await itemsRepository.find();
-      expect(entities).toMatchObject([{ id: 'admin' }]);
+      const pagesRepository = subj.getRepository('page');
 
-      itemsRepository = subj.getRepository('page');
-      await itemsRepository.save({ id: 'home' });
-      entities = await itemsRepository.find();
+      await subj.save('page', { id: 'home' });
+      entities = await pagesRepository.find();
       expect(entities).toMatchObject([{ id: 'home' }]);
 
       await repository.remove(schema('user'));
       entities = await repository.find();
       expect(entities).toMatchObject([{ id: 'page' }]);
 
-      itemsRepository = subj.getRepository('page');
-      entities = await itemsRepository.find();
+      entities = await pagesRepository.find();
       expect(entities).toMatchObject([{ id: 'home' }]);
     });
   });

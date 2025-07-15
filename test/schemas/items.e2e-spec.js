@@ -16,14 +16,13 @@ describe('Items (e2e)', () => {
       imports: [ConfigModule, SchemasModule]
     }).compile();
 
-    const service = moduleFixture.get(SchemasService);
+    const schemasService = moduleFixture.get(SchemasService);
     app = moduleFixture.createNestApplication();
 
     await app.init();
 
-    const repository = service.getRepository(entity.id);
-    await repository.save(schema('user'));
-    itemsRepository = service.getRepository('user');
+    await schemasService.save(entity.id, schema('user'));
+    itemsRepository = schemasService.getRepository('user');
   });
 
   it('should be defined', () => {

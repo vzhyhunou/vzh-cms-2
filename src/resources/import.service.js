@@ -4,17 +4,16 @@ import path from 'path';
 import fs from 'fs';
 
 import { SchemasService } from '../schemas/schemas.service';
-
-const SCHEMA = 'schema';
+import entity from '../schemas/schema.entity.json';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
 export class ImportService {
   logger = new Logger(ImportService.name);
 
-  constructor(configService, service) {
+  constructor(configService, schemasService) {
     this.root = configService.get('resources.imp.path');
-    this.service = service;
+    this.schemasService = schemasService;
   }
 
   async imp() {
@@ -23,13 +22,13 @@ export class ImportService {
     }
     this.logger.log('Import schemas');
     await this.consume(
-      (resource) => resource === SCHEMA,
+      (resource) => resource === entity.id,
       (f) => f
     );
     this.logger.log('Import items without relations');
-    const repository = this.service.getRepository(SCHEMA);
+    const repository = this.schemasService.getRepository(entity.id);
     await this.consume(
-      (resource) => resource !== SCHEMA,
+      (resource) => resource !== entity.id,
       async (f, resource) => {
         const { entities } = await repository.findById(resource);
         const { columns } = entities
@@ -42,7 +41,7 @@ export class ImportService {
     );
     this.logger.log('Import items');
     await this.consume(
-      (resource) => resource !== SCHEMA,
+      (resource) => resource !== entity.id,
       (f) => f
     );
     this.logger.log('End import');
@@ -54,14 +53,13 @@ export class ImportService {
         const resourcepath = path.join(this.root, resource);
         const stat = fs.statSync(resourcepath);
         if (stat.isDirectory()) {
-          const repository = this.service.getRepository(resource);
           for (const file of fs.readdirSync(resourcepath)) {
             const filepath = path.join(resourcepath, file);
             if (filepath.endsWith('.json')) {
               let f = fs.readFileSync(filepath);
               f = JSON.parse(f);
               f = await transformer(f, resource);
-              await repository.save(f);
+              await this.schemasService.save(resource, f);
             }
           }
         }

@@ -9,22 +9,20 @@ import {
   Bind,
   Param,
   Query,
-  HttpException,
-  HttpStatus,
   UploadedFiles,
-  UseInterceptors
+  UseInterceptors,
+  UseFilters
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
 import { MultipartPipe } from '../common/pipe/multipart.pipe';
-import entity from './schema.entity.json';
+import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 
-const exception = new HttpException('Not Found', HttpStatus.NOT_FOUND);
-
 @Controller('api')
+@UseFilters(HttpExceptionFilter)
 @Dependencies(SchemasService, StorageService)
 export class SchemasController {
   constructor(schemasService, storageService) {
@@ -32,112 +30,52 @@ export class SchemasController {
     this.storageService = storageService;
   }
 
-  getRepository(resource) {
-    const repository = this.schemasService.getRepository(resource);
-    if (repository) {
-      return repository;
-    }
-    throw exception;
-  }
-
   @Post(':resource')
   @UseInterceptors(FilesInterceptor('files'))
   @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles())
   create(resource, dto, files) {
-    const repository = this.getRepository(resource);
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return repository.save(transformed);
+    return this.schemasService.save(resource, transformed);
   }
 
   @Put(':resource/:id')
   @UseInterceptors(FilesInterceptor('files'))
   @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles())
   update(resource, dto, files) {
-    const repository = this.getRepository(resource);
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return repository.save(transformed);
+    return this.schemasService.save(resource, transformed);
   }
 
   @Delete(':resource/:id')
   @Bind(Param('resource'), Param('id'))
-  async remove(resource, id) {
-    const repository = this.getRepository(resource);
-    const item = await repository.findById(id);
-    if (!item) {
-      throw exception;
-    }
-    return repository.remove(item);
+  remove(resource, id) {
+    return this.schemasService.remove(resource, id);
   }
 
   @Get(':resource')
   @Bind(Param('resource'), Query(PageablePipe))
-  findAll(resource, { ids, page, size, sort, transform, ...rest }) {
-    const repository = this.getRepository(resource);
+  findAll(resource, { ids, ...rest }) {
     if (ids.length) {
-      return repository.findByIdIn(ids);
+      return this.schemasService.findByIdIn(resource, ids);
     }
-    const filter = Object.fromEntries(
-      Object.entries(rest).map(([k, v]) => [
-        k,
-        transform.includes(k) ? repository.options(v) : v
-      ])
-    );
-    return repository
-      .findAll(page, size, sort, filter)
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
+    return this.schemasService.findAll(resource, rest);
   }
 
   @Get(':resource/:id')
   @Bind(Param('resource'), Param('id'))
-  async findById(resource, id) {
-    const repository = this.getRepository(resource);
-    const item = await repository.findById(id);
-    if (!item) {
-      throw exception;
-    }
-    return item;
+  findById(resource, id) {
+    return this.schemasService.findById(resource, id);
   }
 
   @Get(':resource/content/:name')
   @Bind(Param('resource'), Param('name'), Query())
-  async getContent(resource, name, params) {
-    const repository = this.getRepository(entity.id);
-    const schema = await repository.findByContent(resource, name);
-
-    if (!schema) {
-      throw exception;
-    }
-
-    const { findOne, findOptions } = schema.contents[0];
-    const itemsRepository = this.getRepository(resource);
-    const content = await itemsRepository[findOne ? 'findOne' : 'find'](
-      repository.options(findOptions, { params })
-    );
-
-    if (!content) {
-      throw exception;
-    }
-
-    return content;
+  findContent(resource, name, params) {
+    return this.schemasService.findContent(resource, name, params);
   }
 
   @Get(':resource/component/:name')
   @Bind(Param('resource'), Param('name'))
-  async getComponent(resource, name) {
-    const repository = this.getRepository(entity.id);
-    const schema = await repository.findByComponent(resource, name);
-
-    if (!schema) {
-      throw exception;
-    }
-
-    const { element } = schema.components[0];
-
-    return element;
+  findComponent(resource, name) {
+    return this.schemasService.findComponent(resource, name);
   }
 }
