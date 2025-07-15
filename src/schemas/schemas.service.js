@@ -22,7 +22,6 @@ export class SchemasService {
 
   async save(resource, dto) {
     const repository = this.getRepository(resource);
-    const result = await repository.save(dto);
     if (resource === entity.id) {
       const list = Array.isArray(dto) ? dto : [dto];
       const entities = this.entities(list);
@@ -30,16 +29,16 @@ export class SchemasService {
       await this.dataSourceService.synchronize();
       for (const { name, rows } of this.data(list)) {
         const dataRepository = this.getRepository(name);
-        await dataRepository.save(rows);
         const ids = rows.map((row) => dataRepository.getId(row));
         const data = await dataRepository.find();
         const filtered = data.filter(
           (row) => !ids.includes(dataRepository.getId(row))
         );
         await dataRepository.remove(filtered);
+        await dataRepository.save(rows);
       }
     }
-    return result;
+    return await repository.save(dto);
   }
 
   async remove(resource, id) {
@@ -48,7 +47,6 @@ export class SchemasService {
     if (!item) {
       throw new NotFoundException();
     }
-    const result = await repository.remove(item);
     if (resource === entity.id) {
       const list = Array.isArray(item) ? item : [item];
       for (const { name, rows } of this.data(list)) {
@@ -59,7 +57,7 @@ export class SchemasService {
       this.dataSourceService.remove(entities);
       await this.dataSourceService.synchronize();
     }
-    return result;
+    return await repository.remove(item);
   }
 
   findAll(resource, { page, size, sort, transform, ...rest }) {
