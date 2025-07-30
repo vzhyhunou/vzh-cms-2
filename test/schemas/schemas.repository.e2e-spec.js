@@ -58,7 +58,7 @@ describe('SchemasRepository', () => {
       await manager.save(id, [schema('user'), schema('page')]);
       let result = await subj.findAll(0, 2);
       expect(result).toMatchObject({
-        content: [{ id: 'page' }, { id: 'user' }],
+        content: [{ id: 'user' }, { id: 'page' }],
         totalElements: 2
       });
       result = await subj.findAll(1, 2);

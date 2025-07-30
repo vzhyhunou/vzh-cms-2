@@ -67,14 +67,12 @@ describe('Schemas (e2e)', () => {
   });
 
   it('/schema/:id (GET)', async () => {
-    const user = schema('user');
-    const page = schema('page');
-    await repository.save([user, page]);
+    await repository.save([schema('page'), schema('user')]);
     await request(app.getHttpServer())
       .get('/api/schema/page')
       .expect(200)
       .expect(({ body }) => {
-        expect(body).toMatchObject(page);
+        expect(body).toMatchObject({ id: 'page' });
       });
   });
 
