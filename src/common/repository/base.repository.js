@@ -1,38 +1,21 @@
 import { Repository, In } from 'typeorm';
 import * as typeorm from 'typeorm';
 
-Repository.prototype.getRelationNames = function () {
-  return this.metadata.relations.map(({ propertyName }) => propertyName);
-};
-
 Repository.prototype.getPrimaryColumnName = function () {
   return this.metadata.primaryColumns[0].propertyName;
 };
 
 Repository.prototype.findById = function (id) {
-  return this.findOne({
-    relations: Object.fromEntries(
-      this.getRelationNames().map((name) => [name, true])
-    ),
-    where: { [this.getPrimaryColumnName()]: id }
-  });
+  return this.findOneBy({ [this.getPrimaryColumnName()]: id });
 };
 
 Repository.prototype.findByIdIn = function (ids) {
-  return this.find({
-    relations: Object.fromEntries(
-      this.getRelationNames().map((name) => [name, true])
-    ),
-    where: { [this.getPrimaryColumnName()]: In(ids) }
-  });
+  return this.findBy({ [this.getPrimaryColumnName()]: In(ids) });
 };
 
 Repository.prototype.findAll = async function (page, size, order, filter) {
   return Promise.all([
     this.find({
-      relations: Object.fromEntries(
-        this.getRelationNames().map((name) => [name, true])
-      ),
       where: filter,
       skip: page * size,
       take: size,
@@ -55,9 +38,6 @@ Repository.prototype.options = function (value, params = {}) {
 
 Repository.prototype.findByIndex = function (index) {
   return this.findOne({
-    relations: Object.fromEntries(
-      this.getRelationNames().map((name) => [name, true])
-    ),
     skip: index,
     take: 1,
     where: {}

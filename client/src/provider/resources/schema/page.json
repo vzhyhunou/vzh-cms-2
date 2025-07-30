@@ -1,7 +1,7 @@
 {
   "id": "page",
   "entities": [
-    "{\n  name: 'page',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    title: {\n      type: 'varchar',\n      nullable: true\n    },\n    body: {\n      type: 'text'\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'pageTag',\n      cascade: true,\n      inverseSide: 'page'\n    }\n  }\n}",
+    "{\n  name: 'page',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    title: {\n      type: 'varchar',\n      nullable: true\n    },\n    body: {\n      type: 'text'\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'pageTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'page'\n    }\n  }\n}",
     "{\n  name: 'pageTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar',\n      foreignKey: {\n        target: 'pageTagName'\n      }\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    page: {\n      type: 'many-to-one',\n      target: 'page',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}",
     "{\n  name: 'pageTagName',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    }\n  }\n}"
   ],

@@ -1,7 +1,7 @@
 {
   "id": "user",
   "entities": [
-    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    password: {\n      type: 'varchar'\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
+    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    password: {\n      type: 'varchar'\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
     "{\n  name: 'userTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar',\n      foreignKey: {\n        target: 'userTagName'\n      }\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    user: {\n      type: 'many-to-one',\n      target: 'user',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}",
     "{\n  name: 'userTagName',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    }\n  }\n}"
   ],
