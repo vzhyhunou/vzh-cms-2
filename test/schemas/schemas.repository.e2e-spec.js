@@ -10,7 +10,7 @@ import schema from './schema.fixture';
 import { id, entities } from '../../src/schemas/schema.entity.json';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
-import '../../src/common/repository/base.repository';
+import customRepository from '../../src/schemas/schemas.repository';
 
 describe('SchemasRepository', () => {
   let manager;
@@ -29,7 +29,7 @@ describe('SchemasRepository', () => {
 
     manager = moduleFixture.get(getEntityManagerToken());
     const dataSource = moduleFixture.get(getDataSourceToken());
-    subj = dataSource.getRepository(id);
+    subj = dataSource.getRepository(id).extend(customRepository);
   });
 
   it('should be defined', () => {
@@ -76,6 +76,25 @@ describe('SchemasRepository', () => {
       expect(result).toMatchObject([[{ id: 'user' }], 1]);
       result = await subj.findAndCount({ where: filter, skip: 1 });
       expect(result).toMatchObject([[], 1]);
+    });
+  });
+
+  describe('findByContent()', () => {
+    it('should return a content', async () => {
+      await manager.save(id, schema('user'));
+      const { contents } = await subj.findByContent('user', 'contentuser');
+      expect(contents).toHaveLength(1);
+    });
+  });
+
+  describe('findByComponent()', () => {
+    it('should return a content', async () => {
+      await manager.save(id, schema('user'));
+      const { components } = await subj.findByComponent(
+        'user',
+        'componentuser'
+      );
+      expect(components).toHaveLength(1);
     });
   });
 });

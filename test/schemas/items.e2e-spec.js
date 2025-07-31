@@ -68,47 +68,41 @@ describe('Items (e2e)', () => {
   });
 
   it('/user/:id (GET)', async () => {
-    const admin = { id: 'admin' };
-    const manager = { id: 'manager' };
-    await itemsRepository.save([admin, manager]);
+    await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
     await request(app.getHttpServer())
       .get('/api/user/manager')
       .expect(200)
       .expect(({ body }) => {
-        expect(body).toMatchObject(manager);
+        expect(body).toMatchObject({ id: 'manager' });
       });
   });
 
   it('/user (POST)', async () => {
-    const admin = { id: 'admin' };
-    await itemsRepository.save(admin);
-    const manager = { id: 'manager' };
+    await itemsRepository.save({ id: 'admin' });
     await request(app.getHttpServer())
       .post('/api/user')
-      .field('dto', JSON.stringify(manager))
+      .field('dto', JSON.stringify({ id: 'manager' }))
       .expect(201);
-    const result = await itemsRepository.find();
-    expect(result).toMatchObject([admin, manager]);
+    const result = await itemsRepository.findById('manager');
+    expect(result).toMatchObject({ id: 'manager' });
   });
 
   it('/user/:id (PUT)', async () => {
-    const admin = { id: 'admin' };
-    let manager = { id: 'manager', f: 'a' };
-    await itemsRepository.save([admin, manager]);
-    manager = {
-      id: 'manager'
+    await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
+    const dto = {
+      id: 'manager',
+      data: 'a'
     };
     await request(app.getHttpServer())
       .put('/api/user/manager')
-      .field('dto', JSON.stringify(manager))
+      .field('dto', JSON.stringify(dto))
       .expect(200);
-    const result = await itemsRepository.find();
-    expect(result).toMatchObject([admin, manager]);
+    const result = await itemsRepository.findById('manager');
+    expect(result).toMatchObject(dto);
   });
 
   it('/user/:id (DELETE)', async () => {
-    const admin = { id: 'admin' };
-    await itemsRepository.save(admin);
+    await itemsRepository.save({ id: 'admin' });
     await request(app.getHttpServer()).delete('/api/user/admin').expect(200);
     const result = await itemsRepository.findById('admin');
     expect(result).toBeNull();

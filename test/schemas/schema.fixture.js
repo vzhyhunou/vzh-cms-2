@@ -7,6 +7,10 @@ export default (id) => ({
         id: {
           type: 'varchar',
           primary: true
+        },
+        data: {
+          type: 'varchar',
+          nullable: true
         }
       }
     }`

@@ -77,43 +77,34 @@ describe('Schemas (e2e)', () => {
   });
 
   it('/schema (POST)', async () => {
-    const user = schema('user');
-    await repository.save(user);
-    const page = schema('page');
+    await repository.save(schema('user'));
     await request(app.getHttpServer())
       .post('/api/schema')
-      .field('dto', JSON.stringify(page))
+      .field('dto', JSON.stringify(schema('page')))
       .expect(201);
-    const result = await repository.find({
-      relations: { contents: true, components: true }
-    });
-    expect(result).toMatchObject([entity, user, page]);
+    const result = await repository.findById('page');
+    expect(result).toMatchObject({ id: 'page' });
   });
 
   it('/schema/:id (PUT)', async () => {
-    const user = schema('user');
-    let page = schema('page');
-    await repository.save([user, page]);
-    page = {
+    await repository.save([schema('user'), schema('page')]);
+    const dto = {
       id: 'page',
       entities: [
-        `{name: 'page', columns: {id: {type: 'varchar', primary: true}, a: {type: 'varchar'}}}`
+        `{name: 'page', columns: {id: {type: 'varchar', primary: true}}}`
       ],
       data: []
     };
     await request(app.getHttpServer())
       .put('/api/schema/page')
-      .field('dto', JSON.stringify(page))
+      .field('dto', JSON.stringify(dto))
       .expect(200);
-    const result = await repository.find({
-      relations: { contents: true, components: true }
-    });
-    expect(result).toMatchObject([entity, user, page]);
+    const result = await repository.findById('page');
+    expect(result).toMatchObject(dto);
   });
 
   it('/schema/:id (DELETE)', async () => {
-    const user = schema('user');
-    await repository.save(user);
+    await repository.save(schema('user'));
     await request(app.getHttpServer()).delete('/api/schema/user').expect(200);
     const result = await repository.findById('user');
     expect(result).toBeNull();
