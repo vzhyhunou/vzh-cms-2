@@ -69,8 +69,13 @@ export class SchemasService {
       ])
     );
     return repository
-      .findAll(page, size, sort, filter)
-      .then(({ content, totalElements }) => ({
+      .findAndCount({
+        where: filter,
+        skip: page * size,
+        take: size,
+        order: sort
+      })
+      .then(([content, totalElements]) => ({
         content,
         page: {
           totalElements

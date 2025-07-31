@@ -73,7 +73,11 @@ export class ExportService {
       [Symbol.asyncIterator]() {
         return {
           async next() {
-            const value = await repository.findByIndex(index++);
+            const value = await repository.findOne({
+              skip: index++,
+              take: 1,
+              where: {}
+            });
             return { value, done: !value };
           }
         };

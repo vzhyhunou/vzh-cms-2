@@ -56,32 +56,26 @@ describe('SchemasRepository', () => {
   describe('findAll()', () => {
     it('should return an array of schemas', async () => {
       await manager.save(id, [schema('user'), schema('page')]);
-      let result = await subj.findAll(0, 2);
-      expect(result).toMatchObject({
-        content: [{ id: 'user' }, { id: 'page' }],
-        totalElements: 2
-      });
-      result = await subj.findAll(1, 2);
-      expect(result).toMatchObject({ content: [], totalElements: 2 });
+      let result = await subj.findAndCount({ take: 2 });
+      expect(result).toMatchObject([[{ id: 'user' }, { id: 'page' }], 2]);
+      result = await subj.findAndCount({ skip: 2 });
+      expect(result).toMatchObject([[], 2]);
     });
 
     it('should return an empty array of schemas', async () => {
       await manager.save(id, schema('user'));
       const filter = { id: subj.options(`Like('%a%')`) };
-      const result = await subj.findAll(0, 1, {}, filter);
-      expect(result).toMatchObject({ content: [], totalElements: 0 });
+      const result = await subj.findAndCount({ where: filter });
+      expect(result).toMatchObject([[], 0]);
     });
 
     it('should return a filtered array of schemas', async () => {
       await manager.save(id, [schema('user'), schema('page')]);
       const filter = { id: subj.options(`Like('%uS%')`) };
-      let result = await subj.findAll(0, 1, {}, filter);
-      expect(result).toMatchObject({
-        content: [{ id: 'user' }],
-        totalElements: 1
-      });
-      result = await subj.findAll(1, 1, {}, filter);
-      expect(result).toMatchObject({ content: [], totalElements: 1 });
+      let result = await subj.findAndCount({ where: filter, take: 1 });
+      expect(result).toMatchObject([[{ id: 'user' }], 1]);
+      result = await subj.findAndCount({ where: filter, skip: 1 });
+      expect(result).toMatchObject([[], 1]);
     });
   });
 });
