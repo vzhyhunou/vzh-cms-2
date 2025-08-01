@@ -15,7 +15,7 @@ export default (id) => ({
       }
     }`
   ],
-  data: [],
+  config: [],
   list: '',
   create: '',
   edit: '',

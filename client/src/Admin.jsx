@@ -27,15 +27,25 @@ export default ({ children }) => {
     return;
   }
 
-  const resources = data.map(({ id, list, create, edit }) => ({
-    id,
-    ...Object.fromEntries(
-      Object.entries({ list, create, edit }).map(([k, v]) => [
-        k,
-        <Parser jsx={v} bindings={{ ...admin }} components={{ ...admin }} />
-      ])
-    )
-  }));
+  const resources = data.map(({ id, list, create, edit, config }) => {
+    const c = Object.fromEntries(
+      // eslint-disable-next-line no-new-func
+      config.map(({ name, value }) => [name, new Function(`return ${value}`)()])
+    );
+    return {
+      id,
+      ...Object.fromEntries(
+        Object.entries({ list, create, edit }).map(([k, v]) => [
+          k,
+          <Parser
+            jsx={v}
+            bindings={{ ...admin, config: c }}
+            components={{ ...admin }}
+          />
+        ])
+      )
+    };
+  });
 
   return (
     <Admin basename="/admin" dataProvider={addUploadFeature(contextProvider)}>

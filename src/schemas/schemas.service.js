@@ -27,16 +27,6 @@ export class SchemasService {
       const entities = this.entities(list);
       this.dataSourceService.save(entities);
       await this.dataSourceService.synchronize();
-      for (const { name, rows } of this.data(list)) {
-        const dataRepository = this.getRepository(name);
-        const ids = rows.map((row) => dataRepository.getId(row));
-        const data = await dataRepository.find();
-        const filtered = data.filter(
-          (row) => !ids.includes(dataRepository.getId(row))
-        );
-        await dataRepository.remove(filtered);
-        await dataRepository.save(rows);
-      }
     }
     return await repository.save(dto);
   }
@@ -49,10 +39,6 @@ export class SchemasService {
     }
     if (resource === entity.id) {
       const list = Array.isArray(item) ? item : [item];
-      for (const { name, rows } of this.data(list)) {
-        const dataRepository = this.getRepository(name);
-        await dataRepository.remove(rows);
-      }
       const entities = this.entities(list);
       this.dataSourceService.remove(entities);
       await this.dataSourceService.synchronize();
@@ -123,12 +109,6 @@ export class SchemasService {
   entities(list) {
     return list.flatMap(({ entities }) =>
       entities.map((e) => new Function(`return ${e}`)())
-    );
-  }
-
-  data(list) {
-    return list.flatMap(({ data }) =>
-      data.map((e) => new Function(`return ${e}`)())
     );
   }
 
