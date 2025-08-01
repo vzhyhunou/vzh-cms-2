@@ -1,16 +1,14 @@
 import React from 'react';
 import JsxParser from 'react-jsx-parser';
-import * as router from 'react-router-dom';
-import * as mui from '@mui/material';
 import Icon from '@mui/icons-material/Menu';
 
-import * as ui from '.';
+import dependencies from './dependencies';
 
-export default ({ jsx, bindings, components }) => {
+const Parser = ({ jsx, bindings, components }) => {
   return (
     <JsxParser
       {...{ bindings }}
-      components={{ ...mui, ...ui, ...router, ...components, Icon }}
+      components={{ ...dependencies, ...components, Parser, Icon }}
       jsx={jsx.replaceAll(/\n\s*/g, '')}
       renderInWrapper={false}
       autoCloseVoidElements={true}
@@ -18,3 +16,5 @@ export default ({ jsx, bindings, components }) => {
     />
   );
 };
+
+export default Parser;
