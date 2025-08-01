@@ -28,7 +28,7 @@
   "components": [
     {
       "name": "one",
-      "element": "<Content resource=\"page\" name=\"one\" id={params.id}>\n {content =>\n  <Transform expression=\"[content.body, content.title && (document.title = content.title)]\" content={content}>\n   {body => <Parser jsx={body}/>}\n  </Transform>\n }\n</Content>"
+      "element": "<Content resource=\"page\" name=\"one\" id={params.id}>\n {content =>\n  <TransformField expression=\"(() => ({jsx: content.body}))(content.title && (document.title = content.title))\" content={content}>\n   <Parser/>\n  </TransformField>\n }\n</Content>"
     },
     {
       "name": "menu",
