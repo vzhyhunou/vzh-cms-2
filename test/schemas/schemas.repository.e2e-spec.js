@@ -57,7 +57,7 @@ describe('SchemasRepository', () => {
     it('should return an array of schemas', async () => {
       await manager.save(id, [schema('user'), schema('page')]);
       let result = await subj.findAndCount({ take: 2 });
-      expect(result).toMatchObject([[{ id: 'user' }, { id: 'page' }], 2]);
+      expect(result).toMatchObject([[{ id: 'page' }, { id: 'user' }], 2]);
       result = await subj.findAndCount({ skip: 2 });
       expect(result).toMatchObject([[], 2]);
     });
@@ -82,18 +82,25 @@ describe('SchemasRepository', () => {
   describe('findByContent()', () => {
     it('should return a content', async () => {
       await manager.save(id, schema('user'));
-      const { contents } = await subj.findByContent('user', 'contentuser');
+      const { entities, contents, components } = await subj.findByContent(
+        'user',
+        'contentuser'
+      );
+      expect(entities).toBeUndefined();
       expect(contents).toHaveLength(1);
+      expect(components).toBeUndefined();
     });
   });
 
   describe('findByComponent()', () => {
     it('should return a content', async () => {
       await manager.save(id, schema('user'));
-      const { components } = await subj.findByComponent(
+      const { entities, contents, components } = await subj.findByComponent(
         'user',
         'componentuser'
       );
+      expect(entities).toBeUndefined();
+      expect(contents).toBeUndefined();
       expect(components).toHaveLength(1);
     });
   });
