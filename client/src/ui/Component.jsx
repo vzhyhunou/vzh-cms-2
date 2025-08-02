@@ -1,13 +1,10 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 
 import Parser from './Parser';
 import useGetComponent from '../provider/data/useGetComponent';
 
-const Component = ({ resource, name, ...rest }) => {
-  const { '*': extra, resource: r, ...p } = useParams();
-  const params = { ...p, ...rest };
-  const { data, isLoading, error } = useGetComponent(resource || r, { name });
+const Component = ({ resource, name, ...params }) => {
+  const { data, isLoading, error } = useGetComponent(resource, { name });
 
   if (isLoading) {
     return null;
