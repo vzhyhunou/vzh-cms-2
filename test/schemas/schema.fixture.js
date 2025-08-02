@@ -15,7 +15,12 @@ export default (id) => ({
       }
     }`
   ],
-  config: [],
+  config: [
+    {
+      name: `config${id}`,
+      value: 'v'
+    }
+  ],
   list: '',
   create: '',
   edit: '',
@@ -29,7 +34,7 @@ export default (id) => ({
   components: [
     {
       name: `component${id}`,
-      element: ''
+      element: 'e'
     }
   ]
 });

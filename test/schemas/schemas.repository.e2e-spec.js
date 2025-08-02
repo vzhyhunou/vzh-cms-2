@@ -82,26 +82,27 @@ describe('SchemasRepository', () => {
   describe('findByContent()', () => {
     it('should return a content', async () => {
       await manager.save(id, schema('user'));
-      const { entities, contents, components } = await subj.findByContent(
-        'user',
-        'contentuser'
-      );
-      expect(entities).toBeUndefined();
+      const { contents } = await subj.findByContent('user', 'contentuser');
       expect(contents).toHaveLength(1);
-      expect(components).toBeUndefined();
     });
   });
 
   describe('findByComponent()', () => {
     it('should return a content', async () => {
       await manager.save(id, schema('user'));
-      const { entities, contents, components } = await subj.findByComponent(
+      const { components } = await subj.findByComponent(
         'user',
         'componentuser'
       );
-      expect(entities).toBeUndefined();
-      expect(contents).toBeUndefined();
       expect(components).toHaveLength(1);
+    });
+  });
+
+  describe('findByConfig()', () => {
+    it('should return a content', async () => {
+      await manager.save(id, schema('user'));
+      const { config } = await subj.findByConfig('user', 'configuser');
+      expect(config).toHaveLength(1);
     });
   });
 });

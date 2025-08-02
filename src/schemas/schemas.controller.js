@@ -78,4 +78,10 @@ export class SchemasController {
   findComponent(resource, name) {
     return this.schemasService.findComponent(resource, name);
   }
+
+  @Get(':resource/config/:name')
+  @Bind(Param('resource'), Param('name'))
+  findConfig(resource, name) {
+    return this.schemasService.findConfig(resource, name);
+  }
 }

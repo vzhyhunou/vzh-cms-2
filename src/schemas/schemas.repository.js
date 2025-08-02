@@ -16,5 +16,13 @@ export default {
       .where('schema.id = :resource', { resource })
       .andWhere('component.name = :name', { name })
       .getOne();
+  },
+  findByConfig(resource, name) {
+    return this.createQueryBuilder('schema')
+      .leftJoin('schema.config', 'config')
+      .select(['schema.id', 'config.value'])
+      .where('schema.id = :resource', { resource })
+      .andWhere('config.name = :name', { name })
+      .getOne();
   }
 };

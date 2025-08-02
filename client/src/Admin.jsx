@@ -29,28 +29,15 @@ export default ({ children }) => {
 
   const resources = data
     .filter(({ list }) => list)
-    .map(({ id, list, create, edit, config }) => {
-      const c = Object.fromEntries(
-        config.map(({ name, value }) => [
-          name,
-          // eslint-disable-next-line no-new-func
-          new Function(`return ${value}`)()
+    .map(({ id, list, create, edit }) => ({
+      id,
+      ...Object.fromEntries(
+        Object.entries({ list, create, edit }).map(([k, v]) => [
+          k,
+          <Parser jsx={v} bindings={{ ...admin }} components={{ ...admin }} />
         ])
-      );
-      return {
-        id,
-        ...Object.fromEntries(
-          Object.entries({ list, create, edit }).map(([k, v]) => [
-            k,
-            <Parser
-              jsx={v}
-              bindings={{ ...admin, config: c }}
-              components={{ ...admin }}
-            />
-          ])
-        )
-      };
-    });
+      )
+    }));
 
   return (
     <Admin basename="/admin" dataProvider={addUploadFeature(contextProvider)}>

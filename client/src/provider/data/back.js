@@ -64,6 +64,12 @@ export default () => {
         ({ body }) => ({
           data: body
         })
+      ),
+    getConfig: (resource, { name, options }) =>
+      httpClient(`${API_URL}/${resource}/config/${name}`, options).then(
+        ({ json }) => ({
+          data: json
+        })
       )
   };
 };
