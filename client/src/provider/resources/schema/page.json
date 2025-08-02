@@ -28,11 +28,11 @@
   "components": [
     {
       "name": "one",
-      "element": "<Content resource=\"page\" name=\"one\" id={params.id}>\n {content =>\n  <TransformField expression=\"(() => ({jsx: content.body}))(content.title && (document.title = content.title))\" content={content}>\n   <Parser/>\n  </TransformField>\n }\n</Content>"
+      "element": "<ContentField resource=\"page\" name=\"one\" id={params.id}>\n <TransformField expression=\"(() => ({jsx: one.body}))(one.title && (document.title = one.title))\">\n  <Parser/>\n </TransformField>\n</ContentField>"
     },
     {
       "name": "menu",
-      "element": "<List>\n <Content resource=\"page\" name=\"menu\">\n  {record =>\n   <TransformField expression=\"{to: `/${id}`}\" id={record.id}>\n    <Link>\n     <ListItem>\n      <ListItemText primary={record.title}/>\n     </ListItem>\n    </Link>\n   </TransformField>\n  }\n </Content>\n</List>"
+      "element": "<List>\n <ContentField resource=\"page\" name=\"menu\">\n  <Transform expression=\"[`/${menu.id}`, menu.title]\">\n   {(to, title) =>\n    <Link to={to}>\n     <ListItem>\n      <ListItemText primary={title}/>\n     </ListItem>\n    </Link>\n   }\n  </Transform>\n </ContentField>\n</List>"
     }
   ]
 }
