@@ -108,10 +108,6 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
         s: [...new Set([...v.matchAll(MATCH_PATTERN)].map((m) => m[1]))]
       }))
       .filter(({ s }) => s.length)
-      .map((v) => {
-        console.log(v);
-        return v;
-      })
       .forEach(({ k, v, s }) =>
         set(
           sanitized,

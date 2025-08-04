@@ -3,10 +3,11 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class StorageService {
   replaceFilenames(dto, files) {
-    let s = JSON.stringify(dto);
-    for (const { originalname, filename } of files) {
-      s = s.replaceAll(originalname, filename);
-    }
-    return JSON.parse(s);
+    return JSON.parse(
+      files.reduce(
+        (r, { originalname, filename }) => r.replaceAll(originalname, filename),
+        JSON.stringify(dto)
+      )
+    );
   }
 }
