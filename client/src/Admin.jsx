@@ -34,7 +34,7 @@ export default ({ children }) => {
       ...Object.fromEntries(
         Object.entries({ list, create, edit }).map(([k, v]) => [
           k,
-          <Parser jsx={v} bindings={{ ...admin }} components={{ ...admin }} />
+          <Parser jsx={v} components={{ ...admin }} />
         ])
       )
     }));
