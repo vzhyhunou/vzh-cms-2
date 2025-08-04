@@ -21,9 +21,6 @@ export default (id) => ({
       value: 'v'
     }
   ],
-  list: '',
-  create: '',
-  edit: '',
   contents: [
     {
       name: `content${id}`,
@@ -33,8 +30,20 @@ export default (id) => ({
   ],
   components: [
     {
-      name: `component${id}`,
+      name: `list`,
+      element: 'l'
+    },
+    {
+      name: `create`,
+      element: 'c'
+    },
+    {
+      name: `edit`,
       element: 'e'
+    },
+    {
+      name: `component${id}`,
+      element: 'a'
     }
   ]
 });

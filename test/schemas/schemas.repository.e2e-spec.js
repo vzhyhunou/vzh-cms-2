@@ -80,7 +80,7 @@ describe('SchemasRepository', () => {
   });
 
   describe('findByContent()', () => {
-    it('should return a content', async () => {
+    it('should return a schema with content', async () => {
       await manager.save(id, schema('user'));
       const { contents } = await subj.findByContent('user', 'contentuser');
       expect(contents).toHaveLength(1);
@@ -88,7 +88,7 @@ describe('SchemasRepository', () => {
   });
 
   describe('findByComponent()', () => {
-    it('should return a content', async () => {
+    it('should return a schema with component', async () => {
       await manager.save(id, schema('user'));
       const { components } = await subj.findByComponent(
         'user',
@@ -99,10 +99,19 @@ describe('SchemasRepository', () => {
   });
 
   describe('findByConfig()', () => {
-    it('should return a content', async () => {
+    it('should return a schema with config', async () => {
       await manager.save(id, schema('user'));
       const { config } = await subj.findByConfig('user', 'configuser');
       expect(config).toHaveLength(1);
+    });
+  });
+
+  describe('findByAdminComponents()', () => {
+    it('should return a schema with admin components', async () => {
+      await manager.save(id, schema('user'));
+      const result = await subj.findByAdminComponents();
+      const { components } = result[0];
+      expect(components).toHaveLength(3);
     });
   });
 });

@@ -24,5 +24,14 @@ export default {
       .where('schema.id = :resource', { resource })
       .andWhere('config.name = :name', { name })
       .getOne();
+  },
+  findByAdminComponents() {
+    return this.createQueryBuilder('schema')
+      .leftJoin('schema.components', 'component')
+      .select(['schema.id', 'component.name', 'component.element'])
+      .where('component.name in (:...names)', {
+        names: ['list', 'create', 'edit']
+      })
+      .getMany();
   }
 };

@@ -55,6 +55,9 @@ export class SchemasController {
   @Get(':resource')
   @Bind(Param('resource'), Query(PageablePipe))
   findAll(resource, { ids, ...rest }) {
+    if (resource === 'admin') {
+      return this.schemasService.findAdminComponents();
+    }
     if (ids.length) {
       return this.schemasService.findByIdIn(resource, ids);
     }

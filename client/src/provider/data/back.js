@@ -70,6 +70,10 @@ export default () => {
         ({ json }) => ({
           data: json
         })
-      )
+      ),
+    getAdminComponents: ({ options }) =>
+      httpClient(`${API_URL}/admin`, options).then(({ json }) => ({
+        data: json
+      }))
   };
 };

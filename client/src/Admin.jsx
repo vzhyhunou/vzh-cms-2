@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
 import * as admin from 'react-admin';
@@ -6,22 +6,11 @@ import * as admin from 'react-admin';
 import { useContextProvider } from './Context';
 import Parser from './ui/Parser';
 import addUploadFeature from './provider/data/upload';
-
-const SCHEMA = 'schema';
+import useGetAdminComponents from './provider/data/useGetAdminComponents';
 
 export default ({ children }) => {
   const contextProvider = useContextProvider();
-  const {
-    dataProvider: { getList }
-  } = contextProvider;
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    getList(SCHEMA, {
-      pagination: { page: 1, perPage: Number.MAX_SAFE_INTEGER },
-      sort: { field: 'id', order: 'ASC' }
-    }).then(({ data }) => setData(data));
-  }, [getList]);
+  const data = useGetAdminComponents();
 
   if (!data) {
     return;

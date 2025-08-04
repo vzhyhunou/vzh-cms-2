@@ -116,6 +116,17 @@ export class SchemasService {
     return new Function(`return ${value}`)();
   }
 
+  async findAdminComponents() {
+    const repository = this.getRepository(entity.id);
+    const schemas = await repository.findByAdminComponents();
+    return schemas.map(({ id, components }) => ({
+      id,
+      ...Object.fromEntries(
+        components.map(({ name, element }) => [name, element])
+      )
+    }));
+  }
+
   entities(list) {
     return list.flatMap(({ entities }) =>
       entities.map((e) => new Function(`return ${e}`)())
