@@ -22,7 +22,7 @@ const run = async (
       return Promise.resolve({ data: response });
     }
   };
-  const funcProvider = { originByData: () => 'sample' };
+  const funcProvider = { originByData: (n) => `sample/${n}` };
   const provider = addUploadFeature({ dataProvider, funcProvider });
   const { data } = await provider[method](undefined, { data: request });
   expect(data).toMatchObject(expectedResponse);
@@ -35,12 +35,12 @@ describe('upload', () => {
     run('create', {
       request: {
         image: {
-          src: 'sample',
+          src: 'src',
           title: '900150983cd24fb0d6963f7d28e17f71.png'
         },
         images: [
           {
-            src: 'sample',
+            src: 'src',
             title: '900150983cd24fb0d6963f7d28e17f72.png'
           }
         ],
@@ -52,7 +52,7 @@ describe('upload', () => {
           body: {
             en: [
               {
-                src: 'sample',
+                src: 'src',
                 title: '900150983cd24fb0d6963f7d28e17f74.png'
               }
             ]
@@ -115,7 +115,7 @@ describe('upload', () => {
           body: {
             en: [
               {
-                src: 'sample',
+                src: 'src',
                 title: '900150983cd24fb0d6963f7d28e17f71.png'
               },
               {
@@ -161,12 +161,12 @@ describe('upload', () => {
       },
       expectedResponse: {
         image: {
-          src: 'sample',
+          src: 'sample/900150983cd24fb0d6963f7d28e17f71.png',
           title: '900150983cd24fb0d6963f7d28e17f71.png'
         },
         images: [
           {
-            src: 'sample',
+            src: 'sample/900150983cd24fb0d6963f7d28e17f72.png',
             title: '900150983cd24fb0d6963f7d28e17f72.png'
           }
         ],
@@ -177,11 +177,11 @@ describe('upload', () => {
           body: {
             en: [
               {
-                src: 'sample',
+                src: 'sample/900150983cd24fb0d6963f7d28e17f73.png',
                 title: '900150983cd24fb0d6963f7d28e17f73.png'
               },
               {
-                src: 'sample',
+                src: 'sample/900150983cd24fb0d6963f7d28e17f74.png',
                 title: '900150983cd24fb0d6963f7d28e17f74.png'
               }
             ]
@@ -204,12 +204,12 @@ describe('upload', () => {
       expectedResponse: [
         {
           image: {
-            src: 'sample',
+            src: 'sample/900150983cd24fb0d6963f7d28e17f71.png',
             title: '900150983cd24fb0d6963f7d28e17f71.png'
           },
           images: [
             {
-              src: 'sample',
+              src: 'sample/900150983cd24fb0d6963f7d28e17f72.png',
               title: '900150983cd24fb0d6963f7d28e17f72.png'
             }
           ],
@@ -220,11 +220,11 @@ describe('upload', () => {
             body: {
               en: [
                 {
-                  src: 'sample',
+                  src: 'sample/900150983cd24fb0d6963f7d28e17f73.png',
                   title: '900150983cd24fb0d6963f7d28e17f73.png'
                 },
                 {
-                  src: 'sample',
+                  src: 'sample/900150983cd24fb0d6963f7d28e17f74.png',
                   title: '900150983cd24fb0d6963f7d28e17f74.png'
                 }
               ]
