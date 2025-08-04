@@ -116,9 +116,9 @@ export class SchemasService {
     return new Function(`return ${value}`)();
   }
 
-  async findAdminComponents() {
+  async getResources() {
     const repository = this.getRepository(entity.id);
-    const schemas = await repository.findByAdminComponents();
+    const schemas = await repository.getResources();
     return schemas.map(({ id, components }) => ({
       id,
       ...Object.fromEntries(

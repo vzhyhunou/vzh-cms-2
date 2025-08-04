@@ -6,11 +6,11 @@ import * as admin from 'react-admin';
 import { useContextProvider } from './Context';
 import Parser from './ui/Parser';
 import addUploadFeature from './provider/data/upload';
-import useGetAdminComponents from './provider/data/useGetAdminComponents';
+import useGetResources from './provider/data/useGetResources';
 
 export default ({ children }) => {
   const contextProvider = useContextProvider();
-  const data = useGetAdminComponents();
+  const data = useGetResources();
 
   if (!data) {
     return;

@@ -71,8 +71,8 @@ export default () => {
           data: json
         })
       ),
-    getAdminComponents: ({ options }) =>
-      httpClient(`${API_URL}/admin`, options).then(({ json }) => ({
+    getResources: ({ options }) =>
+      httpClient(API_URL, options).then(({ json }) => ({
         data: json
       }))
   };
