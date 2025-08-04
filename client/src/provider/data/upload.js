@@ -85,6 +85,44 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
     return sanitized;
   };
 
+  const cnt = (data) => {
+    const sanitized = cloneDeep(data);
+
+    dump(sanitized)
+      .map((k) => ({ k, v: get(sanitized, k) }))
+      .filter(({ v }) => typeof v === 'string')
+      .filter(({ v }) => FIELD_PATTERN.test(v))
+      .forEach(({ k, v }) =>
+        set(sanitized, k, {
+          src: originByData(v),
+          title: v
+        })
+      );
+
+    dump(sanitized)
+      .map((k) => ({ k, v: get(sanitized, k) }))
+      .filter(({ v }) => typeof v === 'string')
+      .map(({ k, v }) => ({
+        k,
+        v,
+        s: [...new Set([...v.matchAll(MATCH_PATTERN)].map((m) => m[1]))]
+      }))
+      .filter(({ s }) => s.length)
+      .map((v) => {
+        console.log(v);
+        return v;
+      })
+      .forEach(({ k, v, s }) =>
+        set(
+          sanitized,
+          k,
+          s.reduce((r, n) => r.replaceAll(n, originByData(n)), v)
+        )
+      );
+
+    return sanitized;
+  };
+
   return {
     ...dataProvider,
     create: (resource, { data, ...rest }) =>
@@ -94,10 +132,7 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
     getOne: (resource, params) =>
       dataProvider
         .getOne(resource, params)
-        .then(({ data, ...rest }) => ({ ...rest, data: res(data) }))
-        .then((i) => {
-          return i;
-        }),
+        .then(({ data, ...rest }) => ({ ...rest, data: res(data) })),
     getList: (resource, params) =>
       dataProvider
         .getList(resource, params)
@@ -105,6 +140,10 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
     getMany: (resource, params) =>
       dataProvider
         .getMany(resource, params)
-        .then(({ data, ...rest }) => ({ ...rest, data: data.map(res) }))
+        .then(({ data, ...rest }) => ({ ...rest, data: data.map(res) })),
+    getContent: (resource, params) =>
+      dataProvider
+        .getContent(resource, params)
+        .then(({ data, ...rest }) => ({ ...rest, data: cnt(data) }))
   };
 };

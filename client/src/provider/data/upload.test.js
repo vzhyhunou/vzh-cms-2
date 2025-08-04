@@ -233,4 +233,60 @@ describe('upload', () => {
         }
       ]
     }));
+
+  it('should modify response content', () =>
+    run('getContent', {
+      response: {
+        image: '900150983cd24fb0d6963f7d28e17f71.png',
+        images: ['900150983cd24fb0d6963f7d28e17f72.png'],
+        body: {
+          en: '<img src="900150983cd24fb0d6963f7d28e17f73.png"/><img src="900150983cd24fb0d6963f7d28e17f74.png"/><img src="900150983cd24fb0d6963f7d28e17f74.png"/>'
+        }
+      },
+      expectedResponse: {
+        image: {
+          src: 'sample/900150983cd24fb0d6963f7d28e17f71.png',
+          title: '900150983cd24fb0d6963f7d28e17f71.png'
+        },
+        images: [
+          {
+            src: 'sample/900150983cd24fb0d6963f7d28e17f72.png',
+            title: '900150983cd24fb0d6963f7d28e17f72.png'
+          }
+        ],
+        body: {
+          en: '<img src="sample/900150983cd24fb0d6963f7d28e17f73.png"/><img src="sample/900150983cd24fb0d6963f7d28e17f74.png"/><img src="sample/900150983cd24fb0d6963f7d28e17f74.png"/>'
+        }
+      }
+    }));
+
+  it('should modify response contents', () =>
+    run('getContent', {
+      response: [
+        {
+          image: '900150983cd24fb0d6963f7d28e17f71.png',
+          images: ['900150983cd24fb0d6963f7d28e17f72.png'],
+          body: {
+            en: '<img src="900150983cd24fb0d6963f7d28e17f73.png"/><img src="900150983cd24fb0d6963f7d28e17f74.png"/><img src="900150983cd24fb0d6963f7d28e17f74.png"/>'
+          }
+        }
+      ],
+      expectedResponse: [
+        {
+          image: {
+            src: 'sample/900150983cd24fb0d6963f7d28e17f71.png',
+            title: '900150983cd24fb0d6963f7d28e17f71.png'
+          },
+          images: [
+            {
+              src: 'sample/900150983cd24fb0d6963f7d28e17f72.png',
+              title: '900150983cd24fb0d6963f7d28e17f72.png'
+            }
+          ],
+          body: {
+            en: '<img src="sample/900150983cd24fb0d6963f7d28e17f73.png"/><img src="sample/900150983cd24fb0d6963f7d28e17f74.png"/><img src="sample/900150983cd24fb0d6963f7d28e17f74.png"/>'
+          }
+        }
+      ]
+    }));
 });
