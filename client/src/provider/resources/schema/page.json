@@ -18,7 +18,6 @@
     },
     {
       "name": "menu",
-      "findOne": false,
       "findOptions": "{\n  select: {\n    id: true,\n    title: true\n  },\n  loadEagerRelations: false,\n  where: {\n    tags: {\n      name: 'MENU',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
     }
   ],
