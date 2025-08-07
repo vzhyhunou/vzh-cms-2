@@ -116,9 +116,9 @@ export class SchemasService {
     return new Function(`return ${value}`)();
   }
 
-  async getResources() {
+  async findResources() {
     const repository = this.getRepository(entity.id);
-    const schemas = await repository.getResources();
+    const schemas = await repository.findResources();
     return schemas.map(({ id, components }) => ({
       id,
       ...Object.fromEntries(

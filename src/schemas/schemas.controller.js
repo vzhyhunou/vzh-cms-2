@@ -86,7 +86,7 @@ export class SchemasController {
   }
 
   @Get()
-  getResources() {
-    return this.schemasService.getResources();
+  findResources() {
+    return this.schemasService.findResources();
   }
 }

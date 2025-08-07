@@ -25,7 +25,7 @@ export default {
       .andWhere('config.name = :name', { name })
       .getOne();
   },
-  getResources() {
+  findResources() {
     return this.createQueryBuilder('schema')
       .leftJoin('schema.components', 'component')
       .select(['schema.id', 'component.name', 'component.element'])

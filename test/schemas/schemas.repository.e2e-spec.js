@@ -106,10 +106,10 @@ describe('SchemasRepository', () => {
     });
   });
 
-  describe('getResources()', () => {
+  describe('findResources()', () => {
     it('should return a schema with admin components', async () => {
       await manager.save(id, schema('user'));
-      const result = await subj.getResources();
+      const result = await subj.findResources();
       const { components } = result[0];
       expect(components).toHaveLength(3);
     });
