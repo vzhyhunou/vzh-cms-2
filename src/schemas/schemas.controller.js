@@ -20,6 +20,7 @@ import { PageablePipe } from '../common/pipe/pageable.pipe';
 import { MultipartPipe } from '../common/pipe/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
+import { NotFoundException } from './schemas.exception';
 
 @Controller('api')
 @UseFilters(HttpExceptionFilter)
@@ -67,22 +68,18 @@ export class SchemasController {
     return this.schemasService.findById(resource, id);
   }
 
-  @Get(':resource/content/:name')
-  @Bind(Param('resource'), Param('name'), Query())
-  findContent(resource, name, params) {
-    return this.schemasService.findContent(resource, name, params);
-  }
-
-  @Get(':resource/component/:name')
-  @Bind(Param('resource'), Param('name'))
-  findComponent(resource, name) {
-    return this.schemasService.findComponent(resource, name);
-  }
-
-  @Get(':resource/config/:name')
-  @Bind(Param('resource'), Param('name'))
-  findConfig(resource, name) {
-    return this.schemasService.findConfig(resource, name);
+  @Get(':resource/:type/:name')
+  @Bind(Param('resource'), Param('type'), Param('name'), Query())
+  findContent(resource, type, name, params) {
+    switch (type) {
+      case 'content':
+        return this.schemasService.findContent(resource, name, params);
+      case 'component':
+        return this.schemasService.findComponent(resource, name);
+      case 'config':
+        return this.schemasService.findConfig(resource, name);
+    }
+    throw new NotFoundException();
   }
 
   @Get()
