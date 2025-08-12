@@ -1,37 +1,87 @@
+import { In } from 'typeorm';
+
 import '../common/repository/base.repository';
 
 export default {
   findByContent(resource, name) {
-    return this.createQueryBuilder('schema')
-      .leftJoin('schema.contents', 'content')
-      .select(['schema.id', 'content.findOne', 'content.findOptions'])
-      .where('schema.id = :resource', { resource })
-      .andWhere('content.name = :name', { name })
-      .getOne();
+    return this.findOne({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        contents: {
+          findOne: true,
+          findOptions: true
+        }
+      },
+      relations: {
+        contents: true
+      },
+      where: {
+        id: resource,
+        contents: {
+          name
+        }
+      }
+    });
   },
   findByComponent(resource, name) {
-    return this.createQueryBuilder('schema')
-      .leftJoin('schema.components', 'component')
-      .select(['schema.id', 'component.element'])
-      .where('schema.id = :resource', { resource })
-      .andWhere('component.name = :name', { name })
-      .getOne();
+    return this.findOne({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        components: {
+          element: true
+        }
+      },
+      relations: {
+        components: true
+      },
+      where: {
+        id: resource,
+        components: {
+          name
+        }
+      }
+    });
   },
   findByConfig(resource, name) {
-    return this.createQueryBuilder('schema')
-      .leftJoin('schema.config', 'config')
-      .select(['schema.id', 'config.value'])
-      .where('schema.id = :resource', { resource })
-      .andWhere('config.name = :name', { name })
-      .getOne();
+    return this.findOne({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        config: {
+          value: true
+        }
+      },
+      relations: {
+        config: true
+      },
+      where: {
+        id: resource,
+        config: {
+          name
+        }
+      }
+    });
   },
   findResources() {
-    return this.createQueryBuilder('schema')
-      .leftJoin('schema.components', 'component')
-      .select(['schema.id', 'component.name', 'component.element'])
-      .where('component.name in (:...names)', {
-        names: ['list', 'create', 'edit']
-      })
-      .getMany();
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        components: {
+          name: true,
+          element: true
+        }
+      },
+      relations: {
+        components: true
+      },
+      where: {
+        components: {
+          name: In(['list', 'create', 'edit'])
+        }
+      }
+    });
   }
 };

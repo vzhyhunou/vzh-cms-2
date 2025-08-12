@@ -19,11 +19,20 @@ export default (id) => ({
     {
       name: `config${id}`,
       value: 'v'
+    },
+    {
+      name: `config${id}2`,
+      value: 'v'
     }
   ],
   contents: [
     {
       name: `content${id}`,
+      findOne: false,
+      findOptions: '{}'
+    },
+    {
+      name: `content${id}2`,
       findOne: false,
       findOptions: '{}'
     }
