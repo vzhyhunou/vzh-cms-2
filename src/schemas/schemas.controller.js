@@ -11,7 +11,8 @@ import {
   Query,
   UploadedFiles,
   UseInterceptors,
-  UseFilters
+  UseFilters,
+  Request
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
@@ -69,11 +70,11 @@ export class SchemasController {
   }
 
   @Get(':resource/:type/:name')
-  @Bind(Param('resource'), Param('type'), Param('name'), Query())
-  findContent(resource, type, name, params) {
+  @Bind(Param('resource'), Param('type'), Param('name'), Request())
+  findContent(resource, type, name, request) {
     switch (type) {
       case 'content':
-        return this.schemasService.findContent(resource, name, params);
+        return this.schemasService.findContent(resource, name, request);
       case 'component':
         return this.schemasService.findComponent(resource, name);
       case 'config':

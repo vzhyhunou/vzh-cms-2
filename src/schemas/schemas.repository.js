@@ -3,7 +3,7 @@ import { In } from 'typeorm';
 import '../common/repository/base.repository';
 
 export default {
-  findByContent(resource, name) {
+  findContent(resource, name) {
     return this.findOne({
       loadEagerRelations: false,
       select: {
@@ -24,7 +24,7 @@ export default {
       }
     });
   },
-  findByComponent(resource, name) {
+  findComponent(resource, name) {
     return this.findOne({
       loadEagerRelations: false,
       select: {
@@ -44,7 +44,7 @@ export default {
       }
     });
   },
-  findByConfig(resource, name) {
+  findConfig(resource, name) {
     return this.findOne({
       loadEagerRelations: false,
       select: {

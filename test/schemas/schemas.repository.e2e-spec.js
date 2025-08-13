@@ -79,35 +79,32 @@ describe('SchemasRepository', () => {
     });
   });
 
-  describe('findByContent()', () => {
+  describe('findContent()', () => {
     it('should return a schema with content', async () => {
       await manager.save(id, schema('user'));
-      const { contents } = await subj.findByContent('user', 'contentuser');
+      const { contents } = await subj.findContent('user', 'contentuser');
       expect(contents).toHaveLength(1);
     });
   });
 
-  describe('findByComponent()', () => {
+  describe('findComponent()', () => {
     it('should return a schema with component', async () => {
       await manager.save(id, schema('user'));
-      const { components } = await subj.findByComponent(
-        'user',
-        'componentuser'
-      );
+      const { components } = await subj.findComponent('user', 'componentuser');
       expect(components).toHaveLength(1);
     });
   });
 
-  describe('findByConfig()', () => {
+  describe('findConfig()', () => {
     it('should return a schema with config', async () => {
       await manager.save(id, schema('user'));
-      const { config } = await subj.findByConfig('user', 'configuser');
+      const { config } = await subj.findConfig('user', 'configuser');
       expect(config).toHaveLength(1);
     });
   });
 
   describe('findResources()', () => {
-    it('should return a schema with admin components', async () => {
+    it('should return an array of schemas with resources', async () => {
       await manager.save(id, schema('user'));
       const result = await subj.findResources();
       const { components } = result[0];

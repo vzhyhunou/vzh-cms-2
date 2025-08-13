@@ -83,22 +83,26 @@ export class SchemasService {
     return repository.findByIdIn(ids);
   }
 
-  async findContent(resource, name, params) {
+  async findContent(resource, name, request) {
     const repository = this.getRepository(entity.id);
-    const schema = await repository.findByContent(resource, name);
+    const schema = await repository.findContent(resource, name);
     if (!schema) {
       throw new NotFoundException();
     }
     const { findOne, findOptions } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
-    return await itemsRepository[findOne ? 'findOne' : 'find'](
-      repository.options(findOptions, { params })
+    const result = await itemsRepository[findOne ? 'findOne' : 'find'](
+      repository.options(findOptions, { request })
     );
+    if (!result) {
+      throw new NotFoundException();
+    }
+    return result;
   }
 
   async findComponent(resource, name) {
     const repository = this.getRepository(entity.id);
-    const schema = await repository.findByComponent(resource, name);
+    const schema = await repository.findComponent(resource, name);
     if (!schema) {
       throw new NotFoundException();
     }
@@ -108,7 +112,7 @@ export class SchemasService {
 
   async findConfig(resource, name) {
     const repository = this.getRepository(entity.id);
-    const schema = await repository.findByConfig(resource, name);
+    const schema = await repository.findConfig(resource, name);
     if (!schema) {
       throw new NotFoundException();
     }
