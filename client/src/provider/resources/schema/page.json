@@ -14,7 +14,7 @@
     {
       "name": "one",
       "findOne": true,
-      "findOptions": "{\n  loadEagerRelations: false,\n  where: {\n    id: request.query.id,\n    tags: {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
+      "findOptions": "{\n  loadEagerRelations: false,\n  where: {\n    id: props.query.id,\n    tags: {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
     },
     {
       "name": "menu",
