@@ -36,7 +36,7 @@
     },
     {
       "name": "one",
-      "element": "<ContentField resource=\"page\" name=\"one\" id={params.id}>\n <TransformField expression=\"(() => ({jsx: one.body}))(one.title && (document.title = one.title))\">\n  <Parser/>\n </TransformField>\n</ContentField>"
+      "element": "<ContentField resource=\"page\" name=\"one\" id={props.id}>\n <TransformField expression=\"(() => ({jsx: one.body}))(one.title && (document.title = one.title))\">\n  <Parser/>\n </TransformField>\n</ContentField>"
     },
     {
       "name": "menu",
