@@ -71,8 +71,8 @@ export class SchemasController {
 
   @Get(':resource/content/:name')
   @Bind(Param('resource'), Param('name'), Request())
-  findContent(resource, name, request) {
-        return this.schemasService.findContent(resource, name, request);
+  findContent(resource, name, props) {
+    return this.schemasService.findContent(resource, name, { props });
   }
 
   @Get(':resource/component/:name')
