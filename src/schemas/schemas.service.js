@@ -4,6 +4,7 @@ import entity from './schema.entity.json';
 import customRepository from './schemas.repository';
 import { DataSourceService } from '../datasource/datasource.service';
 import { NotFoundException } from './schemas.exception';
+import { transform } from '../common/repository/base.repository';
 
 @Injectable()
 @Dependencies(DataSourceService)
@@ -46,12 +47,12 @@ export class SchemasService {
     return await repository.remove(item);
   }
 
-  findAll(resource, { page, size, sort, transform, ...rest }) {
+  findAll(resource, { page, size, sort, transform: t, ...rest }) {
     const repository = this.getRepository(resource);
     const filter = Object.fromEntries(
       Object.entries(rest).map(([k, v]) => [
         k,
-        transform.includes(k) ? repository.options(v) : v
+        t.includes(k) ? transform(v) : v
       ])
     );
     return repository
@@ -91,7 +92,7 @@ export class SchemasService {
     }
     const { findOne, findOptions } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
-    const options = repository.options(findOptions, params);
+    const options = transform(findOptions, params);
     const result = await itemsRepository[findOne ? 'findOne' : 'find'](options);
     if (!result) {
       throw new NotFoundException();

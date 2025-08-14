@@ -13,10 +13,9 @@ Repository.prototype.findByIdIn = function (ids) {
   return this.findBy({ [this.getPrimaryColumnName()]: In(ids) });
 };
 
-Repository.prototype.options = function (value, params = {}) {
-  return new Function(
+export const transform = (value, params = {}) =>
+  new Function(
     ...Object.keys(params),
     ...Object.keys(typeorm),
     `return ${value}`
   )(...Object.values(params), ...Object.values(typeorm));
-};
