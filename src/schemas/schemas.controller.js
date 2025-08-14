@@ -69,18 +69,22 @@ export class SchemasController {
     return this.schemasService.findById(resource, id);
   }
 
-  @Get(':resource/:type/:name')
-  @Bind(Param('resource'), Param('type'), Param('name'), Request())
-  findContent(resource, type, name, request) {
-    switch (type) {
-      case 'content':
+  @Get(':resource/content/:name')
+  @Bind(Param('resource'), Param('name'), Request())
+  findContent(resource, name, request) {
         return this.schemasService.findContent(resource, name, request);
-      case 'component':
+  }
+
+  @Get(':resource/component/:name')
+  @Bind(Param('resource'), Param('name'))
+  findComponent(resource, name) {
         return this.schemasService.findComponent(resource, name);
-      case 'config':
+  }
+
+  @Get(':resource/config/:name')
+  @Bind(Param('resource'), Param('name'))
+  findConfig(resource, name) {
         return this.schemasService.findConfig(resource, name);
-    }
-    throw new NotFoundException();
   }
 
   @Get()
