@@ -21,7 +21,6 @@ import { PageablePipe } from '../common/pipe/pageable.pipe';
 import { MultipartPipe } from '../common/pipe/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
-import { NotFoundException } from './schemas.exception';
 
 @Controller('api')
 @UseFilters(HttpExceptionFilter)
