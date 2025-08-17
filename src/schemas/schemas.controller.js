@@ -21,6 +21,7 @@ import { PageablePipe } from '../common/pipe/pageable.pipe';
 import { MultipartPipe } from '../common/pipe/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
+import { Public } from '../auth/public.decorator';
 
 @Controller('api')
 @UseFilters(HttpExceptionFilter)
@@ -68,26 +69,30 @@ export class SchemasController {
     return this.schemasService.findById(resource, id);
   }
 
+  @Public()
   @Get(':resource/content/:name')
   @Bind(Param('resource'), Param('name'), Request())
   findContent(resource, name, props) {
     return this.schemasService.findContent(resource, name, { props });
   }
 
+  @Public()
   @Get(':resource/component/:name')
   @Bind(Param('resource'), Param('name'))
   findComponent(resource, name) {
-        return this.schemasService.findComponent(resource, name);
+    return this.schemasService.findComponent(resource, name);
   }
 
   @Get(':resource/config/:name')
   @Bind(Param('resource'), Param('name'))
   findConfig(resource, name) {
-        return this.schemasService.findConfig(resource, name);
+    return this.schemasService.findConfig(resource, name);
   }
 
+  @Public()
   @Get()
-  findResources() {
-    return this.schemasService.findResources();
+  @Bind(Request())
+  findResources({ user: { authorities = [] } = {} }) {
+    return this.schemasService.findResources(authorities);
   }
 }

@@ -1,4 +1,5 @@
 import { cloneElement } from 'react';
+
 import useGetConfig from '../provider/data/useGetConfig';
 
 export default ({ resource, name, children, ...params }) => {

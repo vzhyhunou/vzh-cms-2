@@ -3,8 +3,21 @@ import { fetchUtils } from 'react-admin';
 
 const API_URL = '/api';
 
-export default () => {
-  const httpClient = (url, options = {}) => fetchUtils.fetchJson(url, options);
+export default ({ authProvider: { getToken } }) => {
+  const httpClient = (url, options = {}) =>
+    Promise.all([getToken()])
+      .then(([token]) => ({
+        ...options,
+        ...(token
+          ? {
+              user: {
+                authenticated: true,
+                token: `Bearer ${token}`
+              }
+            }
+          : {})
+      }))
+      .then((options) => fetchUtils.fetchJson(url, options));
 
   return {
     getList: (resource, { pagination, sort, filter, options }) => {

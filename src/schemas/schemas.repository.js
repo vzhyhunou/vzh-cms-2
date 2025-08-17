@@ -64,7 +64,7 @@ export default {
       }
     });
   },
-  findResources() {
+  findResources(authorities) {
     return this.find({
       loadEagerRelations: false,
       select: {
@@ -80,7 +80,17 @@ export default {
       where: {
         components: {
           name: In(['list', 'create', 'edit'])
-        }
+        },
+        editor: In(authorities)
+      }
+    });
+  },
+  findEditors() {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        editor: true
       }
     });
   }

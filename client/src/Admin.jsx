@@ -6,54 +6,52 @@ import * as admin from 'react-admin';
 import { useContextProvider } from './Context';
 import Parser from './ui/Parser';
 import addUploadFeature from './provider/data/upload';
-import useGetResources from './provider/data/useGetResources';
 
 export default ({ children }) => {
   const contextProvider = useContextProvider();
-  const data = useGetResources();
-
-  if (!data) {
-    return;
-  }
-
-  const resources = data
-    .filter(({ list }) => list)
-    .map(({ id, list, create, edit }) => ({
-      id,
-      ...Object.fromEntries(
-        Object.entries({ list, create, edit }).map(([k, v]) => [
-          k,
-          <Parser jsx={v} components={{ ...admin }} />
-        ])
-      )
-    }));
+  const dataProvider = addUploadFeature(contextProvider);
+  const { authProvider } = contextProvider;
+  const { getResources } = dataProvider;
 
   return (
-    <Admin basename="/admin" dataProvider={addUploadFeature(contextProvider)}>
-      {() => {
-        const access = resources.map(({ id, ...rest }) => ({
-          id,
-          resource: <Resource key={id} name={id} {...rest} />
-        }));
-        return (
-          <>
-            <CustomRoutes noLayout>
-              <Route path="admin">
-                <Route path="" element={<Layout />} />
-                {access.map(({ id, resource }) => (
-                  <Route
-                    key={id}
-                    path={`${id}/*`}
-                    element={<Layout>{resource}</Layout>}
-                  />
-                ))}
-              </Route>
-              {children}
-            </CustomRoutes>
-            {access.map(({ resource }) => resource)}
-          </>
-        );
-      }}
+    <Admin basename="/admin" {...{ dataProvider, authProvider }}>
+      {() =>
+        getResources({}).then(({ data }) => {
+          const resources = data
+            .filter(({ list }) => list)
+            .map(({ id, list, create, edit }) => ({
+              id,
+              ...Object.fromEntries(
+                Object.entries({ list, create, edit }).map(([k, v]) => [
+                  k,
+                  <Parser jsx={v} components={{ ...admin }} />
+                ])
+              )
+            }))
+            .map(({ id, ...rest }) => ({
+              id,
+              resource: <Resource key={id} name={id} {...rest} />
+            }));
+          return (
+            <>
+              <CustomRoutes noLayout>
+                <Route path="admin">
+                  <Route path="" element={<Layout />} />
+                  {resources.map(({ id, resource }) => (
+                    <Route
+                      key={id}
+                      path={`${id}/*`}
+                      element={<Layout>{resource}</Layout>}
+                    />
+                  ))}
+                </Route>
+                {children}
+              </CustomRoutes>
+              {resources.map(({ resource }) => resource)}
+            </>
+          );
+        })
+      }
     </Admin>
   );
 };

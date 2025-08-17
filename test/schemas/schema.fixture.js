@@ -15,6 +15,7 @@ export default (id) => ({
       }
     }`
   ],
+  editor: `editor${id}`,
   config: [
     {
       name: `config${id}`,

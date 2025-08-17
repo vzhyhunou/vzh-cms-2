@@ -120,15 +120,21 @@ export class SchemasService {
     return new Function(`return ${value}`)();
   }
 
-  async findResources() {
+  async findResources(authorities) {
     const repository = this.getRepository(entity.id);
-    const schemas = await repository.findResources();
+    const schemas = await repository.findResources(authorities);
     return schemas.map(({ id, components }) => ({
       id,
       ...Object.fromEntries(
         components.map(({ name, element }) => [name, element])
       )
     }));
+  }
+
+  async findEditors() {
+    const repository = this.getRepository(entity.id);
+    const schemas = await repository.findEditors();
+    return Object.fromEntries(schemas.map(({ id, editor }) => [id, editor]));
   }
 
   entities(list) {

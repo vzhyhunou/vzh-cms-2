@@ -4,6 +4,7 @@
     "{\n  name: 'page',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    title: {\n      type: 'varchar',\n      nullable: true\n    },\n    body: {\n      type: 'text'\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'pageTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'page'\n    }\n  }\n}",
     "{\n  name: 'pageTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    page: {\n      type: 'many-to-one',\n      target: 'page',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
   ],
+  "editor": "PAGES_EDITOR",
   "config": [
     {
       "name": "tags",
@@ -14,7 +15,7 @@
     {
       "name": "one",
       "findOne": true,
-      "findOptions": "{\n  loadEagerRelations: false,\n  where: {\n    id: props.query.id,\n    tags: {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
+      "findOptions": "{\n  loadEagerRelations: false,\n  where: {\n    id: props.query.id,\n    tags: !props.user?.authorized && {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
     },
     {
       "name": "menu",

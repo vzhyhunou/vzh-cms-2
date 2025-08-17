@@ -110,9 +110,18 @@ describe('SchemasRepository', () => {
   describe('findResources()', () => {
     it('should return an array of schemas with resources', async () => {
       await manager.save(id, schema('user'));
-      const result = await subj.findResources();
+      const result = await subj.findResources(['editoruser']);
       const { components } = result[0];
       expect(components).toHaveLength(3);
+    });
+  });
+
+  describe('findEditors()', () => {
+    it('should return an array of schemas with editors', async () => {
+      await manager.save(id, schema('user'));
+      const result = await subj.findEditors();
+      const { editor } = result[0];
+      expect(editor).toBeDefined();
     });
   });
 });
