@@ -1,4 +1,4 @@
-import { cloneElement } from 'react';
+import React, { cloneElement } from 'react';
 
 import useGetContent from '../provider/data/useGetContent';
 import Component from './Component';

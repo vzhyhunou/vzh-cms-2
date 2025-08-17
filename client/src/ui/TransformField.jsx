@@ -1,10 +1,9 @@
 import { cloneElement } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
-import * as admin from 'react-admin';
-import * as router from 'react-router-dom';
+
+import b from './bindings';
 
 export default ({ expression, children, ...rest }) => {
-  const params = { ...rest, useFormContext, useWatch, ...admin, ...router };
+  const params = { ...b, ...rest };
 
   return cloneElement(
     children,

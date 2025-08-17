@@ -15,7 +15,7 @@ export default () => ({
     const credentials = btoa(`${username}:${password}`);
     const auth = { Authorization: `Basic ${credentials}` };
     const response = await fetch('/auth', { headers: auth });
-    const {status, statusText} = response;
+    const { status, statusText } = response;
     if (status < 200 || status >= 300) {
       throw new Error(statusText);
     }

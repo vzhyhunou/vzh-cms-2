@@ -1,9 +1,7 @@
-import { useState } from 'react';
-import * as admin from 'react-admin';
-import * as router from 'react-router-dom';
+import b from './bindings';
 
 export default ({ expression, children, ...rest }) => {
-  const params = { ...rest, useState, ...admin, ...router };
+  const params = { ...b, ...rest };
 
   return children(
     // eslint-disable-next-line no-new-func

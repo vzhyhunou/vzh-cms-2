@@ -1,3 +1,5 @@
+import React from 'react';
+
 import useGetContent from '../provider/data/useGetContent';
 import Component from './Component';
 
