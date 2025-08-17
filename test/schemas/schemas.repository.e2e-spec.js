@@ -4,7 +4,7 @@ import {
   getEntityManagerToken,
   getDataSourceToken
 } from '@nestjs/typeorm';
-import { EntitySchema } from 'typeorm';
+import { EntitySchema, Like } from 'typeorm';
 
 import schema from './schema.fixture';
 import { id, entities } from '../../src/schemas/schema.entity.json';
@@ -64,17 +64,21 @@ describe('SchemasRepository', () => {
 
     it('should return an empty array of schemas', async () => {
       await manager.save(id, schema('user'));
-      const filter = { id: subj.options(`Like('%a%')`) };
-      const result = await subj.findAndCount({ where: filter });
+      const result = await subj.findAndCount({ where: { id: Like('%a%') } });
       expect(result).toMatchObject([[], 0]);
     });
 
     it('should return a filtered array of schemas', async () => {
       await manager.save(id, [schema('user'), schema('page')]);
-      const filter = { id: subj.options(`Like('%uS%')`) };
-      let result = await subj.findAndCount({ where: filter, take: 1 });
+      let result = await subj.findAndCount({
+        where: { id: Like('%uS%') },
+        take: 1
+      });
       expect(result).toMatchObject([[{ id: 'user' }], 1]);
-      result = await subj.findAndCount({ where: filter, skip: 1 });
+      result = await subj.findAndCount({
+        where: { id: Like('%uS%') },
+        skip: 1
+      });
       expect(result).toMatchObject([[], 1]);
     });
   });
