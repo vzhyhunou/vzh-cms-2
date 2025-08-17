@@ -29,13 +29,11 @@ export default (id) => ({
   contents: [
     {
       name: `content${id}`,
-      findOne: false,
-      findOptions: '{}'
+      options: '{}'
     },
     {
       name: `content${id}2`,
-      findOne: false,
-      findOptions: '{}'
+      options: '{}'
     }
   ],
   components: [

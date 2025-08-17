@@ -9,8 +9,8 @@ export default {
       select: {
         id: true,
         contents: {
-          findOne: true,
-          findOptions: true
+          single: true,
+          options: true
         }
       },
       relations: {

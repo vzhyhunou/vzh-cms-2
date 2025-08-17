@@ -90,10 +90,11 @@ export class SchemasService {
     if (!schema) {
       throw new NotFoundException();
     }
-    const { findOne, findOptions } = schema.contents[0];
+    const { single, options } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
-    const options = transform(findOptions, params);
-    const result = await itemsRepository[findOne ? 'findOne' : 'find'](options);
+    const result = await itemsRepository[single ? 'findOne' : 'find'](
+      transform(options, params)
+    );
     if (!result) {
       throw new NotFoundException();
     }

@@ -8,8 +8,8 @@
   "contents": [
     {
       "name": "authorities",
-      "findOne": true,
-      "findOptions": "{\n  where: {\n    id: system.username || IsNull(),\n    tags: {\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
+      "single": true,
+      "options": "{\n  where: {\n    id: system.username || IsNull(),\n    tags: {\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
     }
   ],
   "config": [
