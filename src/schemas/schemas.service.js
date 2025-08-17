@@ -90,7 +90,7 @@ export class SchemasService {
     if (!schema) {
       throw new NotFoundException();
     }
-    const { single, options } = schema.contents[0];
+    const { single, options, projection } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
     const result = await itemsRepository[single ? 'findOne' : 'find'](
       transform(options, params)
@@ -98,7 +98,10 @@ export class SchemasService {
     if (!result) {
       throw new NotFoundException();
     }
-    return result;
+    if (!projection) {
+      return result;
+    }
+    return new Function('target', `return ${projection}`)(result);
   }
 
   async findComponent(resource, name) {

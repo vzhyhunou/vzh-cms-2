@@ -10,7 +10,8 @@ export default {
         id: true,
         contents: {
           single: true,
-          options: true
+          options: true,
+          projection: true
         }
       },
       relations: {

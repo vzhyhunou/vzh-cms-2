@@ -18,7 +18,7 @@ export class AuthService {
       user &&
       bcrypt.compareSync(password, user.password) && {
         username,
-        authorities: user.tags.map(({ name }) => name)
+        authorities: user.authorities
       }
     );
   }
