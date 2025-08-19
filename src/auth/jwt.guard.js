@@ -27,18 +27,22 @@ export class JwtGuard extends AuthGuard('jwt') {
       context.getClass()
     ]);
 
-    if (!isPublic) {
-      if (process.env.NODE_ENV === 'development') {
-        return true;
-      }
-      await super.canActivate(context);
-      return this.isUserInRole(request);
+    if (isPublic) {
+      try {
+        await super.canActivate(context);
+        request.user.authorized = this.isUserInRole(request);
+      } catch (e) {}
+      return true;
     }
 
     try {
       await super.canActivate(context);
-      request.user.authorized = this.isUserInRole(request);
-    } catch (e) {}
-    return true;
+      return this.isUserInRole(request);
+    } catch (e) {
+      if (process.env.NODE_ENV === 'development') {
+        return true;
+      }
+      throw e;
+    }
   }
 }

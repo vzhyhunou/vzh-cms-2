@@ -1,7 +1,7 @@
 {
   "id": "user",
   "entities": [
-    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    password: {\n      type: 'varchar'\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
+    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    password: {\n      type: 'varchar'\n    },\n    userId: {\n      type: 'varchar',\n      nullable: true\n    },\n    date: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
     "{\n  name: 'userTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    user: {\n      type: 'many-to-one',\n      target: 'user',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
   ],
   "editor": "MANAGER",
@@ -30,7 +30,7 @@
     },
     {
       "name": "edit",
-      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <ConfigField resource=\"user\" name=\"tags\">\n      <TransformField expression=\"{choices: tags.map(tag => ({id: tag, name: tag}))}\">\n       <SelectInput source=\"name\" validate={[required()]}/>\n      </TransformField>\n     </ConfigField>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
+      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled source=\"userId\">\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled source=\"date\">\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <ConfigField resource=\"user\" name=\"tags\">\n      <TransformField expression=\"{choices: tags.map(tag => ({id: tag, name: tag}))}\">\n       <SelectInput source=\"name\" validate={[required()]}/>\n      </TransformField>\n     </ConfigField>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
     }
   ]
 }

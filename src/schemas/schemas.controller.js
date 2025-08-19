@@ -22,6 +22,7 @@ import { MultipartPipe } from '../common/pipe/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 import { Public } from '../auth/public.decorator';
+import { AuditPipe } from '../auth/audit.pipe';
 
 @Controller('api')
 @UseFilters(HttpExceptionFilter)
@@ -34,7 +35,7 @@ export class SchemasController {
 
   @Post(':resource')
   @UseInterceptors(FilesInterceptor('files'))
-  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles())
+  @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
   create(resource, dto, files) {
     const transformed = this.storageService.replaceFilenames(dto, files);
     return this.schemasService.save(resource, transformed);
@@ -42,7 +43,7 @@ export class SchemasController {
 
   @Put(':resource/:id')
   @UseInterceptors(FilesInterceptor('files'))
-  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles())
+  @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
   update(resource, dto, files) {
     const transformed = this.storageService.replaceFilenames(dto, files);
     return this.schemasService.save(resource, transformed);
