@@ -1,12 +1,11 @@
-import { useState } from 'react';
+import * as r from 'react';
 import * as router from 'react-router-dom';
-import { useFormContext, useWatch } from 'react-hook-form';
+import * as form from 'react-hook-form';
 import * as admin from 'react-admin';
 
-export default {
-  useState,
+export default (({ default: extra, ...r }) => ({
+  ...r,
   ...router,
-  useFormContext,
-  useWatch,
+  ...form,
   ...admin
-};
+}))(r);
