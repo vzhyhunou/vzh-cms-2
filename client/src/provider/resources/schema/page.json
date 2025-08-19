@@ -15,7 +15,7 @@
     {
       "name": "one",
       "single": true,
-      "options": "{\n  loadEagerRelations: false,\n  where: {\n    id: props.query.id,\n    tags: !props.user?.authorized && {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
+      "options": "{\n  loadEagerRelations: false,\n  where: {\n    id: request.query.id,\n    tags: !request.user?.authorized && {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
     },
     {
       "name": "menu",
