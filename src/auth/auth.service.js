@@ -12,7 +12,7 @@ export class AuthService {
 
   async validateUser(username, password) {
     const user = await this.schemasService.findContent('user', 'authorities', {
-      system: { username }
+      request: { system: { username } }
     });
     return (
       user &&

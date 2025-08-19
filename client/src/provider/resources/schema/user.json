@@ -9,7 +9,7 @@
     {
       "name": "authorities",
       "single": true,
-      "options": "{\n  where: {\n    id: system.username || IsNull(),\n    tags: {\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
+      "options": "{\n  where: {\n    id: request.system?.username || IsNull(),\n    tags: {\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
       "projection": "{\n  password: target.password,\n  authorities: target.tags.map(({ name }) => name)\n}"
     }
   ],
