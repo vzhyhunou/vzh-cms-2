@@ -1,9 +1,16 @@
 import { cloneElement } from 'react';
 
 import b from './bindings';
+import useGetResources from '../provider/data/useGetResources';
 
 export default ({ expression, children, ...rest }) => {
-  const params = { ...b, ...rest };
+  const { data: config } = useGetResources({ config: true });
+
+  if (!config) {
+    return null;
+  }
+
+  const params = { config, ...b, ...rest };
 
   return cloneElement(
     children,

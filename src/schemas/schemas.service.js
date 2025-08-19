@@ -114,14 +114,20 @@ export class SchemasService {
     return element;
   }
 
-  async findConfig(resource, name) {
+  async findConfig() {
     const repository = this.getRepository(entity.id);
-    const schema = await repository.findConfig(resource, name);
-    if (!schema) {
-      throw new NotFoundException();
-    }
-    const { value } = schema.config[0];
-    return new Function(`return ${value}`)();
+    const schemas = await repository.findConfig();
+    return Object.fromEntries(
+      schemas.map(({ id, config }) => [
+        id,
+        Object.fromEntries(
+          config.map(({ name, value }) => [
+            name,
+            new Function(`return ${value}`)()
+          ])
+        )
+      ])
+    );
   }
 
   async findResources(authorities) {

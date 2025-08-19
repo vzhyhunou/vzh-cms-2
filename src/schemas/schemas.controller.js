@@ -84,16 +84,13 @@ export class SchemasController {
     return this.schemasService.findComponent(resource, name);
   }
 
-  @Get(':resource/config/:name')
-  @Bind(Param('resource'), Param('name'))
-  findConfig(resource, name) {
-    return this.schemasService.findConfig(resource, name);
-  }
-
   @Public()
   @Get()
-  @Bind(Request())
-  findResources({ user: { authorities = [] } = {} }) {
+  @Bind(Query(), Request())
+  findResources({ config }, { user: { authorities = [] } = {} }) {
+    if (config) {
+      return this.schemasService.findConfig();
+    }
     return this.schemasService.findResources(authorities);
   }
 }

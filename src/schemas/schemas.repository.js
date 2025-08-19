@@ -45,23 +45,18 @@ export default {
       }
     });
   },
-  findConfig(resource, name) {
-    return this.findOne({
+  findConfig() {
+    return this.find({
       loadEagerRelations: false,
       select: {
         id: true,
         config: {
+          name: true,
           value: true
         }
       },
       relations: {
         config: true
-      },
-      where: {
-        id: resource,
-        config: {
-          name
-        }
       }
     });
   },

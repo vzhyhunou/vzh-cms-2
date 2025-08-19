@@ -78,15 +78,13 @@ export default ({ authProvider: { getToken } }) => {
           data: body
         })
       ),
-    getConfig: (resource, { name, options }) =>
-      httpClient(`${API_URL}/${resource}/config/${name}`, options).then(
+    getResources: ({ config, options }) => {
+      const s = stringify({ config });
+      return httpClient(`${API_URL}${s ? `?${s}` : ''}`, options).then(
         ({ json }) => ({
           data: json
         })
-      ),
-    getResources: ({ options }) =>
-      httpClient(API_URL, options).then(({ json }) => ({
-        data: json
-      }))
+      );
+    }
   };
 };

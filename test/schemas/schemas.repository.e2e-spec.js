@@ -102,8 +102,16 @@ describe('SchemasRepository', () => {
   describe('findConfig()', () => {
     it('should return a schema with config', async () => {
       await manager.save(id, schema('user'));
-      const { config } = await subj.findConfig('user', 'configuser');
-      expect(config).toHaveLength(1);
+      const result = await subj.findConfig();
+      expect(result).toMatchObject([
+        {
+          id: 'user',
+          config: [
+            { name: 'configuser', value: 'v' },
+            { name: 'configuser2', value: 'v' }
+          ]
+        }
+      ]);
     });
   });
 
