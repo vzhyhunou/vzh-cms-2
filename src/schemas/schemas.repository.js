@@ -45,18 +45,18 @@ export default {
       }
     });
   },
-  findConfig() {
+  findSettings() {
     return this.find({
       loadEagerRelations: false,
       select: {
         id: true,
-        config: {
+        settings: {
           name: true,
           value: true
         }
       },
       relations: {
-        config: true
+        settings: true
       }
     });
   },

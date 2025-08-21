@@ -99,16 +99,16 @@ describe('SchemasRepository', () => {
     });
   });
 
-  describe('findConfig()', () => {
-    it('should return a schema with config', async () => {
+  describe('findSettings()', () => {
+    it('should return a schema with settings', async () => {
       await manager.save(id, schema('user'));
-      const result = await subj.findConfig();
+      const result = await subj.findSettings();
       expect(result).toMatchObject([
         {
           id: 'user',
-          config: [
-            { name: 'configuser', value: 'v' },
-            { name: 'configuser2', value: 'v' }
+          settings: [
+            { name: 'settinguser', value: 'v' },
+            { name: 'settinguser2', value: 'v' }
           ]
         }
       ]);

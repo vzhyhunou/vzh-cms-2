@@ -87,9 +87,9 @@ export class SchemasController {
   @Public()
   @Get()
   @Bind(Query(), Request())
-  findResources({ config }, { user: { authorities = [] } = {} }) {
-    if (config) {
-      return this.schemasService.findConfig();
+  findResources({ settings }, { user: { authorities = [] } = {} }) {
+    if (settings) {
+      return this.schemasService.findSettings();
     }
     return this.schemasService.findResources(authorities);
   }

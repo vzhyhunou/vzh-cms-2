@@ -78,8 +78,8 @@ export default ({ authProvider: { getToken } }) => {
           data: body
         })
       ),
-    getResources: ({ config, options }) => {
-      const s = stringify({ config });
+    getResources: ({ settings, options }) => {
+      const s = stringify({ settings });
       return httpClient(`${API_URL}${s ? `?${s}` : ''}`, options).then(
         ({ json }) => ({
           data: json

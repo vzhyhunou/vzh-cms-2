@@ -114,14 +114,14 @@ export class SchemasService {
     return element;
   }
 
-  async findConfig() {
+  async findSettings() {
     const repository = this.getRepository(entity.id);
-    const schemas = await repository.findConfig();
+    const schemas = await repository.findSettings();
     return Object.fromEntries(
-      schemas.map(({ id, config }) => [
+      schemas.map(({ id, settings }) => [
         id,
         Object.fromEntries(
-          config.map(({ name, value }) => [
+          settings.map(({ name, value }) => [
             name,
             new Function(`return ${value}`)()
           ])

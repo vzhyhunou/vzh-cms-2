@@ -28,13 +28,11 @@ export class ExportService {
         const resourcepath = path.join(dir, resource);
         fs.mkdirSync(resourcepath, { recursive: true });
         const id = itemRepository.getId(item);
-        if (id !== entity.id) {
-          const filepath = path.join(resourcepath, `${id}.json`);
-          fs.writeFileSync(
-            filepath,
-            JSON.stringify(item, (k, v) => (v ? v : undefined), 2)
-          );
-        }
+        const filepath = path.join(resourcepath, `${id}.json`);
+        fs.writeFileSync(
+          filepath,
+          JSON.stringify(item, (k, v) => (v ? v : undefined), 2)
+        );
       }
     }
     this.logger.log('End export');

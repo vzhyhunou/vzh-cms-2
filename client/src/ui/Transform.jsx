@@ -2,13 +2,13 @@ import b from './bindings';
 import useGetResources from '../provider/data/useGetResources';
 
 export default ({ expression, children, ...rest }) => {
-  const { data: config } = useGetResources({ config: true });
+  const { data: settings } = useGetResources({ settings: true });
 
-  if (!config) {
+  if (!settings) {
     return null;
   }
 
-  const params = { config, ...b, ...rest };
+  const params = { settings, ...b, ...rest };
 
   return children(
     // eslint-disable-next-line no-new-func

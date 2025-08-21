@@ -16,13 +16,13 @@ export default (id) => ({
     }`
   ],
   editor: `editor${id}`,
-  config: [
+  settings: [
     {
-      name: `config${id}`,
+      name: `setting${id}`,
       value: 'v'
     },
     {
-      name: `config${id}2`,
+      name: `setting${id}2`,
       value: 'v'
     }
   ],
