@@ -54,9 +54,5 @@
     "supertest": "^6.3.4",
     "cross-env": "^7.0.3",
     "rimraf": "^5.0.7"
-  },
-  "files": [
-    "package.json",
-    "dist"
-  ]
+  }
 }

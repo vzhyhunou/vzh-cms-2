@@ -34,12 +34,3 @@ jobs:
       run: npm run test:e2e
     - name: Build with NPM
       run: npm run build
-    - name: Delete npm package
-      run: |
-        curl -X DELETE -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/vzhyhunou/packages/npm/vzh-cms-2
-      if: ${{ github.event_name != 'pull_request' }}
-    - name: Publish with NPM
-      run: npm publish
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      if: ${{ github.event_name != 'pull_request' }}
