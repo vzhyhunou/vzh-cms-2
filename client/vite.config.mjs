@@ -32,7 +32,7 @@ const srcConfig = {
                 '/api': {
                     target: 'http://localhost:8090'
                 },
-                '/login': {
+                '/auth': {
                     target: 'http://localhost:8090'
                 },
                 '/static': {

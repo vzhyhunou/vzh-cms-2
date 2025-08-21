@@ -5,32 +5,34 @@ import fs from 'fs';
 import moment from 'moment';
 
 import { SchemasService } from '../schemas/schemas.service';
-import se from '../schemas/schema.entity.json';
+import entity from '../schemas/schema.entity.json';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
 export class ExportService {
   logger = new Logger(ExportService.name);
 
-  constructor(configService, service) {
+  constructor(configService, schemasService) {
     this.properties = configService.get('resources.exp');
-    this.service = service;
+    this.schemasService = schemasService;
   }
 
   async exp() {
     const dir = this.folder();
     this.logger.log(`Start export ${dir} ...`);
-    for (const resource of this.service.getResources()) {
-      const repository = this.service.getRepository(resource);
-      for await (const item of this.findAll(repository)) {
+    const repository = this.schemasService.getRepository(entity.id);
+    const schemas = await repository.find();
+    for (const resource of schemas.map(({ id }) => id)) {
+      const itemRepository = this.schemasService.getRepository(resource);
+      for await (const item of this.findAll(itemRepository)) {
         const resourcepath = path.join(dir, resource);
         fs.mkdirSync(resourcepath, { recursive: true });
-        const id = repository.getId(item);
-        if (id !== se.id) {
+        const id = itemRepository.getId(item);
+        if (id !== entity.id) {
           const filepath = path.join(resourcepath, `${id}.json`);
           fs.writeFileSync(
             filepath,
-            JSON.stringify(item, (key, value) => (value ? value : undefined), 2)
+            JSON.stringify(item, (k, v) => (v ? v : undefined), 2)
           );
         }
       }
@@ -71,7 +73,11 @@ export class ExportService {
       [Symbol.asyncIterator]() {
         return {
           async next() {
-            const value = await repository.findByIndex(index++);
+            const value = await repository.findOne({
+              skip: index++,
+              take: 1,
+              where: {}
+            });
             return { value, done: !value };
           }
         };

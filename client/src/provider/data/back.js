@@ -3,8 +3,21 @@ import { fetchUtils } from 'react-admin';
 
 const API_URL = '/api';
 
-export default () => {
-  const httpClient = (url, options = {}) => fetchUtils.fetchJson(url, options);
+export default ({ authProvider: { getToken } }) => {
+  const httpClient = (url, options = {}) =>
+    Promise.all([getToken()])
+      .then(([token]) => ({
+        ...options,
+        ...(token
+          ? {
+              user: {
+                authenticated: true,
+                token: `Bearer ${token}`
+              }
+            }
+          : {})
+      }))
+      .then((options) => fetchUtils.fetchJson(url, options));
 
   return {
     getList: (resource, { pagination, sort, filter, options }) => {
@@ -23,6 +36,55 @@ export default () => {
         data: content,
         total: page.totalElements
       }));
+    },
+    getOne: (resource, { id, options }) =>
+      httpClient(`${API_URL}/${resource}/${id}`, options).then(({ json }) => ({
+        data: json
+      })),
+    getMany: (resource, { ids, options }) =>
+      httpClient(`${API_URL}/${resource}?${stringify({ ids })}`, options).then(
+        ({ json }) => ({
+          data: json
+        })
+      ),
+    create: (resource, { data, options }) =>
+      httpClient(`${API_URL}/${resource}`, {
+        method: 'POST',
+        body: data,
+        ...options
+      }).then(({ json }) => ({
+        data: json
+      })),
+    update: (resource, { id, data, options }) =>
+      httpClient(`${API_URL}/${resource}/${id}`, {
+        method: 'PUT',
+        body: data,
+        ...options
+      }).then(({ json }) => ({
+        data: json
+      })),
+    getContent: (resource, { name, params, options }) => {
+      const s = stringify(params);
+      return httpClient(
+        `${API_URL}/${resource}/content/${name}${s ? `?${s}` : ''}`,
+        options
+      ).then(({ json }) => ({
+        data: json
+      }));
+    },
+    getComponent: (resource, { name, options }) =>
+      httpClient(`${API_URL}/${resource}/component/${name}`, options).then(
+        ({ body }) => ({
+          data: body
+        })
+      ),
+    getResources: ({ config, options }) => {
+      const s = stringify({ config });
+      return httpClient(`${API_URL}${s ? `?${s}` : ''}`, options).then(
+        ({ json }) => ({
+          data: json
+        })
+      );
     }
   };
 };

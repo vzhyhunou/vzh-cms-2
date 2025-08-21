@@ -9,70 +9,88 @@ import {
   Bind,
   Param,
   Query,
-  HttpException,
-  HttpStatus
+  UploadedFiles,
+  UseInterceptors,
+  UseFilters,
+  Request
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
+import { MultipartPipe } from '../common/pipe/multipart.pipe';
+import { HttpExceptionFilter } from './schemas.filter';
+import { StorageService } from '../storage/storage.service';
+import { Public } from '../auth/public.decorator';
+import { AuditPipe } from '../auth/audit.pipe';
 
 @Controller('api')
-@Dependencies(SchemasService)
+@UseFilters(HttpExceptionFilter)
+@Dependencies(SchemasService, StorageService)
 export class SchemasController {
-  constructor(service) {
-    this.service = service;
-  }
-
-  getRepository(resource) {
-    const repository = this.service.getRepository(resource);
-    if (repository) {
-      return repository;
-    }
-    throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+  constructor(schemasService, storageService) {
+    this.schemasService = schemasService;
+    this.storageService = storageService;
   }
 
   @Post(':resource')
-  @Bind(Param('resource'), Body())
-  create(resource, dto) {
-    const repository = this.getRepository(resource);
-    return repository.save(dto);
+  @UseInterceptors(FilesInterceptor('files'))
+  @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
+  create(resource, dto, files) {
+    const transformed = this.storageService.replaceFilenames(dto, files);
+    return this.schemasService.save(resource, transformed);
   }
 
   @Put(':resource/:id')
-  @Bind(Param('resource'), Body())
-  update(resource, dto) {
-    const repository = this.getRepository(resource);
-    return repository.save(dto);
+  @UseInterceptors(FilesInterceptor('files'))
+  @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
+  update(resource, dto, files) {
+    const transformed = this.storageService.replaceFilenames(dto, files);
+    return this.schemasService.save(resource, transformed);
   }
 
   @Delete(':resource/:id')
   @Bind(Param('resource'), Param('id'))
   remove(resource, id) {
-    const repository = this.getRepository(resource);
-    return repository.remove({
-      [repository.getPrimaryColumnName()]: id
-    });
+    return this.schemasService.remove(resource, id);
   }
 
   @Get(':resource')
   @Bind(Param('resource'), Query(PageablePipe))
-  findAll(resource, { page, size, sort, ...rest }) {
-    const repository = this.getRepository(resource);
-    const filter = repository.filter(rest);
-    return repository
-      .findAll(page, size, sort, filter)
-      .then(({ content, totalElements }) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
+  findAll(resource, { ids, ...rest }) {
+    if (ids.length) {
+      return this.schemasService.findByIdIn(resource, ids);
+    }
+    return this.schemasService.findAll(resource, rest);
   }
 
   @Get(':resource/:id')
   @Bind(Param('resource'), Param('id'))
   findById(resource, id) {
-    const repository = this.getRepository(resource);
-    return repository.findById(id);
+    return this.schemasService.findById(resource, id);
+  }
+
+  @Public()
+  @Get(':resource/content/:name')
+  @Bind(Param('resource'), Param('name'), Request())
+  findContent(resource, name, request) {
+    return this.schemasService.findContent(resource, name, { request });
+  }
+
+  @Public()
+  @Get(':resource/component/:name')
+  @Bind(Param('resource'), Param('name'))
+  findComponent(resource, name) {
+    return this.schemasService.findComponent(resource, name);
+  }
+
+  @Public()
+  @Get()
+  @Bind(Query(), Request())
+  findResources({ config }, { user: { authorities = [] } = {} }) {
+    if (config) {
+      return this.schemasService.findConfig();
+    }
+    return this.schemasService.findResources(authorities);
   }
 }

@@ -1,0 +1,13 @@
+{
+  "id": "sample1",
+  "tags": [
+    {
+      "name": "MENU"
+    },
+    {
+      "name": "PUBLISHED"
+    }
+  ],
+  "title": "Sample page 1",
+  "body": "<h1>Sample page 1</h1>"
+}
