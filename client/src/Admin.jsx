@@ -10,7 +10,12 @@ import addUploadFeature from './provider/data/upload';
 export default ({ children }) => {
   const contextProvider = useContextProvider();
   const dataProvider = addUploadFeature(contextProvider);
-  const { authProvider } = contextProvider;
+  const {
+    authProvider,
+    settings: {
+      schema: { route }
+    }
+  } = contextProvider;
   const { getResources } = dataProvider;
 
   return (
@@ -45,7 +50,7 @@ export default ({ children }) => {
                     />
                   ))}
                 </Route>
-                {children}
+                {children(route)}
               </CustomRoutes>
               {resources.map(({ resource }) => resource)}
             </>

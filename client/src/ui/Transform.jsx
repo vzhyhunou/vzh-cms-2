@@ -1,8 +1,8 @@
 import b from './bindings';
-import useGetResources from '../provider/data/useGetResources';
+import { useContextProvider } from '../Context';
 
 export default ({ expression, children, ...rest }) => {
-  const { data: settings } = useGetResources({ settings: true });
+  const { settings } = useContextProvider();
 
   if (!settings) {
     return null;
