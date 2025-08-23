@@ -11,11 +11,14 @@ const Element = (props) => {
 };
 
 const parse = ({ element, children = [], ...rest }) =>
-  createElement(Route, {
-    element: <Element {...element} />,
-    children: children.map(parse),
-    ...rest
-  });
+  createElement(
+    Route,
+    {
+      element: <Element {...element} />,
+      ...rest
+    },
+    children.map(parse)
+  );
 
 export default ({ config }) => (
   <Context {...config}>
