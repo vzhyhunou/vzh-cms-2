@@ -22,7 +22,7 @@
   "components": [
     {
       "name": "list",
-      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <TransformInput expression=\"{parse: text => `{name: '${text}'}`, format: text => text ? text.replace(new RegExp(`.*'(.*)'.*`), '$1') : '', choices: settings.user.tags.map(tag => ({id: tag, name: tag})), source}\" source=\"tags\">\n  <SelectInput/>\n </TransformInput>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
+      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <TransformInput expression=\"(([state, setState]) => ({parse: text => (() => `{name: '${text}'}`)(setState(text)), format: () => state, choices: settings.user.tags.map(tag => ({id: tag, name: tag})), source}))(useState(''))\" source=\"tags\">\n  <SelectInput/>\n </TransformInput>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
     },
     {
       "name": "create",
