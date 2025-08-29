@@ -5,8 +5,7 @@
     "react-admin": "^5.2.1",
     "ra-data-fakerest": "^5.1.1",
     "jwt-decode": "^3.1.2",
-    "jwt-encode": "^1.0.1",
-    "js-md5": "^0.8.3"
+    "jwt-encode": "^1.0.1"
   },
   "devDependencies": {
     "vite": "^5.4.7",
