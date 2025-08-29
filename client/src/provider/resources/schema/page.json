@@ -15,7 +15,8 @@
     {
       "name": "one",
       "single": true,
-      "options": "{\n  loadEagerRelations: false,\n  where: {\n    id: request.query.id,\n    tags: !request.user?.authorized && {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}"
+      "options": "{\n  loadEagerRelations: false,\n  where: {\n    id: request.query.id,\n    tags: !request.user?.authorized && {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
+      "projection": "{\n  title: target.title,\n  body: service.transform(target.body)\n}"
     },
     {
       "name": "menu",
@@ -25,23 +26,27 @@
   "components": [
     {
       "name": "list",
-      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <TransformInput expression=\"(([state, setState]) => ({parse: text => (() => `Like('%${text}%')`)(setState(text)), format: () => state, source}))(useState(''))\" source=\"title\">\n  <TextInput/>\n </TransformInput>,\n <TransformInput expression=\"(([state, setState]) => ({parse: text => (() => `{name: '${text}'}`)(setState(text)), format: () => state, choices: settings.page.tags.map(tag => ({id: tag, name: tag})), source}))(useState(''))\" source=\"tags\">\n  <SelectInput/>\n </TransformInput>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <FunctionField source=\"id\" render={record =>\n   <TransformField expression=\"{to: `/${id}`}\" id={record.id}>\n    <Link>{record.id}</Link>\n   </TransformField>\n  }/>\n  <TextField source=\"title\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
+      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <Component schema=\"schema\" name=\"ParseInput\" component={TextInput} source=\"title\" parse={value => `Like('%${value}%')`}/>,\n <Component schema=\"schema\" name=\"ParseInput\" component={SelectInput} source=\"tags\" parse={value => `{name: '${value}'}`} choices={settings.page.tags.map(tag => ({id: tag, name: tag}))}/>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <FunctionField source=\"id\" render={({id}) =>\n   <Link to={`/${id}`}>{id}</Link>\n  }/>\n  <TextField source=\"title\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
     },
     {
       "name": "create",
-      "element": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required()]}/>\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n   <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n    <TransformField expression={\"{onClick: ((value, {setValue}) => ({target: {title}}) => setValue('body', (value ? value : '') + `<img src=\\\"${title}\\\"/>`))(useWatch({name: 'body'}), useFormContext())}\"}>\n     <ImageField source=\"src\" title=\"title\"/>\n    </TransformField>\n   </ImageInput>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <TransformField expression=\"{choices: settings.page.tags.map(tag => ({id: tag, name: tag}))}\">\n      <SelectInput source=\"name\" validate={[required()]}/>\n     </TransformField>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>"
+      "element": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required()]}/>\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n   <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n    <Component schema=\"page\" name=\"ImageInput\"/>\n   </ImageInput>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.page.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>"
     },
     {
       "name": "edit",
-      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled source=\"userId\">\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled source=\"date\">\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n   <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n    <TransformField expression={\"{onClick: ((value, {setValue}) => ({target: {title}}) => setValue('body', (value ? value : '') + `<img src=\\\"${title}\\\"/>`))(useWatch({name: 'body'}), useFormContext())}\"}>\n     <ImageField source=\"src\" title=\"title\"/>\n    </TransformField>\n   </ImageInput>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <TransformField expression=\"{choices: settings.page.tags.map(tag => ({id: tag, name: tag}))}\">\n      <SelectInput source=\"name\" validate={[required()]}/>\n     </TransformField>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
+      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled source=\"userId\">\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled source=\"date\">\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <TextInput source=\"title\"/>\n   <TextInput multiline source=\"body\" sx={{'.MuiInputBase-input': {fontFamily: 'Courier New'}}}/>\n   <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n    <Component schema=\"page\" name=\"ImageInput\"/>\n   </ImageInput>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.page.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
     },
     {
       "name": "one",
-      "element": "<ContentField resource=\"page\" name=\"one\" id={props.id}>\n <TransformField expression=\"(() => ({jsx: one.body}))(one.title && (document.title = one.title))\">\n  <Parser/>\n </TransformField>\n</ContentField>"
+      "element": "<Content resource=\"page\" name=\"one\" id={props.id}>\n {({title, body}) =>\n  (() => <Parser code={body}/>)(title && (document.title = title))\n }\n</Content>"
     },
     {
       "name": "menu",
-      "element": "<List>\n <ContentField resource=\"page\" name=\"menu\">\n  <Transform expression=\"[`/${menu.id}`, menu.title]\">\n   {(to, title) =>\n    <Link to={to}>\n     <ListItem>\n      <ListItemText primary={title}/>\n     </ListItem>\n    </Link>\n   }\n  </Transform>\n </ContentField>\n</List>"
+      "element": "<Content resource=\"page\" name=\"menu\">\n {content =>\n  <List>\n   {content.map(({id, title}) =>\n    <Link key={id} to={`/${id}`}>\n     <ListItem>\n      <ListItemText primary={title}/>\n     </ListItem>\n    </Link>\n   )}\n  </List>\n }\n</Content>"
+    },
+    {
+      "name": "ImageInput",
+      "element": "{((value, {setValue}) => <ImageField source=\"src\" title=\"title\" onClick={({target: {title}}) => setValue('body', (value ? value : '') + `<img src=\"${title}\"/>`)}/>)(useWatch({name: 'body'}), useFormContext())}"
     }
   ]
 }

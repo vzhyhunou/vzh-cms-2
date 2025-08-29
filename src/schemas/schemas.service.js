@@ -1,10 +1,11 @@
 import { Dependencies, Injectable } from '@nestjs/common';
+import { transform } from '@babel/standalone';
 
 import entity from './schema.entity.json';
 import customRepository from './schemas.repository';
 import { DataSourceService } from '../datasource/datasource.service';
 import { NotFoundException } from './schemas.exception';
-import { transform } from '../common/repository/base.repository';
+import { parse } from '../common/repository/base.repository';
 
 @Injectable()
 @Dependencies(DataSourceService)
@@ -47,13 +48,10 @@ export class SchemasService {
     return await repository.remove(item);
   }
 
-  findAll(resource, { page, size, sort, transform: t, ...rest }) {
+  findAll(resource, { page, size, sort, parse: p, ...rest }) {
     const repository = this.getRepository(resource);
     const filter = Object.fromEntries(
-      Object.entries(rest).map(([k, v]) => [
-        k,
-        t.includes(k) ? transform(v) : v
-      ])
+      Object.entries(rest).map(([k, v]) => [k, p.includes(k) ? parse(v) : v])
     );
     return repository
       .findAndCount({
@@ -93,7 +91,7 @@ export class SchemasService {
     const { single, options, projection } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
     const result = await itemsRepository[single ? 'findOne' : 'find'](
-      transform(options, params)
+      parse(options, params)
     );
     if (!result) {
       throw new NotFoundException();
@@ -101,7 +99,10 @@ export class SchemasService {
     if (!projection) {
       return result;
     }
-    return new Function('target', `return ${projection}`)(result);
+    return new Function('target', 'service', `return ${projection}`)(
+      result,
+      this
+    );
   }
 
   async findComponent(resource, name) {
@@ -111,7 +112,7 @@ export class SchemasService {
       throw new NotFoundException();
     }
     const { element } = schema.components[0];
-    return element;
+    return this.transform(element);
   }
 
   async findSettings() {
@@ -136,7 +137,7 @@ export class SchemasService {
     return schemas.map(({ id, components }) => ({
       id,
       ...Object.fromEntries(
-        components.map(({ name, element }) => [name, element])
+        components.map(({ name, element }) => [name, this.transform(element)])
       )
     }));
   }
@@ -151,6 +152,12 @@ export class SchemasService {
     return list.flatMap(({ entities }) =>
       entities.map((e) => new Function(`return ${e}`)())
     );
+  }
+
+  transform(element) {
+    return transform(`<>${element}</>`, {
+      presets: ['react']
+    }).code;
   }
 
   getRepository(resource) {

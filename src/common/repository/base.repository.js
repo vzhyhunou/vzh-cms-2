@@ -13,7 +13,7 @@ Repository.prototype.findByIdIn = function (ids) {
   return this.findBy({ [this.getPrimaryColumnName()]: In(ids) });
 };
 
-export const transform = (value, params = {}) =>
+export const parse = (value, params = {}) =>
   new Function(
     ...Object.keys(params),
     ...Object.keys(typeorm),

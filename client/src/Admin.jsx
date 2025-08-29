@@ -1,10 +1,9 @@
 import React from 'react';
 import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
-import * as admin from 'react-admin';
 
 import { useContextProvider } from './Context';
-import Parser from './ui/Parser';
+import { AdminParser } from './ui/Parser';
 import addUploadFeature from './provider/data/upload';
 
 export default ({ children }) => {
@@ -29,7 +28,7 @@ export default ({ children }) => {
               ...Object.fromEntries(
                 Object.entries({ list, create, edit }).map(([k, v]) => [
                   k,
-                  <Parser jsx={v} components={{ ...admin }} />
+                  <AdminParser code={v} />
                 ])
               )
             }))

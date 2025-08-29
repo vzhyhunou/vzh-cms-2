@@ -31,7 +31,9 @@ export class JwtGuard extends AuthGuard('jwt') {
       try {
         await super.canActivate(context);
         request.user.authorized = this.isUserInRole(request);
-      } catch (e) {}
+      } catch (e) {
+        // eslint-disable-line no-empty
+      }
       return true;
     }
 

@@ -34,7 +34,7 @@ describe('Items (e2e)', () => {
       await itemsRepository.save([{ id: 'admin' }, { id: 'manager' }]);
       await request(app.getHttpServer())
         .get(
-          '/api/user?id=Like%28%27%25d%25%27%29&transform=id&page=0&size=1&sort=id%2CASC'
+          '/api/user?id=Like%28%27%25d%25%27%29&parse=id&page=0&size=1&sort=id%2CASC'
         )
         .expect(200)
         .expect(({ body }) => {
@@ -45,7 +45,7 @@ describe('Items (e2e)', () => {
         });
       await request(app.getHttpServer())
         .get(
-          '/api/user?id=Like%28%27%25d%25%27%29&transform=id&page=1&size=1&sort=id%2CASC'
+          '/api/user?id=Like%28%27%25d%25%27%29&parse=id&page=1&size=1&sort=id%2CASC'
         )
         .expect(200)
         .expect(({ body }) => {

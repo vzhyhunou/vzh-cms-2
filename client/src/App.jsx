@@ -17,7 +17,7 @@ const parse = ({ element, children = [], ...rest }) =>
       element: <Element {...element} />,
       ...rest
     },
-    children.map(parse)
+    ...children.map(parse)
   );
 
 export default ({ config }) => (

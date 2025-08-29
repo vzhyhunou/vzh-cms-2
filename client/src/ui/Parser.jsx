@@ -1,20 +1,14 @@
-import React from 'react';
-import JsxParser from 'react-jsx-parser';
+import parse, { adminParse } from './parse';
+import { useContextProvider } from '../Context';
 
-import b from './bindings';
-import c from './components';
+const Parser = ({ code, bindings }) => {
+  const { settings } = useContextProvider();
+  return parse(code, { Parser, settings, ...bindings });
+};
 
-const Parser = ({ jsx, bindings, components }) => {
-  return (
-    <JsxParser
-      bindings={{ ...b, ...bindings }}
-      components={{ ...c, ...components, Parser }}
-      jsx={jsx.replaceAll(/\n\s*/g, '')}
-      renderInWrapper={false}
-      autoCloseVoidElements={true}
-      showWarnings={true}
-    />
-  );
+export const AdminParser = ({ code, bindings }) => {
+  const { settings } = useContextProvider();
+  return adminParse(code, { Parser: AdminParser, settings, ...bindings });
 };
 
 export default Parser;
