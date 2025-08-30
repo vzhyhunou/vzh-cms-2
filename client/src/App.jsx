@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
 
@@ -8,11 +8,22 @@ import addUploadFeature from './data/upload';
 import parse from './ui/parse';
 
 const App = () => {
+  const [routes, setRoutes] = useState();
   const contextProvider = useContextProvider();
   const {
     dataProvider: { getResources, getComponent },
     authProvider
   } = contextProvider;
+
+  useEffect(() => {
+    getComponent('schema', { name: 'Routes' }).then(({ data }) =>
+      setRoutes(data)
+    );
+  }, [getComponent]);
+
+  if (!routes) {
+    return null;
+  }
 
   return (
     <Admin
@@ -21,10 +32,7 @@ const App = () => {
       authProvider={authProvider}
     >
       {() =>
-        Promise.all([
-          getResources({}),
-          getComponent('schema', { name: 'Routes' })
-        ]).then(([{ data }, { data: routes }]) => {
+        getResources({}).then(({ data }) => {
           const resources = data
             .filter(({ list }) => list)
             .map(({ id, list, create, edit }) => ({
