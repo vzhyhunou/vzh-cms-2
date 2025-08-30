@@ -23,12 +23,14 @@
     {
       "name": "ParseInput",
       "element": "{(({ setValue }, value, [state, setState]) => {\n  useEffect(() => {\n    props.source &&\n      (value\n        ? value.includes(props.source) ||\n          setValue('parse', [...value, props.source])\n        : setValue('parse', [props.source]))\n  }, [setValue, value])\n  return createElement(props.component, {\n    ...props,\n    source: props.source,\n    parse: (value) => (() => props.parse(value))(setState(value)),\n    format: () => state\n  })\n})(useFormContext(), useWatch({ name: 'parse' }), useState(''))}"
-    }
-  ],
-  "settings": [
+    },
     {
-      "name": "route",
-      "value": "{\n  element: {\n    schema: 'page',\n    name: 'one',\n    id: 'layout'\n  },\n  children: [\n    {\n      path: '',\n      element: {\n        schema: 'page',\n        name: 'one',\n        id: 'home'\n      }\n    },\n    {\n      path: ':schema/:id',\n      element: {\n        name: 'one'\n      }\n    },\n    {\n      path: ':id',\n      element: {\n        schema: 'page',\n        name: 'one'\n      }\n    },\n    {\n      path: '*',\n      element: {\n        schema: 'page',\n        name: 'one',\n        id: 'none'\n      }\n    }\n  ]\n}"
+      "name": "RouteComponent",
+      "element": "{(({paramSchema, paramId}) => <Component schema={paramSchema || 'page'} name=\"one\" id={paramId}/>)(useParams())}"
+    },
+    {
+      "name": "Routes",
+      "element": "<Route element={<Component schema=\"page\" name=\"one\" id=\"layout\"/>}>\n <Route path=\"\" element={<Component schema=\"page\" name=\"one\" id=\"home\"/>}/>\n <Route path=\":paramSchema/:paramId\" element={<Component schema=\"schema\" name=\"RouteComponent\"/>}/>\n <Route path=\":paramId\" element={<Component schema=\"schema\" name=\"RouteComponent\"/>}/>\n <Route path=\"*\" element={<Component schema=\"page\" name=\"one\" id=\"none\"/>}/>\n</Route>"
     }
   ]
 }
