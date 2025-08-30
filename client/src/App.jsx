@@ -4,17 +4,22 @@ import { Route } from 'react-router-dom';
 
 import Context, { useContextProvider } from './Context';
 import { AdminParser } from './ui/Parser';
-import addUploadFeature from './provider/data/upload';
+import addUploadFeature from './data/upload';
 import parse from './ui/parse';
 
 const App = () => {
   const contextProvider = useContextProvider();
-  const dataProvider = addUploadFeature(contextProvider);
-  const { authProvider } = contextProvider;
-  const { getResources, getComponent } = dataProvider;
+  const {
+    dataProvider: { getResources, getComponent },
+    authProvider
+  } = contextProvider;
 
   return (
-    <Admin basename="/admin" {...{ dataProvider, authProvider }}>
+    <Admin
+      basename="/admin"
+      dataProvider={addUploadFeature(contextProvider)}
+      authProvider={authProvider}
+    >
       {() =>
         Promise.all([
           getResources({}),

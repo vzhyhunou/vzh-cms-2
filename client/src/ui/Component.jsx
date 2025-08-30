@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Parser, { AdminParser } from './Parser';
-import useGetComponent from '../provider/data/useGetComponent';
+import useGetComponent from '../data/useGetComponent';
 
 const Component = ({ schema, name, ...props }) => {
   const { data, isLoading, error } = useGetComponent(schema, { name });
