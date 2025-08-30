@@ -16,7 +16,7 @@
       "name": "one",
       "single": true,
       "options": "{\n  loadEagerRelations: false,\n  where: {\n    id: request.query.id,\n    tags: !request.user?.authorized && {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
-      "projection": "{\n  title: target.title,\n  body: service.transform(target.body)\n}"
+      "projection": "{\n  title: target.title,\n  code: service.transform(target.body)\n}"
     },
     {
       "name": "menu",
@@ -38,7 +38,7 @@
     },
     {
       "name": "one",
-      "element": "<Content resource=\"page\" name=\"one\" id={props.id}>\n {({title, body}) =>\n  (() => <Parser code={body}/>)(title && (document.title = title))\n }\n</Content>"
+      "element": "<Content resource=\"page\" name=\"one\" id={props.id}>\n {({title, code}) =>\n  (() => <Parser code={code}/>)(title && (document.title = title))\n }\n</Content>"
     },
     {
       "name": "menu",

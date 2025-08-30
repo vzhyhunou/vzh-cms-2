@@ -3,7 +3,7 @@ import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
 
 import Context, { useContextProvider } from './Context';
-import { AdminParser } from './ui/Parser';
+import Parser, { AdminParser } from './ui/Parser';
 import addUploadFeature from './data/upload';
 import parse from './ui/parse';
 
@@ -61,7 +61,7 @@ const App = () => {
                     />
                   ))}
                 </Route>
-                {parse(routes)}
+                {parse(routes, {Parser})}
               </CustomRoutes>
               {resources.map(({ resource }) => resource)}
             </>
