@@ -30,7 +30,7 @@
     },
     {
       "name": "CodeInput",
-      "element": "<Labeled label={props.source}>\n{(({field:{value, onChange}}, [theme]) =>\n  <Box sx={{'& .cm-editor': {backgroundColor: 'inherit'}}}>\n    <CodeMirror value={value} onChange={onChange} extensions={[EditorView.lineWrapping, ...[theme === 'dark' ? [oneDark] : []], javascript({jsx: true})]}/>\n  </Box>\n)(useInput(props), useTheme())}\n</Labeled>"
+      "element": "<Labeled label={props.source} fullWidth>\n{(({field:{value, onChange}}, [theme]) =>\n  <Box sx={{'& .cm-editor': {backgroundColor: 'inherit'}}}>\n    <CodeMirror value={value} onChange={onChange} extensions={[EditorView.lineWrapping, ...[theme === 'dark' ? [oneDark] : []], javascript({jsx: true})]}/>\n  </Box>\n)(useInput(props), useTheme())}\n</Labeled>"
     }
   ]
 }
