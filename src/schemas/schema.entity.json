@@ -22,7 +22,7 @@
     },
     {
       "name": "ParseInput",
-      "element": "{(({ setValue }, value, [state, setState]) => {\n  useEffect(() => {\n    props.source &&\n      (value\n        ? value.includes(props.source) ||\n          setValue('parse', [...value, props.source])\n        : setValue('parse', [props.source]))\n  }, [setValue, value])\n  return createElement(props.component, {\n    ...props,\n    source: props.source,\n    parse: (value) => (() => props.parse(value))(setState(value)),\n    format: () => state\n  })\n})(useFormContext(), useWatch({ name: 'parse' }), useState(''))}"
+      "element": "{(({ setValue }, value, [state, setState], {component, source, parse, ...rest}) => {\n  useEffect(() => {\n    source &&\n      (value\n        ? value.includes(source) ||\n          setValue('parse', [...value, source])\n        : setValue('parse', [source]))\n  }, [setValue, value])\n  return createElement(component, {\n    ...rest,\n    source,\n    parse: (value) => (() => parse(value))(setState(value)),\n    format: () => state\n  })\n})(useFormContext(), useWatch({ name: 'parse' }), useState(''), props)}"
     },
     {
       "name": "Routes",
