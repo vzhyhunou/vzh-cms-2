@@ -3,24 +3,26 @@ import * as router from 'react-router-dom';
 import * as form from 'react-hook-form';
 import * as admin from 'react-admin';
 import * as mui from '@mui/material';
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import {EditorView} from '@codemirror/view';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 import Content from './Content';
 import Component from './Component';
 
-const filter = (obj, pattern) =>
-  Object.fromEntries(
-    Object.entries(obj)
-      .filter(([k]) => pattern.test(k))
-      .map(([k, v]) => [k, v])
-  );
-
-export default (({ default: React, ...react }) => ({
+export default (({ default: React, ...react }, {useTheme, ...admin}) => ({
   React,
   ...react,
-  ...filter(admin, /^[a-z]/),
+  ...admin,
   ...mui,
+  useTheme,
   ...router,
-  ...filter(form, /^use.*/),
+  ...form,
   Content,
-  Component
-}))(react);
+  Component,
+  CodeMirror,
+  javascript,
+  EditorView,
+  oneDark
+}))(react, admin);
