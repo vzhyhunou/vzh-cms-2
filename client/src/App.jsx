@@ -61,7 +61,7 @@ const App = () => {
                     />
                   ))}
                 </Route>
-                {parse(routes, {Parser})}
+                {parse(routes, { Parser })}
               </CustomRoutes>
               {resources.map(({ resource }) => resource)}
             </>

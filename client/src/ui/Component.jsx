@@ -28,9 +28,7 @@ export const AdminComponent = ({ schema, name, ...props }) => {
     return <Component schema="page" name="one" id="none" />;
   }
 
-  return (
-    <AdminParser code={data} bindings={{ Component: AdminComponent, props }} />
-  );
+  return <AdminParser code={data} bindings={{ props }} />;
 };
 
 export default Component;
