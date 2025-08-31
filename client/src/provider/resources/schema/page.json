@@ -42,7 +42,7 @@
     },
     {
       "name": "menu",
-      "element": "<Content resource=\"page\" name=\"menu\">\n {content =>\n  <List>\n   {content.map(({id, title}) =>\n    <Link key={id} to={`/${id}`}>\n     <ListItem>\n      <ListItemText primary={title}/>\n     </ListItem>\n    </Link>\n   )}\n  </List>\n }\n</Content>"
+      "element": "<Content resource=\"page\" name=\"menu\">\n {content =>\n  <List>\n   {content.map(({id, title}) =>\n    <ListItem key={id}>\n      <ListItemButton component={Link} to={`/${id}`}>\n        <ListItemText primary={title}/>\n      </ListItemButton>\n    </ListItem>\n   )}\n  </List>\n }\n</Content>"
     },
     {
       "name": "ImageInput",
