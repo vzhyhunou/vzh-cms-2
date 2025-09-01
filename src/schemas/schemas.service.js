@@ -155,8 +155,8 @@ export class SchemasService {
   }
 
   transform(element) {
-    return transform(`<>${element}</>`, {
-      presets: ['react']
+    return transform(`const result = <>${element}</>`, {
+      presets: ['react', 'env']
     }).code;
   }
 
