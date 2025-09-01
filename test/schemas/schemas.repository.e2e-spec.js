@@ -94,7 +94,7 @@ describe('SchemasRepository', () => {
   describe('findComponent()', () => {
     it('should return a schema with component', async () => {
       await manager.save(id, schema('user'));
-      const { components } = await subj.findComponent('user', 'componentuser');
+      const { components } = await subj.findComponent('user', 'Componentuser');
       expect(components).toHaveLength(1);
     });
   });

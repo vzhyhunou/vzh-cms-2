@@ -34,14 +34,12 @@ const App = () => {
       {() =>
         getResources({}).then(({ data }) => {
           const resources = data
-            .filter(({ list }) => list)
-            .map(({ id, list, create, edit }) => ({
+            .map(({ id, List, Create, Edit }) => ({
               id,
               ...Object.fromEntries(
-                Object.entries({ list, create, edit }).map(([k, v]) => [
-                  k,
-                  <AdminParser code={v} />
-                ])
+                Object.entries({ list: List, create: Create, edit: Edit }).map(
+                  ([k, v]) => [k, <AdminParser code={v} />]
+                )
               )
             }))
             .map(({ id, ...rest }) => ({

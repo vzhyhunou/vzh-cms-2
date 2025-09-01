@@ -38,19 +38,19 @@ export default (id) => ({
   ],
   components: [
     {
-      name: `list`,
+      name: `List`,
       element: 'l'
     },
     {
-      name: `create`,
+      name: `Create`,
       element: 'c'
     },
     {
-      name: `edit`,
+      name: `Edit`,
       element: 'e'
     },
     {
-      name: `component${id}`,
+      name: `Component${id}`,
       element: 'a'
     }
   ]

@@ -75,7 +75,7 @@ export default {
       },
       where: {
         components: {
-          name: In(['list', 'create', 'edit'])
+          name: In(['List', 'Create', 'Edit'])
         },
         editor: In(authorities)
       }
