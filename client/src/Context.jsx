@@ -11,7 +11,7 @@ export default ({ provider, children, ...rest }) => {
       .then(({ default: _ }) => _(JSON.parse(config)))
       .then((value) =>
         value.dataProvider
-          .getResources({ settings: true })
+          .getResources({ type: 'settings' })
           .then(({ data: settings }) => setState({ ...value, settings }))
       );
   }, [provider, config]);

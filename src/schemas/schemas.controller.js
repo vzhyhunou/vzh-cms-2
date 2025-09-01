@@ -87,8 +87,8 @@ export class SchemasController {
   @Public()
   @Get()
   @Bind(Query(), Request())
-  findResources({ settings }, { user: { authorities = [] } = {} }) {
-    if (settings) {
+  findResources({ type }, { user: { authorities = [] } = {} }) {
+    if (type === 'settings') {
       return this.schemasService.findSettings();
     }
     return this.schemasService.findResources(authorities);
