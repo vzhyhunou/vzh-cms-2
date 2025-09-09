@@ -1,8 +1,9 @@
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import schema from './schema.fixture';
-import entity from '../../src/schemas/schema.entity.json';
+import schemaEntity from '../../src/schemas/schema.entity.json';
 import { ConfigModule } from '../../src/config/config.module';
 import { SchemasModule } from '../../src/schemas/schemas.module';
 import { SchemasService } from '../../src/schemas/schemas.service';
@@ -13,7 +14,13 @@ describe('Items (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [ConfigModule, SchemasModule]
+      imports: [
+        EventEmitterModule.forRoot({
+          wildcard: true
+        }),
+        ConfigModule,
+        SchemasModule
+      ]
     }).compile();
 
     const schemasService = moduleFixture.get(SchemasService);
@@ -21,7 +28,7 @@ describe('Items (e2e)', () => {
 
     await app.init();
 
-    await schemasService.save(entity.id, schema('user'));
+    await schemasService.save(schemaEntity.id, schema('user'));
     itemsRepository = schemasService.getRepository('user');
   });
 

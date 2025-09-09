@@ -1,11 +1,11 @@
 import { Dependencies, Injectable } from '@nestjs/common';
-import { transform } from '@babel/standalone';
 
-import entity from './schema.entity.json';
+import schemaEntity from './schema.entity.json';
 import customRepository from './schemas.repository';
 import { DataSourceService } from '../datasource/datasource.service';
 import { NotFoundException } from './schemas.exception';
-import { parse } from '../common/repository/base.repository';
+import parse from './parse';
+import { transform } from './utils';
 
 @Injectable()
 @Dependencies(DataSourceService)
@@ -15,8 +15,8 @@ export class SchemasService {
   }
 
   async onModuleInit() {
-    const repository = this.getRepository(entity.id);
-    await repository.save(entity);
+    const repository = this.getRepository(schemaEntity.id);
+    await repository.save(schemaEntity);
     const list = await repository.find();
     const entities = this.entities(list);
     this.dataSourceService.save(entities);
@@ -24,7 +24,7 @@ export class SchemasService {
 
   async save(resource, dto) {
     const repository = this.getRepository(resource);
-    if (resource === entity.id) {
+    if (resource === schemaEntity.id) {
       const list = Array.isArray(dto) ? dto : [dto];
       const entities = this.entities(list);
       this.dataSourceService.save(entities);
@@ -39,7 +39,7 @@ export class SchemasService {
     if (!item) {
       throw new NotFoundException();
     }
-    if (resource === entity.id) {
+    if (resource === schemaEntity.id) {
       const list = Array.isArray(item) ? item : [item];
       const entities = this.entities(list);
       this.dataSourceService.remove(entities);
@@ -83,40 +83,37 @@ export class SchemasService {
   }
 
   async findContent(resource, name, params) {
-    const repository = this.getRepository(entity.id);
+    const repository = this.getRepository(schemaEntity.id);
     const schema = await repository.findContent(resource, name);
     if (!schema) {
       throw new NotFoundException();
     }
     const { single, options, projection } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
-    const result = await itemsRepository[single ? 'findOne' : 'find'](
+    const target = await itemsRepository[single ? 'findOne' : 'find'](
       parse(options, params)
     );
-    if (!result) {
+    if (!target) {
       throw new NotFoundException();
     }
     if (!projection) {
-      return result;
+      return target;
     }
-    return new Function('target', 'service', `return ${projection}`)(
-      result,
-      this
-    );
+    return parse(projection, { target });
   }
 
   async findComponent(resource, name) {
-    const repository = this.getRepository(entity.id);
+    const repository = this.getRepository(schemaEntity.id);
     const schema = await repository.findComponent(resource, name);
     if (!schema) {
       throw new NotFoundException();
     }
     const { element } = schema.components[0];
-    return this.transform(element);
+    return transform(element);
   }
 
   async findSettings() {
-    const repository = this.getRepository(entity.id);
+    const repository = this.getRepository(schemaEntity.id);
     const schemas = await repository.findSettings();
     return Object.fromEntries(
       schemas.map(({ id, settings }) => [
@@ -131,19 +128,25 @@ export class SchemasService {
     );
   }
 
+  async findEvent(resource, name) {
+    const repository = this.getRepository(schemaEntity.id);
+    const schema = await repository.findEvent(resource, name);
+    return schema?.events[0].value;
+  }
+
   async findResources(authorities) {
-    const repository = this.getRepository(entity.id);
+    const repository = this.getRepository(schemaEntity.id);
     const schemas = await repository.findResources(authorities);
     return schemas.map(({ id, components }) => ({
       id,
       ...Object.fromEntries(
-        components.map(({ name, element }) => [name, this.transform(element)])
+        components.map(({ name, element }) => [name, transform(element)])
       )
     }));
   }
 
   async findEditors() {
-    const repository = this.getRepository(entity.id);
+    const repository = this.getRepository(schemaEntity.id);
     const schemas = await repository.findEditors();
     return Object.fromEntries(schemas.map(({ id, editor }) => [id, editor]));
   }
@@ -154,18 +157,12 @@ export class SchemasService {
     );
   }
 
-  transform(element) {
-    return transform(`const result = <>${element}</>`, {
-      presets: ['react', 'env']
-    }).code;
-  }
-
   getRepository(resource) {
     let repository = this.dataSourceService.getRepository(resource);
     if (!repository) {
       throw new NotFoundException();
     }
-    if (resource === entity.id) {
+    if (resource === schemaEntity.id) {
       repository = repository.extend(customRepository);
     }
     return repository;

@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 
 import { SchemasService } from '../schemas/schemas.service';
-import entity from '../schemas/schema.entity.json';
+import schemaEntity from '../schemas/schema.entity.json';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
@@ -22,13 +22,13 @@ export class ImportService {
     }
     this.logger.log('Import schemas');
     await this.consume(
-      (resource) => resource === entity.id,
+      (resource) => resource === schemaEntity.id,
       (f) => f
     );
     this.logger.log('Import items without relations');
-    const repository = this.schemasService.getRepository(entity.id);
+    const repository = this.schemasService.getRepository(schemaEntity.id);
     await this.consume(
-      (resource) => resource !== entity.id,
+      (resource) => resource !== schemaEntity.id,
       async (f, resource) => {
         const { entities } = await repository.findById(resource);
         const { columns } = entities
@@ -41,7 +41,7 @@ export class ImportService {
     );
     this.logger.log('Import items');
     await this.consume(
-      (resource) => resource !== entity.id,
+      (resource) => resource !== schemaEntity.id,
       (f) => f
     );
     this.logger.log('End import');

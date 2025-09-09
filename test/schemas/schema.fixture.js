@@ -53,5 +53,15 @@ export default (id) => ({
       name: `Component${id}`,
       element: 'a'
     }
+  ],
+  events: [
+    {
+      name: `event${id}`,
+      value: 'v'
+    },
+    {
+      name: `event${id}2`,
+      value: 'v'
+    }
   ]
 });

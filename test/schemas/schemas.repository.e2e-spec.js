@@ -7,7 +7,7 @@ import {
 import { EntitySchema, Like } from 'typeorm';
 
 import schema from './schema.fixture';
-import { id, entities } from '../../src/schemas/schema.entity.json';
+import schemaEntity from '../../src/schemas/schema.entity.json';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import customRepository from '../../src/schemas/schemas.repository';
@@ -22,14 +22,16 @@ describe('SchemasRepository', () => {
         ConfigModule,
         DataSourceModule,
         TypeOrmModule.forFeature(
-          entities.map((e) => new EntitySchema(new Function(`return ${e}`)()))
+          schemaEntity.entities.map(
+            (e) => new EntitySchema(new Function(`return ${e}`)())
+          )
         )
       ]
     }).compile();
 
     manager = moduleFixture.get(getEntityManagerToken());
     const dataSource = moduleFixture.get(getDataSourceToken());
-    subj = dataSource.getRepository(id).extend(customRepository);
+    subj = dataSource.getRepository(schemaEntity.id).extend(customRepository);
   });
 
   it('should be defined', () => {
@@ -39,23 +41,23 @@ describe('SchemasRepository', () => {
   describe('save()', () => {
     it('should create a schema', async () => {
       await subj.save(schema('user'));
-      const result = await manager.find(id);
+      const result = await manager.find(schemaEntity.id);
       expect(result).toMatchObject([{ id: 'user' }]);
     });
   });
 
   describe('delete()', () => {
     it('should delete a schema', async () => {
-      await manager.save(id, schema('user'));
+      await manager.save(schemaEntity.id, schema('user'));
       await subj.remove({ id: 'user' });
-      const result = await manager.find(id);
+      const result = await manager.find(schemaEntity.id);
       expect(result).toHaveLength(0);
     });
   });
 
   describe('findAll()', () => {
     it('should return an array of schemas', async () => {
-      await manager.save(id, [schema('user'), schema('page')]);
+      await manager.save(schemaEntity.id, [schema('user'), schema('page')]);
       let result = await subj.findAndCount({ take: 2 });
       expect(result).toMatchObject([[{ id: 'page' }, { id: 'user' }], 2]);
       result = await subj.findAndCount({ skip: 2 });
@@ -63,13 +65,13 @@ describe('SchemasRepository', () => {
     });
 
     it('should return an empty array of schemas', async () => {
-      await manager.save(id, schema('user'));
+      await manager.save(schemaEntity.id, schema('user'));
       const result = await subj.findAndCount({ where: { id: Like('%a%') } });
       expect(result).toMatchObject([[], 0]);
     });
 
     it('should return a filtered array of schemas', async () => {
-      await manager.save(id, [schema('user'), schema('page')]);
+      await manager.save(schemaEntity.id, [schema('user'), schema('page')]);
       let result = await subj.findAndCount({
         where: { id: Like('%uS%') },
         take: 1
@@ -85,7 +87,7 @@ describe('SchemasRepository', () => {
 
   describe('findContent()', () => {
     it('should return a schema with content', async () => {
-      await manager.save(id, schema('user'));
+      await manager.save(schemaEntity.id, schema('user'));
       const { contents } = await subj.findContent('user', 'contentuser');
       expect(contents).toHaveLength(1);
     });
@@ -93,7 +95,7 @@ describe('SchemasRepository', () => {
 
   describe('findComponent()', () => {
     it('should return a schema with component', async () => {
-      await manager.save(id, schema('user'));
+      await manager.save(schemaEntity.id, schema('user'));
       const { components } = await subj.findComponent('user', 'Componentuser');
       expect(components).toHaveLength(1);
     });
@@ -101,7 +103,7 @@ describe('SchemasRepository', () => {
 
   describe('findSettings()', () => {
     it('should return a schema with settings', async () => {
-      await manager.save(id, schema('user'));
+      await manager.save(schemaEntity.id, schema('user'));
       const result = await subj.findSettings();
       expect(result).toMatchObject([
         {
@@ -115,9 +117,17 @@ describe('SchemasRepository', () => {
     });
   });
 
+  describe('findEvent()', () => {
+    it('should return a schema with event', async () => {
+      await manager.save(schemaEntity.id, schema('user'));
+      const { events } = await subj.findEvent('user', 'eventuser');
+      expect(events).toHaveLength(1);
+    });
+  });
+
   describe('findResources()', () => {
     it('should return an array of schemas with resources', async () => {
-      await manager.save(id, schema('user'));
+      await manager.save(schemaEntity.id, schema('user'));
       const result = await subj.findResources(['editoruser']);
       const { components } = result[0];
       expect(components).toHaveLength(3);
@@ -126,7 +136,7 @@ describe('SchemasRepository', () => {
 
   describe('findEditors()', () => {
     it('should return an array of schemas with editors', async () => {
-      await manager.save(id, schema('user'));
+      await manager.save(schemaEntity.id, schema('user'));
       const result = await subj.findEditors();
       const { editor } = result[0];
       expect(editor).toBeDefined();

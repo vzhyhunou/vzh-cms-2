@@ -32,5 +32,15 @@
       "name": "Edit",
       "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled source=\"userId\">\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled source=\"date\">\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
     }
+  ],
+  "events": [
+    {
+      "name": "before.create",
+      "value": "/^\\$2[ayb]\\$.{56}$/.test(entity.password) || (entity.password = hashSync(entity.password, 10))"
+    },
+    {
+      "name": "before.update",
+      "value": "/^\\$2[ayb]\\$.{56}$/.test(entity.password) || (entity.password = hashSync(entity.password, 10))"
+    }
   ]
 }

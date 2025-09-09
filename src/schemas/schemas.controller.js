@@ -23,14 +23,16 @@ import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 import { Public } from '../auth/public.decorator';
 import { AuditPipe } from '../auth/audit.pipe';
+import { SchemasEmitter } from './schemas.emitter';
 
 @Controller('api')
 @UseFilters(HttpExceptionFilter)
-@Dependencies(SchemasService, StorageService)
+@Dependencies(SchemasService, StorageService, SchemasEmitter)
 export class SchemasController {
-  constructor(schemasService, storageService) {
+  constructor(schemasService, storageService, schemasEmitter) {
     this.schemasService = schemasService;
     this.storageService = storageService;
+    this.schemasEmitter = schemasEmitter;
   }
 
   @Post(':resource')
@@ -38,7 +40,9 @@ export class SchemasController {
   @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
   create(resource, dto, files) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasService.save(resource, transformed);
+    return this.schemasEmitter.create(resource, transformed, () =>
+      this.schemasService.save(resource, transformed)
+    );
   }
 
   @Put(':resource/:id')
@@ -46,13 +50,17 @@ export class SchemasController {
   @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
   update(resource, dto, files) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasService.save(resource, transformed);
+    return this.schemasEmitter.update(resource, transformed, () =>
+      this.schemasService.save(resource, transformed)
+    );
   }
 
   @Delete(':resource/:id')
   @Bind(Param('resource'), Param('id'))
   remove(resource, id) {
-    return this.schemasService.remove(resource, id);
+    return this.schemasEmitter.remove(resource, id, () =>
+      this.schemasService.remove(resource, id)
+    );
   }
 
   @Get(':resource')

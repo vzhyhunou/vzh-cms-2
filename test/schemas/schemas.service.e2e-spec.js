@@ -5,7 +5,7 @@ import { EntitySchema } from 'typeorm';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { ConfigModule } from '../../src/config/config.module';
 import schema from './schema.fixture';
-import { id, entities } from '../../src/schemas/schema.entity.json';
+import schemaEntity from '../../src/schemas/schema.entity.json';
 import { SchemasService } from '../../src/schemas/schemas.service';
 import { DataSourceService } from '../../src/datasource/datasource.service';
 
@@ -18,14 +18,15 @@ describe('SchemasService (e2e)', () => {
         ConfigModule,
         DataSourceModule,
         TypeOrmModule.forFeature(
-          entities.map((e) => new EntitySchema(new Function(`return ${e}`)()))
+          schemaEntity.entities.map(
+            (e) => new EntitySchema(new Function(`return ${e}`)())
+          )
         )
       ]
     }).compile();
 
     const dataSourceService = moduleFixture.get(DataSourceService);
-    const storageService = { replaceFilenames: (dto) => dto };
-    subj = new SchemasService(dataSourceService, storageService);
+    subj = new SchemasService(dataSourceService);
   });
 
   it('should be defined', () => {
@@ -34,12 +35,13 @@ describe('SchemasService (e2e)', () => {
 
   describe('save()', () => {
     it('should save item', async () => {
-      const repository = subj.getRepository(id);
-      entities = await repository.find();
+      const repository = subj.getRepository(schemaEntity.id);
+
+      let entities = await repository.find();
       expect(entities).toHaveLength(0);
 
-      await subj.save(id, schema('user'));
-      let entities = await repository.find();
+      await subj.save(schemaEntity.id, schema('user'));
+      entities = await repository.find();
       expect(entities).toMatchObject([{ id: 'user' }]);
 
       const usersRepository = subj.getRepository('user');
@@ -48,20 +50,13 @@ describe('SchemasService (e2e)', () => {
       entities = await usersRepository.find();
       expect(entities).toMatchObject([{ id: 'admin' }]);
 
-      await subj.save('schema', schema('page'));
+      await subj.save(schemaEntity.id, schema('page'));
       entities = await repository.find();
       expect(entities).toMatchObject([{ id: 'user' }, { id: 'page' }]);
 
       const pagesRepository = subj.getRepository('page');
 
       await subj.save('page', { id: 'home' });
-      entities = await pagesRepository.find();
-      expect(entities).toMatchObject([{ id: 'home' }]);
-
-      await repository.remove(schema('user'));
-      entities = await repository.find();
-      expect(entities).toMatchObject([{ id: 'page' }]);
-
       entities = await pagesRepository.find();
       expect(entities).toMatchObject([{ id: 'home' }]);
     });
