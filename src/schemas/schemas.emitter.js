@@ -12,23 +12,25 @@ export class SchemasEmitter {
     this.eventEmitter = eventEmitter;
   }
 
-  async create(resource, entity, call) {
+  async create(resource, entity, params, call) {
     const repository = this.schemasService.getRepository(resource);
     const entityId = repository.getId(entity);
     await this.eventEmitter.emitAsync('before.create', resource, {
       entityId,
-      entity
+      entity,
+      ...params
     });
     const updatedEntity = await call();
     await this.eventEmitter.emitAsync('after.create', resource, {
       entityId,
       entity,
-      updatedEntity
+      updatedEntity,
+      ...params
     });
     return updatedEntity;
   }
 
-  async update(resource, entity, call) {
+  async update(resource, entity, params, call) {
     const repository = this.schemasService.getRepository(resource);
     const entityId = repository.getId(entity);
     const databaseEntity = await this.schemasService.findById(
@@ -41,19 +43,21 @@ export class SchemasEmitter {
     await this.eventEmitter.emitAsync('before.update', resource, {
       entityId,
       entity,
-      databaseEntity
+      databaseEntity,
+      ...params
     });
     const updatedEntity = await call();
     await this.eventEmitter.emitAsync('after.update', resource, {
       entityId,
       entity,
       databaseEntity,
-      updatedEntity
+      updatedEntity,
+      ...params
     });
     return updatedEntity;
   }
 
-  async remove(resource, entityId, call) {
+  async remove(resource, entityId, params, call) {
     const databaseEntity = await this.schemasService.findById(
       resource,
       entityId
@@ -63,12 +67,14 @@ export class SchemasEmitter {
     }
     await this.eventEmitter.emitAsync('before.remove', resource, {
       entityId,
-      databaseEntity
+      databaseEntity,
+      ...params
     });
     const updatedEntity = await call();
     await this.eventEmitter.emitAsync('after.remove', resource, {
       entityId,
-      databaseEntity
+      databaseEntity,
+      ...params
     });
     return updatedEntity;
   }

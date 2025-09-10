@@ -36,11 +36,11 @@
   "events": [
     {
       "name": "before.create",
-      "value": "/^\\$2[ayb]\\$.{56}$/.test(entity.password) || (entity.password = hashSync(entity.password, 10))"
+      "value": "(() => /^\\$2[ayb]\\$.{56}$/.test(entity.password) || (entity.password = hashSync(entity.password, 10)))(entity.date = new Date(), entity.userId = request.user?.username)"
     },
     {
       "name": "before.update",
-      "value": "/^\\$2[ayb]\\$.{56}$/.test(entity.password) || (entity.password = hashSync(entity.password, 10))"
+      "value": "(() => /^\\$2[ayb]\\$.{56}$/.test(entity.password) || (entity.password = hashSync(entity.password, 10)))(entity.date = new Date(), entity.userId = request.user?.username)"
     }
   ]
 }

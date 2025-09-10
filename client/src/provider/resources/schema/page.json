@@ -48,5 +48,15 @@
       "name": "ImageInput",
       "element": "{((value, {setValue}) => <ImageField source=\"src\" title=\"title\" onClick={({target: {title}}) => setValue('body', (value ? value : '') + `<img src=\"${title}\"/>`)}/>)(useWatch({name: 'body'}), useFormContext())}"
     }
+  ],
+  "events": [
+    {
+      "name": "before.create",
+      "value": "(() => {})(entity.date = new Date(), entity.userId = request.user?.username)"
+    },
+    {
+      "name": "before.update",
+      "value": "(() => {})(entity.date = new Date(), entity.userId = request.user?.username)"
+    }
   ]
 }

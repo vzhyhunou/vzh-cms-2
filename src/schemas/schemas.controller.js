@@ -22,7 +22,6 @@ import { MultipartPipe } from '../common/pipe/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 import { Public } from '../auth/public.decorator';
-import { AuditPipe } from '../auth/audit.pipe';
 import { SchemasEmitter } from './schemas.emitter';
 
 @Controller('api')
@@ -37,28 +36,28 @@ export class SchemasController {
 
   @Post(':resource')
   @UseInterceptors(FilesInterceptor('files'))
-  @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
-  create(resource, dto, files) {
+  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
+  create(resource, dto, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasEmitter.create(resource, transformed, () =>
+    return this.schemasEmitter.create(resource, transformed, { request }, () =>
       this.schemasService.save(resource, transformed)
     );
   }
 
   @Put(':resource/:id')
   @UseInterceptors(FilesInterceptor('files'))
-  @Bind(Param('resource'), Body(MultipartPipe, AuditPipe), UploadedFiles())
-  update(resource, dto, files) {
+  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
+  update(resource, dto, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasEmitter.update(resource, transformed, () =>
+    return this.schemasEmitter.update(resource, transformed, { request }, () =>
       this.schemasService.save(resource, transformed)
     );
   }
 
   @Delete(':resource/:id')
-  @Bind(Param('resource'), Param('id'))
-  remove(resource, id) {
-    return this.schemasEmitter.remove(resource, id, () =>
+  @Bind(Param('resource'), Param('id'), Request())
+  remove(resource, id, request) {
+    return this.schemasEmitter.remove(resource, id, { request }, () =>
       this.schemasService.remove(resource, id)
     );
   }
