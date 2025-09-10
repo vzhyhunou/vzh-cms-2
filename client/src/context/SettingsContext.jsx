@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState, useContext } from 'react';
 
-import { useContextProvider } from './Context';
+import { useProviders } from './ProvidersContext';
 
 const Context = createContext();
 const events = [
@@ -16,7 +16,7 @@ export default ({ children }) => {
   const [state, setState] = useState();
   const {
     dataProvider: { getResources }
-  } = useContextProvider();
+  } = useProviders();
 
   useEffect(() => {
     getResources({ type: 'settings' }).then(({ data: settings }) =>

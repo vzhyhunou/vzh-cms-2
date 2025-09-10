@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
 
-import Context, { useContextProvider } from './Context';
-import SettingsContext from './SettingsContext';
+import ProvidersContext, { useProviders } from './context/ProvidersContext';
+import SettingsContext from './context/SettingsContext';
 import Parser, { AdminParser } from './ui/Parser';
 import addUploadFeature from './data/upload';
 import parse from './ui/parse';
 
 const App = () => {
   const [routes, setRoutes] = useState();
-  const contextProvider = useContextProvider();
+  const providers = useProviders();
   const {
     dataProvider: { getResources, getComponent },
     authProvider
-  } = contextProvider;
+  } = providers;
 
   useEffect(() => {
     getComponent('schema', { name: 'Routes' }).then(({ data }) =>
@@ -29,7 +29,7 @@ const App = () => {
   return (
     <Admin
       basename="/admin"
-      dataProvider={addUploadFeature(contextProvider)}
+      dataProvider={addUploadFeature(providers)}
       authProvider={authProvider}
     >
       {() =>
@@ -72,9 +72,9 @@ const App = () => {
 };
 
 export default ({ config }) => (
-  <Context {...config}>
+  <ProvidersContext {...config}>
     <SettingsContext>
       <App />
     </SettingsContext>
-  </Context>
+  </ProvidersContext>
 );

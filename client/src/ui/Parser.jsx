@@ -1,5 +1,5 @@
 import parse, { adminParse } from './parse';
-import { useSettings } from '../SettingsContext';
+import { useSettings } from '../context/SettingsContext';
 import { AdminComponent } from './Component';
 
 const Parser = ({ code, bindings }) => {

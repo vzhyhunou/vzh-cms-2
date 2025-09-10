@@ -20,4 +20,4 @@ export default ({ provider, children, ...rest }) => {
   );
 };
 
-export const useContextProvider = () => useContext(Context);
+export const useProviders = () => useContext(Context);
