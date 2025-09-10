@@ -3,6 +3,7 @@ import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
 
 import Context, { useContextProvider } from './Context';
+import SettingsContext from './SettingsContext';
 import Parser, { AdminParser } from './ui/Parser';
 import addUploadFeature from './data/upload';
 import parse from './ui/parse';
@@ -72,6 +73,8 @@ const App = () => {
 
 export default ({ config }) => (
   <Context {...config}>
-    <App />
+    <SettingsContext>
+      <App />
+    </SettingsContext>
   </Context>
 );

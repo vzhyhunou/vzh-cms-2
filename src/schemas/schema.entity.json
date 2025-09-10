@@ -33,11 +33,5 @@
       "name": "CodeInput",
       "element": "<Labeled label={props.source} fullWidth>\n{(({field:{value, onChange}}, [theme]) =>\n  <Box sx={{'& .cm-editor': {backgroundColor: 'inherit'}}}>\n    <CodeMirror value={value} onChange={onChange} extensions={[EditorView.lineWrapping, ...[theme === 'dark' ? [oneDark] : []], javascript({jsx: true})]}/>\n  </Box>\n)(useInput(props), useTheme())}\n</Labeled>"
     }
-  ],
-  "settings": [
-    {
-      "name": "events",
-      "value": "[\n  'before.create',\n  'after.create',\n  'before.update',\n  'after.update',\n  'before.remove',\n  'after.remove'\n]"
-    }
   ]
 }

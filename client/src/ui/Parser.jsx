@@ -1,14 +1,14 @@
 import parse, { adminParse } from './parse';
-import { useContextProvider } from '../Context';
+import { useSettings } from '../SettingsContext';
 import { AdminComponent } from './Component';
 
 const Parser = ({ code, bindings }) => {
-  const { settings } = useContextProvider();
+  const settings = useSettings();
   return parse(code, { Parser, settings, ...bindings });
 };
 
 export const AdminParser = ({ code, bindings }) => {
-  const { settings } = useContextProvider();
+  const settings = useSettings();
   return adminParse(code, {
     Parser: AdminParser,
     Component: AdminComponent,

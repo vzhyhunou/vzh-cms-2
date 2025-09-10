@@ -4,24 +4,17 @@ const Context = createContext();
 
 export default ({ provider, children, ...rest }) => {
   const [state, setState] = useState();
-  const config = JSON.stringify(rest);
 
   useEffect(() => {
-    provider
-      .then(({ default: _ }) => _(JSON.parse(config)))
-      .then((value) =>
-        value.dataProvider
-          .getResources({ type: 'settings' })
-          .then(({ data: settings }) => setState({ ...value, settings }))
-      );
-  }, [provider, config]);
+    provider.then(setState);
+  }, [provider]);
 
   if (!state) {
     return null;
   }
 
   return (
-    <Context.Provider value={{ ...state, ...rest }}>
+    <Context.Provider value={{ ...state.default(rest) }}>
       {children}
     </Context.Provider>
   );
