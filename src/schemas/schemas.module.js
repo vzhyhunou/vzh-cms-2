@@ -22,6 +22,6 @@ import { SchemasListener } from './schemas.listener';
   ],
   controllers: [SchemasController],
   providers: [SchemasService, SchemasEmitter, SchemasListener],
-  exports: [SchemasService, SchemasEmitter]
+  exports: [SchemasService]
 })
 export class SchemasModule {}
