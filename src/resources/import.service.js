@@ -6,6 +6,18 @@ import fs from 'fs';
 import { SchemasService } from '../schemas/schemas.service';
 import schemaEntity from '../schemas/schema.entity.json';
 
+const filterColumns = async (resource, item, repository) => {
+  const { entities } = await repository.findById(resource);
+  const keys = Object.keys(
+    entities
+      .map((e) => new Function(`return ${e}`)())
+      .find(({ name }) => name === resource).columns
+  );
+  return Object.fromEntries(
+    Object.entries(item).filter(([k]) => keys.includes(k))
+  );
+};
+
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
 export class ImportService {
@@ -23,44 +35,40 @@ export class ImportService {
     this.logger.log('Import schemas');
     await this.consume(
       (resource) => resource === schemaEntity.id,
-      (f) => f
+      (item) => item
     );
     this.logger.log('Import items without relations');
-    const repository = this.schemasService.getRepository(schemaEntity.id);
     await this.consume(
       (resource) => resource !== schemaEntity.id,
-      async (f, resource) => {
-        const { entities } = await repository.findById(resource);
-        const { columns } = entities
-          .map((e) => new Function(`return ${e}`)())
-          .find(({ name }) => name === resource);
-        const keys = Object.keys(columns);
-        return Object.fromEntries(
-          Object.entries(f).filter(([k]) => keys.includes(k))
-        );
-      }
+      (item, resource) =>
+        filterColumns(
+          resource,
+          item,
+          this.schemasService.getRepository(schemaEntity.id)
+        )
     );
     this.logger.log('Import items');
     await this.consume(
       (resource) => resource !== schemaEntity.id,
-      (f) => f
+      (item) => item
     );
     this.logger.log('End import');
   }
 
-  async consume(filter, transformer) {
+  async consume(resourceFilter, transformer) {
     for (const resource of fs.readdirSync(this.root)) {
-      if (filter(resource)) {
-        const resourcepath = path.join(this.root, resource);
-        const stat = fs.statSync(resourcepath);
+      if (resourceFilter(resource)) {
+        const resourcePath = path.join(this.root, resource);
+        const stat = fs.statSync(resourcePath);
         if (stat.isDirectory()) {
-          for (const file of fs.readdirSync(resourcepath)) {
-            const filepath = path.join(resourcepath, file);
-            if (filepath.endsWith('.json')) {
-              let f = fs.readFileSync(filepath);
-              f = JSON.parse(f);
-              f = await transformer(f, resource);
-              await this.schemasService.save(resource, f);
+          for (const file of fs.readdirSync(resourcePath)) {
+            const { ext } = path.parse(file);
+            if (ext === '.json') {
+              const filePath = path.join(resourcePath, file);
+              const dto = fs.readFileSync(filePath);
+              const item = JSON.parse(dto);
+              const transformed = await transformer(item, resource);
+              await this.schemasService.save(resource, transformed);
             }
           }
         }
