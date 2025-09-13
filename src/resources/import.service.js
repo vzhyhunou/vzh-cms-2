@@ -34,8 +34,9 @@ export class ImportService {
         const { columns } = entities
           .map((e) => new Function(`return ${e}`)())
           .find(({ name }) => name === resource);
+        const keys = Object.keys(columns);
         return Object.fromEntries(
-          Object.entries(f).filter(([k]) => Object.keys(columns).includes(k))
+          Object.entries(f).filter(([k]) => keys.includes(k))
         );
       }
     );
