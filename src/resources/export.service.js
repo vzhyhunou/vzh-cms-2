@@ -5,7 +5,8 @@ import fs from 'fs';
 import moment from 'moment';
 
 import { SchemasService } from '../schemas/schemas.service';
-import schemaEntity from '../schemas/schema.entity.json';
+
+const SCHEMA = 'schema';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService)
@@ -20,7 +21,7 @@ export class ExportService {
   async exp() {
     const dir = this.folder();
     this.logger.log(`Start export ${dir} ...`);
-    const repository = this.schemasService.getRepository(schemaEntity.id);
+    const repository = this.schemasService.getRepository(SCHEMA);
     const schemas = await repository.find();
     for (const resource of schemas.map(({ id }) => id)) {
       const itemRepository = this.schemasService.getRepository(resource);

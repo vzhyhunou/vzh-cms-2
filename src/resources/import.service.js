@@ -4,7 +4,8 @@ import path from 'path';
 import fs from 'fs';
 
 import { SchemasService } from '../schemas/schemas.service';
-import schemaEntity from '../schemas/schema.entity.json';
+
+const SCHEMA = 'schema';
 
 const filterColumns = async (resource, item, repository) => {
   const { entities } = await repository.findById(resource);
@@ -32,38 +33,43 @@ export class ImportService {
     if (!fs.existsSync(this.root)) {
       return;
     }
+    this.logger.log('Import schema');
+    await this.consume(
+      (resource) => resource === SCHEMA,
+      (id) => id === SCHEMA,
+      (item) => item
+    );
     this.logger.log('Import schemas');
     await this.consume(
-      (resource) => resource === schemaEntity.id,
+      (resource) => resource === SCHEMA,
+      (id) => id !== SCHEMA,
       (item) => item
     );
     this.logger.log('Import items without relations');
     await this.consume(
-      (resource) => resource !== schemaEntity.id,
+      (resource) => resource !== SCHEMA,
+      () => true,
       (item, resource) =>
-        filterColumns(
-          resource,
-          item,
-          this.schemasService.getRepository(schemaEntity.id)
-        )
+        filterColumns(resource, item, this.schemasService.getRepository(SCHEMA))
     );
     this.logger.log('Import items');
     await this.consume(
-      (resource) => resource !== schemaEntity.id,
+      (resource) => resource !== SCHEMA,
+      () => true,
       (item) => item
     );
     this.logger.log('End import');
   }
 
-  async consume(resourceFilter, transformer) {
+  async consume(resourceFilter, idFilter, transformer) {
     for (const resource of fs.readdirSync(this.root)) {
       if (resourceFilter(resource)) {
         const resourcePath = path.join(this.root, resource);
         const stat = fs.statSync(resourcePath);
         if (stat.isDirectory()) {
           for (const file of fs.readdirSync(resourcePath)) {
-            const { ext } = path.parse(file);
-            if (ext === '.json') {
+            const { name, ext } = path.parse(file);
+            if (idFilter(name) && ext === '.json') {
               const filePath = path.join(resourcePath, file);
               const dto = fs.readFileSync(filePath);
               const item = JSON.parse(dto);

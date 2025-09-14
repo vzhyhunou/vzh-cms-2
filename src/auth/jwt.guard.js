@@ -14,10 +14,9 @@ export class JwtGuard extends AuthGuard('jwt') {
     this.schemasService = schemasService;
   }
 
-  async onModuleInit() {
+  async isUserInRole({ user: { authorities }, params: { resource } }) {
     const editors = await this.schemasService.findEditors();
-    this.isUserInRole = ({ user: { authorities }, params: { resource } }) =>
-      authorities.includes(editors[resource]);
+    return authorities.includes(editors[resource]);
   }
 
   async canActivate(context) {
@@ -30,7 +29,7 @@ export class JwtGuard extends AuthGuard('jwt') {
     if (isPublic) {
       try {
         await super.canActivate(context);
-        request.user.authorized = this.isUserInRole(request);
+        request.user.authorized = await this.isUserInRole(request);
       } catch (e) {
         // eslint-disable-line no-empty
       }
@@ -39,7 +38,7 @@ export class JwtGuard extends AuthGuard('jwt') {
 
     try {
       await super.canActivate(context);
-      return this.isUserInRole(request);
+      return await this.isUserInRole(request);
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
         return true;

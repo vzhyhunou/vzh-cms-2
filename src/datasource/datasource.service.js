@@ -5,22 +5,29 @@ import { EntitySchema } from 'typeorm';
 @Injectable()
 @Dependencies(getDataSourceToken())
 export class DataSourceService {
-  dataSource;
-
   constructor(dataSource) {
     this.dataSource = dataSource;
   }
 
-  save(values) {
-    this.remove(values);
-    const entities = values.map((value) => new EntitySchema(value));
+  async save(values) {
+    this.saveSchema(values);
+    await this.synchronize();
+  }
+
+  saveSchema(values) {
+    this.removeSchema(values);
     this.dataSource.options.entities = [
       ...this.dataSource.options.entities,
-      ...entities
+      ...values.map((entity) => new EntitySchema(entity))
     ];
   }
 
-  remove(values) {
+  async remove(values) {
+    this.removeSchema(values);
+    await this.synchronize();
+  }
+
+  removeSchema(values) {
     const names = values.map(({ name }) => name);
     this.dataSource.options.entities = this.dataSource.options.entities.filter(
       ({ options: { name } }) => !names.includes(name)

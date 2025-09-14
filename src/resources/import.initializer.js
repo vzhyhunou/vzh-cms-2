@@ -1,18 +1,19 @@
 import { Dependencies, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import { ImportService } from './import.service';
+import { SchemasService } from '../schemas/schemas.service';
 
 @Injectable()
-@Dependencies(ConfigService, ImportService)
+@Dependencies(SchemasService, ImportService)
 export class ImportInitializer {
-  constructor(configService, importService) {
-    if (configService.get('resources.imp.init')) {
-      this.importService = importService;
-    }
+  constructor(schemasService, importService) {
+    this.schemasService = schemasService;
+    this.importService = importService;
   }
 
   async onModuleInit() {
-    await this.importService?.imp();
+    if (!(await this.schemasService.getSchemaEntities()).length) {
+      await this.importService.imp();
+    }
   }
 }

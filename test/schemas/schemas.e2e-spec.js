@@ -3,10 +3,12 @@ import request from 'supertest';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import schema from './schema.fixture';
-import schemaEntity from '../../src/schemas/schema.entity.json';
+import entity from './entity.fixture';
 import { ConfigModule } from '../../src/config/config.module';
 import { SchemasModule } from '../../src/schemas/schemas.module';
 import { SchemasService } from '../../src/schemas/schemas.service';
+
+const SCHEMA = 'schema';
 
 describe('Schemas (e2e)', () => {
   let repository;
@@ -28,7 +30,8 @@ describe('Schemas (e2e)', () => {
 
     await app.init();
 
-    repository = service.getRepository(schemaEntity.id);
+    await service.save(SCHEMA, entity);
+    repository = service.getRepository(SCHEMA);
   });
 
   it('should be defined', () => {
