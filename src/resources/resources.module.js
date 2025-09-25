@@ -10,12 +10,14 @@ import { SchemasModule } from '../schemas/schemas.module';
 import { ExportService } from './export.service';
 import { ExportController } from './export.controller';
 import { ExportScheduler } from './export.scheduler';
+import { StorageModule } from '../storage/storage.module';
 
 @Module({
   imports: [
     ConfigModule.forFeature(config),
     ScheduleModule.forRoot(),
-    SchemasModule
+    SchemasModule,
+    StorageModule
   ],
   controllers: [ImportController, ExportController],
   providers: [ImportService, ImportInitializer, ExportService, ExportScheduler]

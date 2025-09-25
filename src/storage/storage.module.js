@@ -8,6 +8,7 @@ import { StorageService } from './storage.service';
 
 @Module({
   imports: [
+    ConfigModule.forFeature(config),
     MulterModule.registerAsync({
       inject: [ConfigService],
       imports: [ConfigModule.forFeature(config)],

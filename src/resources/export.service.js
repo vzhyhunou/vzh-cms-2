@@ -3,39 +3,51 @@ import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import fs from 'fs';
 import moment from 'moment';
+import JSZip from 'jszip';
+import { pipeline } from 'stream/promises';
 
 import { SchemasService } from '../schemas/schemas.service';
+import { StorageService } from '../storage/storage.service';
 
 const SCHEMA = 'schema';
+const DATA_FOLDER = 'data';
+const FILES_FOLDER = 'files';
 
 @Injectable()
-@Dependencies(ConfigService, SchemasService)
+@Dependencies(ConfigService, SchemasService, StorageService)
 export class ExportService {
   logger = new Logger(ExportService.name);
 
-  constructor(configService, schemasService) {
+  constructor(configService, schemasService, storageService) {
     this.properties = configService.get('resources.exp');
     this.schemasService = schemasService;
+    this.storageService = storageService;
   }
 
   async exp() {
-    const dir = this.folder();
-    this.logger.log(`Start export ${dir} ...`);
+    const name = `${this.name()}.zip`;
+    this.logger.log(`Start export ${name} ...`);
+    const zip = new JSZip();
+    const filesFolder = zip.folder(FILES_FOLDER);
+    const dataFolder = zip.folder(DATA_FOLDER);
     const repository = this.schemasService.getRepository(SCHEMA);
     const schemas = await repository.find();
     for (const resource of schemas.map(({ id }) => id)) {
+      const resourceFolder = dataFolder.folder(resource);
       const itemRepository = this.schemasService.getRepository(resource);
       for await (const item of this.findAll(itemRepository)) {
-        const resourcepath = path.join(dir, resource);
-        fs.mkdirSync(resourcepath, { recursive: true });
         const id = itemRepository.getId(item);
-        const filepath = path.join(resourcepath, `${id}.json`);
-        fs.writeFileSync(
-          filepath,
-          JSON.stringify(item, (k, v) => (v ? v : undefined), 2)
-        );
+        const data = JSON.stringify(item, (k, v) => (v ? v : undefined), 2);
+        resourceFolder.file(`${id}.json`, data);
+        for (const origin of this.storageService.getFilenames(item)) {
+          filesFolder.file(path.basename(origin), fs.createReadStream(origin));
+        }
       }
     }
+    await pipeline(
+      zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true }),
+      fs.createWriteStream(name)
+    );
     this.logger.log('End export');
     this.clean();
   }
@@ -57,13 +69,14 @@ export class ExportService {
 
   delete(size) {
     for (const p of this.list().sort().slice(0, size)) {
-      fs.rmSync(path.join(this.properties.path, p), { recursive: true });
+      fs.rmSync(path.join(this.properties.path, p));
     }
   }
 
-  folder() {
-    const folder = moment().format(this.properties.pattern);
-    return path.join(this.properties.path, folder);
+  name() {
+    fs.mkdirSync(this.properties.path, { recursive: true });
+    const name = moment().format(this.properties.pattern);
+    return path.join(this.properties.path, name);
   }
 
   findAll(repository) {
