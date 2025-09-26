@@ -2,7 +2,7 @@ import { Injectable, Dependencies } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
 
-const MATCH_PATTERN = /\\"([0-9a-fA-F]{32}.[a-zA-Z0-9]+)\\"/g;
+const MATCH_PATTERN = /\\?"([0-9a-fA-F]{32}.[a-zA-Z0-9]+)\\?"/g;
 
 @Injectable()
 @Dependencies(ConfigService)
