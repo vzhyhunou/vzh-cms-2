@@ -33,7 +33,7 @@
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
     "nest-winston": "^1.9.7",
-    "jszip": "^3.10.1"
+    "adm-zip": "^0.5.16"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",

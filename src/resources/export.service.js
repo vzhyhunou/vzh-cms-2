@@ -3,8 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import fs from 'fs';
 import moment from 'moment';
-import JSZip from 'jszip';
-import { pipeline } from 'stream/promises';
+import AdmZip from 'adm-zip';
 
 import { SchemasService } from '../schemas/schemas.service';
 import { StorageService } from '../storage/storage.service';
@@ -27,27 +26,24 @@ export class ExportService {
   async exp() {
     const name = `${this.name()}.zip`;
     this.logger.log(`Start export ${name} ...`);
-    const zip = new JSZip();
-    const filesFolder = zip.folder(FILES_FOLDER);
-    const dataFolder = zip.folder(DATA_FOLDER);
+    const zip = new AdmZip();
     const repository = this.schemasService.getRepository(SCHEMA);
     const schemas = await repository.find();
     for (const resource of schemas.map(({ id }) => id)) {
-      const resourceFolder = dataFolder.folder(resource);
       const itemRepository = this.schemasService.getRepository(resource);
       for await (const item of this.findAll(itemRepository)) {
         const id = itemRepository.getId(item);
         const data = JSON.stringify(item, (k, v) => (v ? v : undefined), 2);
-        resourceFolder.file(`${id}.json`, data);
+        zip.addFile(
+          path.join(DATA_FOLDER, resource, `${id}.json`),
+          Buffer.from(data)
+        );
         for (const origin of this.storageService.getFilenames(item)) {
-          filesFolder.file(path.basename(origin), fs.createReadStream(origin));
+          zip.addLocalFile(origin, FILES_FOLDER);
         }
       }
     }
-    await pipeline(
-      zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true }),
-      fs.createWriteStream(name)
-    );
+    zip.writeZip(name);
     this.logger.log('End export');
     this.clean();
   }
