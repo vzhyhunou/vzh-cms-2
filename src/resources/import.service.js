@@ -2,10 +2,14 @@ import { Dependencies, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import fs from 'fs';
+import AdmZip from 'adm-zip';
 
 import { SchemasService } from '../schemas/schemas.service';
+import { StorageService } from '../storage/storage.service';
 
 const SCHEMA = 'schema';
+const DATA_FOLDER = 'data';
+const FILES_FOLDER = 'files';
 
 const filterColumns = async (resource, item, repository) => {
   const { entities } = await repository.findById(resource);
@@ -20,17 +24,18 @@ const filterColumns = async (resource, item, repository) => {
 };
 
 @Injectable()
-@Dependencies(ConfigService, SchemasService)
+@Dependencies(ConfigService, SchemasService, StorageService)
 export class ImportService {
   logger = new Logger(ImportService.name);
 
-  constructor(configService, schemasService) {
-    this.root = configService.get('resources.imp.path');
+  constructor(configService, schemasService, storageService) {
+    this.path = configService.get('resources.imp.path');
     this.schemasService = schemasService;
+    this.storageService = storageService;
   }
 
   async imp() {
-    if (!fs.existsSync(this.root)) {
+    if (!fs.existsSync(this.path)) {
       return;
     }
     this.logger.log('Import schema');
@@ -62,22 +67,22 @@ export class ImportService {
   }
 
   async consume(resourceFilter, idFilter, transformer) {
-    for (const resource of fs.readdirSync(this.root)) {
-      if (resourceFilter(resource)) {
-        const resourcePath = path.join(this.root, resource);
-        const stat = fs.statSync(resourcePath);
-        if (stat.isDirectory()) {
-          for (const file of fs.readdirSync(resourcePath)) {
-            const { name, ext } = path.parse(file);
-            if (idFilter(name) && ext === '.json') {
-              const filePath = path.join(resourcePath, file);
-              const dto = fs.readFileSync(filePath);
-              const item = JSON.parse(dto);
-              const transformed = await transformer(item, resource);
-              await this.schemasService.save(resource, transformed);
-            }
+    var zip = new AdmZip(this.path);
+    for (const entry of zip.getEntries()) {
+      const { entryName } = entry;
+      const [folder, resource, file] = entryName.split(path.sep);
+      switch (folder) {
+        case DATA_FOLDER:
+          const { name } = path.parse(file);
+          if (resourceFilter(resource) && idFilter(name)) {
+            const dto = zip.readAsText(entry);
+            const item = JSON.parse(dto);
+            const transformed = await transformer(item, resource);
+            await this.schemasService.save(resource, transformed);
           }
-        }
+          break;
+        case FILES_FOLDER:
+          zip.extractEntryTo(entryName, this.storageService.path, false, true);
       }
     }
   }
