@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
 
@@ -7,20 +7,15 @@ import SettingsContext from './context/SettingsContext';
 import Parser, { AdminParser } from './ui/Parser';
 import addUploadFeature from './data/upload';
 import parse from './ui/parse';
+import useGetRoutes from './data/useGetRoutes';
 
 const App = () => {
-  const [routes, setRoutes] = useState();
+  const routes = useGetRoutes();
   const providers = useProviders();
   const {
-    dataProvider: { getResources, getComponent },
+    dataProvider: { getResources },
     authProvider
   } = providers;
-
-  useEffect(() => {
-    getComponent('schema', { name: 'Routes' }).then(({ data }) =>
-      setRoutes(data)
-    );
-  }, [getComponent]);
 
   if (!routes) {
     return null;
