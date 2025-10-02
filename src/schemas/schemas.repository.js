@@ -50,12 +50,6 @@ export default {
       loadEagerRelations: false,
       select: {
         id: true,
-        settings: {
-          name: true,
-          value: true
-        }
-      },
-      relations: {
         settings: true
       }
     });

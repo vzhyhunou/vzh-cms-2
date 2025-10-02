@@ -126,12 +126,7 @@ export class SchemasService {
     return Object.fromEntries(
       schemas.map(({ id, settings }) => [
         id,
-        Object.fromEntries(
-          settings.map(({ name, value }) => [
-            name,
-            new Function(`return ${value}`)()
-          ])
-        )
+        new Function(`return ${settings}`)()
       ])
     );
   }

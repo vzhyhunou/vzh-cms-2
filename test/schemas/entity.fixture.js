@@ -14,6 +14,10 @@ export default {
         editor: {
           type: 'varchar'
         },
+        settings: {
+          type: 'text',
+          nullable: true
+        },
         userId: {
           type: 'varchar',
           nullable: true
@@ -34,13 +38,6 @@ export default {
         components: {
           type: 'one-to-many',
           target: 'component',
-          eager: true,
-          cascade: true,
-          inverseSide: 'schema'
-        },
-        settings: {
-          type: 'one-to-many',
-          target: 'setting',
           eager: true,
           cascade: true,
           inverseSide: 'schema'
@@ -116,38 +113,6 @@ export default {
           onDelete: 'CASCADE',
           orphanedRowAction: 'delete',
           inverseSide: 'components'
-        }
-      },
-      indices: [
-        {
-          synchronize: false,
-          unique: true,
-          columns: ['schema', 'name']
-        }
-      ]
-    }`,
-    `{
-      name: 'setting',
-      columns: {
-        id: {
-          type: 'int',
-          primary: true,
-          generated: true
-        },
-        name: {
-          type: 'varchar'
-        },
-        value: {
-          type: 'text'
-        }
-      },
-      relations: {
-        schema: {
-          type: 'many-to-one',
-          target: 'schema',
-          onDelete: 'CASCADE',
-          orphanedRowAction: 'delete',
-          inverseSide: 'settings'
         }
       },
       indices: [

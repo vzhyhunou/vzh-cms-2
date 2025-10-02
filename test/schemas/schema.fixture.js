@@ -16,16 +16,7 @@ export default (id) => ({
     }`
   ],
   editor: `editor${id}`,
-  settings: [
-    {
-      name: `setting${id}`,
-      value: 'v'
-    },
-    {
-      name: `setting${id}2`,
-      value: 'v'
-    }
-  ],
+  settings: '{}',
   contents: [
     {
       name: `content${id}`,

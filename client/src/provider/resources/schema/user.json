@@ -13,12 +13,7 @@
       "projection": "{\n  password: target.password,\n  authorities: target.tags.map(({ name }) => name)\n}"
     }
   ],
-  "settings": [
-    {
-      "name": "tags",
-      "value": "[\n  'ADMIN',\n  'MANAGER',\n  'PAGES_EDITOR'\n]"
-    }
-  ],
+  "settings": "{\n  tags: [\n    'ADMIN',\n    'MANAGER',\n    'PAGES_EDITOR'\n  ]\n}",
   "components": [
     {
       "name": "List",

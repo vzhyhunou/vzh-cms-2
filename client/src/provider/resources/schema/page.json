@@ -5,12 +5,7 @@
     "{\n  name: 'pageTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    page: {\n      type: 'many-to-one',\n      target: 'page',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
   ],
   "editor": "PAGES_EDITOR",
-  "settings": [
-    {
-      "name": "tags",
-      "value": "[\n  'MENU',\n  'PUBLISHED'\n]"
-    }
-  ],
+  "settings": "{\n  tags: [\n    'MENU',\n    'PUBLISHED'\n  ]\n}",
   "contents": [
     {
       "name": "one",
