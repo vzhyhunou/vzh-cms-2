@@ -3,11 +3,18 @@ import { fetchUtils } from 'react-admin';
 
 const API_URL = '/api';
 
-export default ({ authProvider: { getToken } }) => {
+export default ({
+  localeProvider: { getLocale },
+  authProvider: { getToken }
+}) => {
   const httpClient = (url, options = {}) =>
-    Promise.all([getToken()])
-      .then(([token]) => ({
+    Promise.all([getLocale(), getToken()])
+      .then(([locale, token]) => ({
         ...options,
+        headers: new Headers({
+          Accept: 'application/json',
+          'Accept-Language': locale
+        }),
         ...(token
           ? {
               user: {

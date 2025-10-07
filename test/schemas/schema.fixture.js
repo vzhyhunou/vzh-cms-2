@@ -54,5 +54,15 @@ export default (id) => ({
       name: `event${id}2`,
       value: 'v'
     }
+  ],
+  messages: [
+    {
+      locale: `locale`,
+      value: '{}'
+    },
+    {
+      locale: `locale2`,
+      value: '{}'
+    }
   ]
 });

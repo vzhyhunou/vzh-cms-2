@@ -25,7 +25,7 @@
     },
     {
       "name": "Edit",
-      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled source=\"userId\">\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled source=\"date\">\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
+      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled>\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled>\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
     }
   ],
   "events": [
@@ -36,6 +36,16 @@
     {
       "name": "before.update",
       "value": "(() => /^\\$2[ayb]\\$.{56}$/.test(entity.password) || (entity.password = hashSync(entity.password, 10)))(entity.date = new Date(), entity.userId = request.user?.username)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en",
+      "value": "{\n    resources: {\n        user: {\n            name: 'Users',\n            tags: {\n                'ADMIN': 'Administrator',\n                'MANAGER': 'Manager',\n                'PAGES_EDITOR': 'Pages editor'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                password: 'Password',\n                tags: 'Tags'\n            }\n        }\n    }\n}"
+    },
+    {
+      "locale": "ru",
+      "value": "{\n    resources: {\n        user: {\n            name: 'Пользователи',\n            tags: {\n                'ADMIN': 'Администратор',\n                'MANAGER': 'Менеджер',\n                'PAGES_EDITOR': 'Редактор страниц'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                password: 'Пароль',\n                tags: 'Теги'\n            }\n        }\n    }\n}"
     }
   ]
 }

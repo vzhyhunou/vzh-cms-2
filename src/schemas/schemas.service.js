@@ -1,4 +1,6 @@
 import { Dependencies, Injectable } from '@nestjs/common';
+import { I18nContext } from 'nestjs-i18n';
+import merge from 'lodash/merge';
 
 import customRepository from './schemas.repository';
 import { DataSourceService } from '../datasource/datasource.service';
@@ -152,6 +154,14 @@ export class SchemasService {
     const repository = this.getRepository(SCHEMA);
     const schemas = await repository.findEditors();
     return Object.fromEntries(schemas.map(({ id, editor }) => [id, editor]));
+  }
+
+  async findMessages() {
+    const repository = this.getRepository(SCHEMA);
+    const schemas = await repository.findMessages(I18nContext.current().lang);
+    return schemas
+      .map(({ messages }) => new Function(`return ${messages[0].value}`)())
+      .reduce(merge, {});
   }
 
   entities(item) {

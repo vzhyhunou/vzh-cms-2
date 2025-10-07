@@ -103,5 +103,24 @@ export default {
         editor: true
       }
     });
+  },
+  findMessages(locale) {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        messages: {
+          value: true
+        }
+      },
+      relations: {
+        messages: true
+      },
+      where: {
+        messages: {
+          locale
+        }
+      }
+    });
   }
 };

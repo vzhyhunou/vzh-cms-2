@@ -97,7 +97,7 @@ describe('SchemasRepository', () => {
   });
 
   describe('findSettings()', () => {
-    it('should return a schema with settings', async () => {
+    it('should return an array of schemas with settings', async () => {
       await manager.save(SCHEMA, schema('user'));
       const settings = await subj.findSettings();
       expect(settings).toHaveLength(1);
@@ -127,6 +127,14 @@ describe('SchemasRepository', () => {
       const result = await subj.findEditors();
       const { editor } = result[0];
       expect(editor).toBeDefined();
+    });
+  });
+
+  describe('findMessages()', () => {
+    it('should return an array of schemas with messages', async () => {
+      await manager.save(SCHEMA, schema('user'));
+      const messages = await subj.findMessages('locale');
+      expect(messages).toHaveLength(1);
     });
   });
 });

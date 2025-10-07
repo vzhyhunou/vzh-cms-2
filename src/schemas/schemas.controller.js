@@ -98,6 +98,9 @@ export class SchemasController {
     if (type === 'settings') {
       return this.schemasService.findSettings();
     }
+    if (type === 'messages') {
+      return this.schemasService.findMessages();
+    }
     return this.schemasService.findResources(authorities);
   }
 }
