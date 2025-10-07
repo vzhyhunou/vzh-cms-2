@@ -14,9 +14,15 @@ const events = [
 
 export default ({ children }) => {
   const [state, setState] = useState();
+  const providers = useProviders();
+
+  if (!providers) {
+    return null;
+  }
+
   const {
     dataProvider: { getResources }
-  } = useProviders();
+  } = providers;
 
   useEffect(() => {
     getResources({ type: 'settings' }).then(({ data: settings }) =>

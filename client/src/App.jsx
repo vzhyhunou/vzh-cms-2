@@ -12,14 +12,15 @@ import useGetRoutes from './data/useGetRoutes';
 const App = () => {
   const routes = useGetRoutes();
   const providers = useProviders();
+
+  if (!routes || !providers) {
+    return null;
+  }
+
   const {
     dataProvider: { getResources },
     authProvider
   } = providers;
-
-  if (!routes) {
-    return null;
-  }
 
   return (
     <Admin

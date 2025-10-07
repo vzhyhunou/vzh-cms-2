@@ -4,9 +4,15 @@ import { useProviders } from '../context/ProvidersContext';
 
 export default () => {
   const [routes, setRoutes] = useState();
+  const providers = useProviders();
+
+  if (!providers) {
+    return null;
+  }
+
   const {
     dataProvider: { getComponent }
-  } = useProviders();
+  } = providers;
 
   useEffect(() => {
     getComponent('schema', { name: 'Routes' }).then(({ data }) =>
