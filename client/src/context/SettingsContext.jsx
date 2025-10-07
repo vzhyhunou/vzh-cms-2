@@ -1,6 +1,6 @@
-import React, { createContext, useEffect, useState, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
-import { useProviders } from './ProvidersContext';
+import useGetSettings from '../data/useGetSettings';
 
 const Context = createContext();
 const events = [
@@ -13,29 +13,16 @@ const events = [
 ];
 
 export default ({ children }) => {
-  const [state, setState] = useState();
-  const providers = useProviders();
+  const settings = useGetSettings();
 
-  if (!providers) {
-    return null;
-  }
-
-  const {
-    dataProvider: { getResources }
-  } = providers;
-
-  useEffect(() => {
-    getResources({ type: 'settings' }).then(({ data: settings }) =>
-      setState(settings)
-    );
-  }, [getResources]);
-
-  if (!state) {
+  if (!settings) {
     return null;
   }
 
   return (
-    <Context.Provider value={{ ...state, schema: { events, ...state.schema } }}>
+    <Context.Provider
+      value={{ ...settings, schema: { events, ...settings.schema } }}
+    >
       {children}
     </Context.Provider>
   );
