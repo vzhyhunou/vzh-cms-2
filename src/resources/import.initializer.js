@@ -12,7 +12,7 @@ export class ImportInitializer {
   }
 
   async onModuleInit() {
-    if (!(await this.schemasService.getSchemaEntities()).length) {
+    if (!(await this.schemasService.findSchemaEntities()).length) {
       await this.importService.imp();
     }
   }

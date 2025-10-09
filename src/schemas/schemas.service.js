@@ -18,7 +18,7 @@ export class SchemasService {
   }
 
   async onModuleInit() {
-    const rows = await this.getSchemaEntities();
+    const rows = await this.findSchemaEntities();
     const items = rows.map(({ entities }) => ({
       entities: new Function(`return ${entities}`)()
     }));
@@ -26,7 +26,7 @@ export class SchemasService {
     await this.dataSourceService.save(entities);
   }
 
-  async getSchemaEntities() {
+  async findSchemaEntities() {
     try {
       return await this.dataSourceService.dataSource.query(
         'select entities from schema'
@@ -76,6 +76,47 @@ export class SchemasService {
           totalElements
         }
       }));
+  }
+
+  getIterator(resource) {
+    const repository = this.getRepository(resource);
+    let index = 0;
+    return {
+      [Symbol.asyncIterator]() {
+        return {
+          async next() {
+            const value = await repository.findOne({
+              skip: index++,
+              take: 1,
+              where: {}
+            });
+            return { value, done: !value };
+          }
+        };
+      }
+    };
+  }
+
+  getId(resource, item) {
+    const repository = this.getRepository(resource);
+    return repository.getId(item);
+  }
+
+  async findSchemaIds() {
+    const repository = this.getRepository(SCHEMA);
+    const schemas = await repository.findIds();
+    return schemas.map(({ id }) => id);
+  }
+
+  async findColumns() {
+    const repository = this.getRepository(SCHEMA);
+    const schemas = await repository.findEntities();
+    return Object.fromEntries(
+      schemas.map(({ id, ...rest }) => [
+        id,
+        Object.keys(this.entities(rest).find(({ name }) => name === id).columns)
+      ])
+    );
   }
 
   async findById(resource, id) {

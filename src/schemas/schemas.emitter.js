@@ -13,8 +13,7 @@ export class SchemasEmitter {
   }
 
   async create(resource, entity, params, call) {
-    const repository = this.schemasService.getRepository(resource);
-    const entityId = repository.getId(entity);
+    const entityId = this.schemasService.getId(resource, entity);
     await this.eventEmitter.emitAsync('before.create', resource, {
       entityId,
       entity,
@@ -31,8 +30,7 @@ export class SchemasEmitter {
   }
 
   async update(resource, entity, params, call) {
-    const repository = this.schemasService.getRepository(resource);
-    const entityId = repository.getId(entity);
+    const entityId = this.schemasService.getId(resource, entity);
     const databaseEntity = await this.schemasService.findById(
       resource,
       entityId

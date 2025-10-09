@@ -122,5 +122,22 @@ export default {
         }
       }
     });
+  },
+  findIds() {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true
+      }
+    });
+  },
+  findEntities() {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        entities: true
+      }
+    });
   }
 };

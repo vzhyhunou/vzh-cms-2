@@ -11,18 +11,6 @@ const SCHEMA = 'schema';
 const DATA_FOLDER = 'data';
 const FILES_FOLDER = 'files';
 
-const filterColumns = async (resource, item, repository) => {
-  const { entities } = await repository.findById(resource);
-  const keys = Object.keys(
-    entities
-      .map((e) => new Function(`return ${e}`)())
-      .find(({ name }) => name === resource).columns
-  );
-  return Object.fromEntries(
-    Object.entries(item).filter(([k]) => keys.includes(k))
-  );
-};
-
 @Injectable()
 @Dependencies(ConfigService, SchemasService, StorageService)
 export class ImportService {
@@ -51,11 +39,14 @@ export class ImportService {
       (item) => item
     );
     this.logger.log('Import items without relations');
+    const columns = await this.schemasService.findColumns();
     await this.consume(
       (resource) => resource !== SCHEMA,
       () => true,
       (item, resource) =>
-        filterColumns(resource, item, this.schemasService.getRepository(SCHEMA))
+        Object.fromEntries(
+          Object.entries(item).filter(([k]) => columns[resource].includes(k))
+        )
     );
     this.logger.log('Import items');
     await this.consume(

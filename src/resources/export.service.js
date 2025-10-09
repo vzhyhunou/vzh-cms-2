@@ -27,12 +27,9 @@ export class ExportService {
     const name = `${this.name()}.zip`;
     this.logger.log(`Start export ${name} ...`);
     const zip = new AdmZip();
-    const repository = this.schemasService.getRepository(SCHEMA);
-    const schemas = await repository.find();
-    for (const resource of schemas.map(({ id }) => id)) {
-      const itemRepository = this.schemasService.getRepository(resource);
-      for await (const item of this.findAll(itemRepository)) {
-        const id = itemRepository.getId(item);
+    for (const resource of await this.schemasService.findSchemaIds()) {
+      for await (const item of this.schemasService.getIterator(resource)) {
+        const id = this.schemasService.getId(resource, item);
         const data = JSON.stringify(item, (k, v) => (v ? v : undefined), 2);
         zip.addFile(
           path.join(DATA_FOLDER, resource, `${id}.json`),
@@ -73,23 +70,5 @@ export class ExportService {
     fs.mkdirSync(this.properties.path, { recursive: true });
     const name = moment().format(this.properties.pattern);
     return path.join(this.properties.path, name);
-  }
-
-  findAll(repository) {
-    let index = 0;
-    return {
-      [Symbol.asyncIterator]() {
-        return {
-          async next() {
-            const value = await repository.findOne({
-              skip: index++,
-              take: 1,
-              where: {}
-            });
-            return { value, done: !value };
-          }
-        };
-      }
-    };
   }
 }
