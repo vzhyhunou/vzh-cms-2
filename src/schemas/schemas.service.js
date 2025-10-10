@@ -155,7 +155,11 @@ export class SchemasService {
 
   async findContent(resource, name, params) {
     const repository = this.getRepository(SCHEMA);
-    const schema = await repository.findResourceRelation(resource, 'contents', name);
+    const schema = await repository.findResourceRelation(
+      resource,
+      'contents',
+      name
+    );
     if (!schema) {
       throw new NotFoundException();
     }
@@ -175,7 +179,11 @@ export class SchemasService {
 
   async findComponent(resource, name) {
     const repository = this.getRepository(SCHEMA);
-    const schema = await repository.findResourceRelation(resource, 'components', name);
+    const schema = await repository.findResourceRelation(
+      resource,
+      'components',
+      name
+    );
     if (!schema) {
       throw new NotFoundException();
     }
@@ -213,7 +221,10 @@ export class SchemasService {
 
   async findMessages() {
     const repository = this.getRepository(SCHEMA);
-    const schemas = await repository.findMessages(I18nContext.current().lang);
+    const schemas = await repository.findRelation(
+      'messages',
+      I18nContext.current().lang
+    );
     return schemas
       .map(({ messages }) => new Function(`return ${messages[0].value}`)())
       .reduce(merge, {});

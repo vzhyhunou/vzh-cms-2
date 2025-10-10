@@ -7,12 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { I18nModule } from './i18n/i18n.module';
 
 @Module({
-  imports: [
-    ConfigModule,
-    ResourcesModule,
-    StaticModule,
-    AuthModule,
-    I18nModule
-  ]
+  imports: [ConfigModule, ResourcesModule, StaticModule, AuthModule, I18nModule]
 })
 export class AppModule {}

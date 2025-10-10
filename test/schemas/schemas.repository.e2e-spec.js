@@ -96,10 +96,22 @@ describe('SchemasRepository', () => {
     });
   });
 
+  describe('findRelation()', () => {
+    it('should return an array of schemas with messages', async () => {
+      await manager.save(SCHEMA, schema('user'));
+      const messages = await subj.findRelation('messages', 'locale');
+      expect(messages).toHaveLength(1);
+    });
+  });
+
   describe('findResourceRelation()', () => {
     it('should return a schema with relation field value', async () => {
       await manager.save(SCHEMA, schema('user'));
-      const { contents } = await subj.findResourceRelation('user', 'contents', 'contentuser');
+      const { contents } = await subj.findResourceRelation(
+        'user',
+        'contents',
+        'contentuser'
+      );
       expect(contents).toHaveLength(1);
     });
   });
@@ -110,14 +122,6 @@ describe('SchemasRepository', () => {
       const result = await subj.findResources(['editoruser']);
       const { components } = result[0];
       expect(components).toHaveLength(3);
-    });
-  });
-
-  describe('findMessages()', () => {
-    it('should return an array of schemas with messages', async () => {
-      await manager.save(SCHEMA, schema('user'));
-      const messages = await subj.findMessages('locale');
-      expect(messages).toHaveLength(1);
     });
   });
 });

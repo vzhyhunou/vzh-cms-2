@@ -15,10 +15,7 @@ describe('Schemas (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [
-        ConfigModule,
-        SchemasModule
-      ]
+      imports: [ConfigModule, SchemasModule]
     }).compile();
 
     const service = moduleFixture.get(SchemasService);

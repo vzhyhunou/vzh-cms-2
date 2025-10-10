@@ -3,23 +3,6 @@ import { In } from 'typeorm';
 import '../common/repository/base.repository';
 
 export default {
-  findResourceRelation(resource, relation, name) {
-    return this.findOne({
-      loadEagerRelations: false,
-      select: {
-        id: true
-      },
-      relations: {
-        [relation]: true
-      },
-      where: {
-        id: resource,
-        [relation]: {
-          name
-        }
-      }
-    });
-  },
   findField(field) {
     return this.find({
       loadEagerRelations: false,
@@ -37,6 +20,39 @@ export default {
       },
       where: {
         id: resource
+      }
+    });
+  },
+  findRelation(relation, name) {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true
+      },
+      relations: {
+        [relation]: true
+      },
+      where: {
+        [relation]: {
+          name
+        }
+      }
+    });
+  },
+  findResourceRelation(resource, relation, name) {
+    return this.findOne({
+      loadEagerRelations: false,
+      select: {
+        id: true
+      },
+      relations: {
+        [relation]: true
+      },
+      where: {
+        id: resource,
+        [relation]: {
+          name
+        }
       }
     });
   },
@@ -58,25 +74,6 @@ export default {
           name: In(['List', 'Create', 'Edit'])
         },
         editor: In(authorities)
-      }
-    });
-  },
-  findMessages(name) {
-    return this.find({
-      loadEagerRelations: false,
-      select: {
-        id: true,
-        messages: {
-          value: true
-        }
-      },
-      relations: {
-        messages: true
-      },
-      where: {
-        messages: {
-          name
-        }
       }
     });
   }
