@@ -96,10 +96,10 @@ describe('SchemasRepository', () => {
     });
   });
 
-  describe('findSettings()', () => {
-    it('should return an array of schemas with settings', async () => {
+  describe('findField()', () => {
+    it('should return an array of schemas with field values', async () => {
       await manager.save(SCHEMA, schema('user'));
-      const settings = await subj.findSettings();
+      const settings = await subj.findField('settings');
       expect(settings).toHaveLength(1);
     });
   });

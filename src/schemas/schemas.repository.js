@@ -45,15 +45,6 @@ export default {
       }
     });
   },
-  findSettings() {
-    return this.find({
-      loadEagerRelations: false,
-      select: {
-        id: true,
-        settings: true
-      }
-    });
-  },
   findEvent(resource, name) {
     return this.findOne({
       loadEagerRelations: false,
@@ -71,6 +62,15 @@ export default {
         events: {
           name
         }
+      }
+    });
+  },
+  findField(name) {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        [name]: true
       }
     });
   },
@@ -122,23 +122,6 @@ export default {
         messages: {
           locale
         }
-      }
-    });
-  },
-  findIds() {
-    return this.find({
-      loadEagerRelations: false,
-      select: {
-        id: true
-      }
-    });
-  },
-  findEntities() {
-    return this.find({
-      loadEagerRelations: false,
-      select: {
-        id: true,
-        entities: true
       }
     });
   }

@@ -115,13 +115,13 @@ export class SchemasService {
 
   async findSchemaIds() {
     const repository = this.getRepository(SCHEMA);
-    const schemas = await repository.findIds();
+    const schemas = await repository.findField('id');
     return schemas.map(({ id }) => id);
   }
 
   async findColumns() {
     const repository = this.getRepository(SCHEMA);
-    const schemas = await repository.findEntities();
+    const schemas = await repository.findField('entities');
     return Object.fromEntries(
       schemas.map(({ id, ...rest }) => [
         id,
@@ -185,7 +185,7 @@ export class SchemasService {
 
   async findSettings() {
     const repository = this.getRepository(SCHEMA);
-    const schemas = await repository.findSettings();
+    const schemas = await repository.findField('settings');
     return Object.fromEntries(
       schemas.map(({ id, settings }) => [
         id,
