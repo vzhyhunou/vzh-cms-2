@@ -194,12 +194,6 @@ export class SchemasService {
     );
   }
 
-  async findEvent(resource, name) {
-    const repository = this.getRepository(SCHEMA);
-    const schema = await repository.findEvent(resource, name);
-    return schema?.events[0].value;
-  }
-
   async findResourceField(resource, name) {
     const repository = this.getRepository(SCHEMA);
     const schema = await repository.findResourceField(resource, name);

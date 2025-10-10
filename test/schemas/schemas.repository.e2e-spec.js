@@ -104,14 +104,6 @@ describe('SchemasRepository', () => {
     });
   });
 
-  describe('findEvent()', () => {
-    it('should return a schema with event', async () => {
-      await manager.save(SCHEMA, schema('user'));
-      const { events } = await subj.findEvent('user', 'eventuser');
-      expect(events).toHaveLength(1);
-    });
-  });
-
   describe('findResourceField()', () => {
     it('should return a schema with field value', async () => {
       await manager.save(SCHEMA, schema('user'));

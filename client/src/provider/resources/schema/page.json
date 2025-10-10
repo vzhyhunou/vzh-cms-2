@@ -6,6 +6,7 @@
   ],
   "editor": "PAGES_EDITOR",
   "settings": "{\n  tags: [\n    'MENU',\n    'PUBLISHED'\n  ]\n}",
+  "parse": "{\n  ...target,\n  date: new Date(),\n  userId: request.user?.username\n}",
   "contents": [
     {
       "name": "one",
@@ -42,16 +43,6 @@
     {
       "name": "One",
       "element": "<Content resource=\"page\" name=\"one\" id={props.id}>\n {({title, code}) =>\n  (() => <Parser code={code}/>)(title && (document.title = title))\n }\n</Content>"
-    }
-  ],
-  "events": [
-    {
-      "name": "before.create",
-      "value": "(() => {})(entity.date = new Date(), entity.userId = request.user?.username)"
-    },
-    {
-      "name": "before.update",
-      "value": "(() => {})(entity.date = new Date(), entity.userId = request.user?.username)"
     }
   ],
   "messages": [

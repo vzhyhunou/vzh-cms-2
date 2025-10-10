@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import schema from './schema.fixture';
 import entity from './entity.fixture';
@@ -17,9 +16,6 @@ describe('Schemas (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({
       imports: [
-        EventEmitterModule.forRoot({
-          wildcard: true
-        }),
         ConfigModule,
         SchemasModule
       ]

@@ -6,5 +6,6 @@ import * as utils from './utils';
 export default {
   ...typeorm,
   ...bcrypt,
-  ...utils
+  ...utils,
+  request: {}
 };

@@ -22,16 +22,14 @@ import { MultipartPipe } from '../common/pipe/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 import { Public } from '../auth/public.decorator';
-import { SchemasEmitter } from './schemas.emitter';
 
 @Controller('api')
 @UseFilters(HttpExceptionFilter)
-@Dependencies(SchemasService, StorageService, SchemasEmitter)
+@Dependencies(SchemasService, StorageService)
 export class SchemasController {
-  constructor(schemasService, storageService, schemasEmitter) {
+  constructor(schemasService, storageService) {
     this.schemasService = schemasService;
     this.storageService = storageService;
-    this.schemasEmitter = schemasEmitter;
   }
 
   @Post(':resource')
@@ -39,9 +37,7 @@ export class SchemasController {
   @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
   create(resource, dto, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasEmitter.create(resource, transformed, { request }, () =>
-      this.schemasService.save(resource, transformed, { request })
-    );
+    return this.schemasService.save(resource, transformed, { request });
   }
 
   @Put(':resource/:id')
@@ -49,17 +45,13 @@ export class SchemasController {
   @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
   update(resource, dto, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasEmitter.update(resource, transformed, { request }, () =>
-      this.schemasService.save(resource, transformed, { request })
-    );
+    return this.schemasService.save(resource, transformed, { request });
   }
 
   @Delete(':resource/:id')
   @Bind(Param('resource'), Param('id'), Request())
   remove(resource, id, request) {
-    return this.schemasEmitter.remove(resource, id, { request }, () =>
-      this.schemasService.remove(resource, id)
-    );
+    return this.schemasService.remove(resource, id);
   }
 
   @Get(':resource')

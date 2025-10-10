@@ -45,26 +45,6 @@ export default {
       }
     });
   },
-  findEvent(resource, name) {
-    return this.findOne({
-      loadEagerRelations: false,
-      select: {
-        id: true,
-        events: {
-          value: true
-        }
-      },
-      relations: {
-        events: true
-      },
-      where: {
-        id: resource,
-        events: {
-          name
-        }
-      }
-    });
-  },
   findField(name) {
     return this.find({
       loadEagerRelations: false,

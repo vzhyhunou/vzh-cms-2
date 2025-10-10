@@ -50,13 +50,6 @@ export default {
           cascade: true,
           inverseSide: 'schema'
         },
-        events: {
-          type: 'one-to-many',
-          target: 'event',
-          eager: true,
-          cascade: true,
-          inverseSide: 'schema'
-        },
         messages: {
           type: 'one-to-many',
           target: 'messages',
@@ -128,38 +121,6 @@ export default {
           onDelete: 'CASCADE',
           orphanedRowAction: 'delete',
           inverseSide: 'components'
-        }
-      },
-      indices: [
-        {
-          synchronize: false,
-          unique: true,
-          columns: ['schema', 'name']
-        }
-      ]
-    }`,
-    `{
-      name: 'event',
-      columns: {
-        id: {
-          type: 'int',
-          primary: true,
-          generated: true
-        },
-        name: {
-          type: 'varchar'
-        },
-        value: {
-          type: 'text'
-        }
-      },
-      relations: {
-        schema: {
-          type: 'many-to-one',
-          target: 'schema',
-          onDelete: 'CASCADE',
-          orphanedRowAction: 'delete',
-          inverseSide: 'events'
         }
       },
       indices: [

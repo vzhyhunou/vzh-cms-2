@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { ConfigModule } from './config/config.module';
 import { ResourcesModule } from './resources/resources.module';
@@ -9,9 +8,6 @@ import { I18nModule } from './i18n/i18n.module';
 
 @Module({
   imports: [
-    EventEmitterModule.forRoot({
-      wildcard: true
-    }),
     ConfigModule,
     ResourcesModule,
     StaticModule,

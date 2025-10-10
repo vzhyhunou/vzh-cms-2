@@ -3,14 +3,6 @@ import React, { createContext, useContext } from 'react';
 import useGetSettings from '../data/useGetSettings';
 
 const Context = createContext();
-const events = [
-  'before.create',
-  'after.create',
-  'before.update',
-  'after.update',
-  'before.remove',
-  'after.remove'
-];
 
 export default ({ children }) => {
   const settings = useGetSettings();
@@ -21,7 +13,7 @@ export default ({ children }) => {
 
   return (
     <Context.Provider
-      value={{ ...settings, schema: { events, ...settings.schema } }}
+      value={settings}
     >
       {children}
     </Context.Provider>
