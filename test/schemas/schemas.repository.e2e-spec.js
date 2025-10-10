@@ -80,22 +80,6 @@ describe('SchemasRepository', () => {
     });
   });
 
-  describe('findContent()', () => {
-    it('should return a schema with content', async () => {
-      await manager.save(SCHEMA, schema('user'));
-      const { contents } = await subj.findContent('user', 'contentuser');
-      expect(contents).toHaveLength(1);
-    });
-  });
-
-  describe('findComponent()', () => {
-    it('should return a schema with component', async () => {
-      await manager.save(SCHEMA, schema('user'));
-      const { components } = await subj.findComponent('user', 'Componentuser');
-      expect(components).toHaveLength(1);
-    });
-  });
-
   describe('findField()', () => {
     it('should return an array of schemas with field values', async () => {
       await manager.save(SCHEMA, schema('user'));
@@ -109,6 +93,14 @@ describe('SchemasRepository', () => {
       await manager.save(SCHEMA, schema('user'));
       const { parse } = await subj.findResourceField('user', 'parse');
       expect(parse).toBeDefined();
+    });
+  });
+
+  describe('findResourceRelation()', () => {
+    it('should return a schema with relation field value', async () => {
+      await manager.save(SCHEMA, schema('user'));
+      const { contents } = await subj.findResourceRelation('user', 'contents', 'contentuser');
+      expect(contents).toHaveLength(1);
     });
   });
 

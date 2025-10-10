@@ -3,54 +3,29 @@ import { In } from 'typeorm';
 import '../common/repository/base.repository';
 
 export default {
-  findContent(resource, name) {
+  findResourceRelation(resource, relation, name) {
     return this.findOne({
       loadEagerRelations: false,
       select: {
-        id: true,
-        contents: {
-          single: true,
-          options: true,
-          projection: true
-        }
+        id: true
       },
       relations: {
-        contents: true
+        [relation]: true
       },
       where: {
         id: resource,
-        contents: {
+        [relation]: {
           name
         }
       }
     });
   },
-  findComponent(resource, name) {
-    return this.findOne({
-      loadEagerRelations: false,
-      select: {
-        id: true,
-        components: {
-          element: true
-        }
-      },
-      relations: {
-        components: true
-      },
-      where: {
-        id: resource,
-        components: {
-          name
-        }
-      }
-    });
-  },
-  findField(name) {
+  findField(field) {
     return this.find({
       loadEagerRelations: false,
       select: {
         id: true,
-        [name]: true
+        [field]: true
       }
     });
   },

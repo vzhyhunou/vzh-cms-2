@@ -155,7 +155,7 @@ export class SchemasService {
 
   async findContent(resource, name, params) {
     const repository = this.getRepository(SCHEMA);
-    const schema = await repository.findContent(resource, name);
+    const schema = await repository.findResourceRelation(resource, 'contents', name);
     if (!schema) {
       throw new NotFoundException();
     }
@@ -175,7 +175,7 @@ export class SchemasService {
 
   async findComponent(resource, name) {
     const repository = this.getRepository(SCHEMA);
-    const schema = await repository.findComponent(resource, name);
+    const schema = await repository.findResourceRelation(resource, 'components', name);
     if (!schema) {
       throw new NotFoundException();
     }
