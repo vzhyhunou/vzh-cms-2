@@ -129,15 +129,6 @@ describe('SchemasRepository', () => {
     });
   });
 
-  describe('findEditors()', () => {
-    it('should return an array of schemas with editors', async () => {
-      await manager.save(SCHEMA, schema('user'));
-      const result = await subj.findEditors();
-      const { editor } = result[0];
-      expect(editor).toBeDefined();
-    });
-  });
-
   describe('findMessages()', () => {
     it('should return an array of schemas with messages', async () => {
       await manager.save(SCHEMA, schema('user'));

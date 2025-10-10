@@ -106,15 +106,6 @@ export default {
       }
     });
   },
-  findEditors() {
-    return this.find({
-      loadEagerRelations: false,
-      select: {
-        id: true,
-        editor: true
-      }
-    });
-  },
   findMessages(locale) {
     return this.find({
       loadEagerRelations: false,

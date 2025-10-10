@@ -217,12 +217,6 @@ export class SchemasService {
     }));
   }
 
-  async findEditors() {
-    const repository = this.getRepository(SCHEMA);
-    const schemas = await repository.findEditors();
-    return Object.fromEntries(schemas.map(({ id, editor }) => [id, editor]));
-  }
-
   async findMessages() {
     const repository = this.getRepository(SCHEMA);
     const schemas = await repository.findMessages(I18nContext.current().lang);

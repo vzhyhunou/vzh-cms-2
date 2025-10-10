@@ -15,8 +15,14 @@ export class JwtGuard extends AuthGuard('jwt') {
   }
 
   async isUserInRole({ user: { authorities }, params: { resource } }) {
-    const editors = await this.schemasService.findEditors();
-    return authorities.includes(editors[resource]);
+    if (!resource) {
+      return false;
+    }
+    const editor = await this.schemasService.findResourceField(
+      resource,
+      'editor'
+    );
+    return authorities.includes(editor);
   }
 
   async canActivate(context) {
