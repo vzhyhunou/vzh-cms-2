@@ -28,7 +28,9 @@ export class ExportService {
     this.logger.log(`Start export ${name} ...`);
     const zip = new AdmZip();
     for (const resource of await this.schemasService.findSchemaIds()) {
-      for await (const item of this.schemasService.getIterator(resource)) {
+      for await (const item of await this.schemasService.getIterator(
+        resource
+      )) {
         const id = this.schemasService.getId(resource, item);
         const data = JSON.stringify(item, (k, v) => (v ? v : undefined), 2);
         zip.addFile(

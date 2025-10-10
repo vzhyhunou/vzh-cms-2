@@ -18,6 +18,14 @@ export default {
           type: 'text',
           nullable: true
         },
+        parse: {
+          type: 'text',
+          nullable: true
+        },
+        format: {
+          type: 'text',
+          nullable: true
+        },
         userId: {
           type: 'varchar',
           nullable: true

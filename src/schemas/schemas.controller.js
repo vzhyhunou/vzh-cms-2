@@ -40,7 +40,7 @@ export class SchemasController {
   create(resource, dto, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
     return this.schemasEmitter.create(resource, transformed, { request }, () =>
-      this.schemasService.save(resource, transformed)
+      this.schemasService.save(resource, transformed, { request })
     );
   }
 
@@ -50,7 +50,7 @@ export class SchemasController {
   update(resource, dto, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
     return this.schemasEmitter.update(resource, transformed, { request }, () =>
-      this.schemasService.save(resource, transformed)
+      this.schemasService.save(resource, transformed, { request })
     );
   }
 

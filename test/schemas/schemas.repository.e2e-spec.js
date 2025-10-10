@@ -112,6 +112,14 @@ describe('SchemasRepository', () => {
     });
   });
 
+  describe('findResourceField()', () => {
+    it('should return a schema with field value', async () => {
+      await manager.save(SCHEMA, schema('user'));
+      const { parse } = await subj.findResourceField('user', 'parse');
+      expect(parse).toBeDefined();
+    });
+  });
+
   describe('findResources()', () => {
     it('should return an array of schemas with resources', async () => {
       await manager.save(SCHEMA, schema('user'));

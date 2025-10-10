@@ -36,12 +36,16 @@ export class SchemasService {
     }
   }
 
-  async save(resource, item) {
+  async save(resource, item, params) {
     if (resource === SCHEMA) {
       const entities = this.entities(item);
       await this.dataSourceService.save(entities);
     }
     const repository = this.getRepository(resource);
+    const transform = await this.findResourceField(resource, 'parse');
+    if (transform) {
+      item = parse(transform, { ...params, target: item });
+    }
     return await repository.save(item);
   }
 
@@ -58,38 +62,45 @@ export class SchemasService {
     return await repository.remove(item);
   }
 
-  findAll(resource, { page, size, sort, parse: p, ...rest }) {
+  async findAll(resource, { page, size, sort, parse: p, ...rest }) {
     const repository = this.getRepository(resource);
     const filter = Object.fromEntries(
       Object.entries(rest).map(([k, v]) => [k, p.includes(k) ? parse(v) : v])
     );
-    return repository
-      .findAndCount({
-        where: filter,
-        skip: page * size,
-        take: size,
-        order: sort
-      })
-      .then(([content, totalElements]) => ({
-        content,
-        page: {
-          totalElements
-        }
-      }));
+    let [content, totalElements] = await repository.findAndCount({
+      where: filter,
+      skip: page * size,
+      take: size,
+      order: sort
+    });
+    const transform = await this.findResourceField(resource, 'format');
+    if (transform) {
+      content = content.map((item) => parse(transform, { target: item }));
+    }
+    return {
+      content,
+      page: {
+        totalElements
+      }
+    };
   }
 
-  getIterator(resource) {
+  async getIterator(resource) {
+    const transform = await this.findResourceField(resource, 'format');
     const repository = this.getRepository(resource);
     let index = 0;
     return {
       [Symbol.asyncIterator]() {
         return {
           async next() {
-            const value = await repository.findOne({
+            let value = await repository.findOne({
               skip: index++,
               take: 1,
               where: {}
             });
+            if (value && transform) {
+              value = parse(transform, { target: value });
+            }
             return { value, done: !value };
           }
         };
@@ -121,16 +132,25 @@ export class SchemasService {
 
   async findById(resource, id) {
     const repository = this.getRepository(resource);
-    const item = await repository.findById(id);
+    let item = await repository.findById(id);
     if (!item) {
       throw new NotFoundException();
+    }
+    const transform = await this.findResourceField(resource, 'format');
+    if (transform) {
+      item = parse(transform, { target: item });
     }
     return item;
   }
 
-  findByIdIn(resource, ids) {
+  async findByIdIn(resource, ids) {
     const repository = this.getRepository(resource);
-    return repository.findByIdIn(ids);
+    let content = await repository.findByIdIn(ids);
+    const transform = await this.findResourceField(resource, 'format');
+    if (transform) {
+      content = content.map((item) => parse(transform, { target: item }));
+    }
+    return content;
   }
 
   async findContent(resource, name, params) {
@@ -178,6 +198,12 @@ export class SchemasService {
     const repository = this.getRepository(SCHEMA);
     const schema = await repository.findEvent(resource, name);
     return schema?.events[0].value;
+  }
+
+  async findResourceField(resource, name) {
+    const repository = this.getRepository(SCHEMA);
+    const schema = await repository.findResourceField(resource, name);
+    return schema?.[name];
   }
 
   async findResources(authorities) {

@@ -74,6 +74,17 @@ export default {
       }
     });
   },
+  findResourceField(resource, name) {
+    return this.findOne({
+      loadEagerRelations: false,
+      select: {
+        [name]: true
+      },
+      where: {
+        id: resource
+      }
+    });
+  },
   findResources(authorities) {
     return this.find({
       loadEagerRelations: false,

@@ -17,6 +17,8 @@ export default (id) => ({
   ],
   editor: `editor${id}`,
   settings: '{}',
+  parse: 'target',
+  format: 'target',
   contents: [
     {
       name: `content${id}`,
