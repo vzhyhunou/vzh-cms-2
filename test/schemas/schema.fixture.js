@@ -49,11 +49,11 @@ export default (id) => ({
   ],
   messages: [
     {
-      locale: `locale`,
+      name: `locale`,
       value: '{}'
     },
     {
-      locale: `locale2`,
+      name: `locale2`,
       value: '{}'
     }
   ]

@@ -139,7 +139,7 @@ export default {
           primary: true,
           generated: true
         },
-        locale: {
+        name: {
           type: 'varchar'
         },
         value: {

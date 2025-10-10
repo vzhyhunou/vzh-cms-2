@@ -61,7 +61,7 @@ export default {
       }
     });
   },
-  findMessages(locale) {
+  findMessages(name) {
     return this.find({
       loadEagerRelations: false,
       select: {
@@ -75,7 +75,7 @@ export default {
       },
       where: {
         messages: {
-          locale
+          name
         }
       }
     });

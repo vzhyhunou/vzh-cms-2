@@ -31,11 +31,11 @@
   ],
   "messages": [
     {
-      "locale": "en",
+      "name": "en",
       "value": "{\n    resources: {\n        user: {\n            name: 'Users',\n            tags: {\n                'ADMIN': 'Administrator',\n                'MANAGER': 'Manager',\n                'PAGES_EDITOR': 'Pages editor'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                password: 'Password',\n                tags: 'Tags'\n            }\n        }\n    }\n}"
     },
     {
-      "locale": "ru",
+      "name": "ru",
       "value": "{\n    resources: {\n        user: {\n            name: 'Пользователи',\n            tags: {\n                'ADMIN': 'Администратор',\n                'MANAGER': 'Менеджер',\n                'PAGES_EDITOR': 'Редактор страниц'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                password: 'Пароль',\n                tags: 'Теги'\n            }\n        }\n    }\n}"
     }
   ]
