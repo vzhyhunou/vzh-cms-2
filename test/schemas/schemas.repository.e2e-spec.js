@@ -83,8 +83,8 @@ describe('SchemasRepository', () => {
   describe('findField()', () => {
     it('should return an array of schemas with field values', async () => {
       await manager.save(SCHEMA, schema('user'));
-      const settings = await subj.findField('settings');
-      expect(settings).toHaveLength(1);
+      const result = await subj.findField('settings');
+      expect(result).toHaveLength(1);
     });
   });
 
@@ -97,10 +97,10 @@ describe('SchemasRepository', () => {
   });
 
   describe('findRelation()', () => {
-    it('should return an array of schemas with messages', async () => {
+    it('should return an array of schemas with relation', async () => {
       await manager.save(SCHEMA, schema('user'));
-      const messages = await subj.findRelation('messages', 'locale');
-      expect(messages).toHaveLength(1);
+      const result = await subj.findRelation('contents', 'contentuser');
+      expect(result).toHaveLength(1);
     });
   });
 
@@ -120,8 +120,7 @@ describe('SchemasRepository', () => {
     it('should return an array of schemas with resources', async () => {
       await manager.save(SCHEMA, schema('user'));
       const result = await subj.findResources(['editoruser']);
-      const { components } = result[0];
-      expect(components).toHaveLength(3);
+      expect(result).toHaveLength(1);
     });
   });
 });

@@ -29,14 +29,8 @@
       "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <Component schema=\"schema\" name=\"ParseInput\" component={SelectInput} source=\"tags\" parse={value => `{name: '${value}'}`} choices={settings.user.tags.map(tag => ({id: tag, name: tag}))}/>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
     }
   ],
-  "messages": [
-    {
-      "name": "en",
-      "value": "{\n    resources: {\n        user: {\n            name: 'Users',\n            tags: {\n                'ADMIN': 'Administrator',\n                'MANAGER': 'Manager',\n                'PAGES_EDITOR': 'Pages editor'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                password: 'Password',\n                tags: 'Tags'\n            }\n        }\n    }\n}"
-    },
-    {
-      "name": "ru",
-      "value": "{\n    resources: {\n        user: {\n            name: 'Пользователи',\n            tags: {\n                'ADMIN': 'Администратор',\n                'MANAGER': 'Менеджер',\n                'PAGES_EDITOR': 'Редактор страниц'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                password: 'Пароль',\n                tags: 'Теги'\n            }\n        }\n    }\n}"
-    }
-  ]
+  "messages": {
+    "en": "{\n    resources: {\n        user: {\n            name: 'Users',\n            tags: {\n                'ADMIN': 'Administrator',\n                'MANAGER': 'Manager',\n                'PAGES_EDITOR': 'Pages editor'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                password: 'Password',\n                tags: 'Tags'\n            }\n        }\n    }\n}",
+    "ru": "{\n    resources: {\n        user: {\n            name: 'Пользователи',\n            tags: {\n                'ADMIN': 'Администратор',\n                'MANAGER': 'Менеджер',\n                'PAGES_EDITOR': 'Редактор страниц'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                password: 'Пароль',\n                tags: 'Теги'\n            }\n        }\n    }\n}"
+  }
 }

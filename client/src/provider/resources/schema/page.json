@@ -45,14 +45,8 @@
       "element": "<Content resource=\"page\" name=\"one\" id={props.id}>\n {({title, code}) =>\n  (() => <Parser code={code}/>)(title && (document.title = title))\n }\n</Content>"
     }
   ],
-  "messages": [
-    {
-      "name": "en",
-      "value": "{\n    resources: {\n        page: {\n            name: 'Pages',\n            tags: {\n                'MENU': 'Menu',\n                'PUBLISHED': 'Published'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                tags: 'Tags',\n                title: 'Title',\n                content: 'Content',\n                '@files.content': 'Images'\n            }\n        }\n    }\n}"
-    },
-    {
-      "name": "ru",
-      "value": "{\n    resources: {\n        page: {\n            name: 'Страницы',\n            tags: {\n                'MENU': 'Меню',\n                'PUBLISHED': 'Опубликовано'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                tags: 'Теги',\n                title: 'Заголовок',\n                content: 'Контент',\n                '@files.content': 'Изображения'\n            }\n        }\n    }\n}"
-    }
-  ]
+  "messages": {
+    "en": "{\n    resources: {\n        page: {\n            name: 'Pages',\n            tags: {\n                'MENU': 'Menu',\n                'PUBLISHED': 'Published'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                tags: 'Tags',\n                title: 'Title',\n                content: 'Content',\n                '@files.content': 'Images'\n            }\n        }\n    }\n}",
+    "ru": "{\n    resources: {\n        page: {\n            name: 'Страницы',\n            tags: {\n                'MENU': 'Меню',\n                'PUBLISHED': 'Опубликовано'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                tags: 'Теги',\n                title: 'Заголовок',\n                content: 'Контент',\n                '@files.content': 'Изображения'\n            }\n        }\n    }\n}"
+  }
 }

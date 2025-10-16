@@ -42,7 +42,10 @@ export class SchemasService {
       await this.dataSourceService.save(entities);
     }
     const repository = this.getRepository(resource);
-    const transform = await this.findResourceField(resource, 'parse');
+    const transform =
+      resource === SCHEMA && item.id === SCHEMA
+        ? item.parse
+        : await this.findResourceField(resource, 'parse');
     if (transform) {
       item = parse(transform, { ...params, target: item });
     }

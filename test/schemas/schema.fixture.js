@@ -46,15 +46,5 @@ export default (id) => ({
       name: `Component${id}`,
       element: 'a'
     }
-  ],
-  messages: [
-    {
-      name: `locale`,
-      value: '{}'
-    },
-    {
-      name: `locale2`,
-      value: '{}'
-    }
   ]
 });
