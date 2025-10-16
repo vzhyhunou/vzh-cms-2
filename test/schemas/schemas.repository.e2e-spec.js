@@ -99,7 +99,7 @@ describe('SchemasRepository', () => {
   describe('findRelation()', () => {
     it('should return an array of schemas with relation', async () => {
       await manager.save(SCHEMA, schema('user'));
-      const result = await subj.findRelation('contents', 'contentuser');
+      const result = await subj.findRelation('contents', 'content');
       expect(result).toHaveLength(1);
     });
   });
@@ -110,7 +110,7 @@ describe('SchemasRepository', () => {
       const { contents } = await subj.findResourceRelation(
         'user',
         'contents',
-        'contentuser'
+        'content'
       );
       expect(contents).toHaveLength(1);
     });
@@ -119,7 +119,7 @@ describe('SchemasRepository', () => {
   describe('findResources()', () => {
     it('should return an array of schemas with resources', async () => {
       await manager.save(SCHEMA, schema('user'));
-      const result = await subj.findResources(['editoruser']);
+      const result = await subj.findResources(['editor']);
       expect(result).toHaveLength(1);
     });
   });

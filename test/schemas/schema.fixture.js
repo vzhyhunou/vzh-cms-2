@@ -15,17 +15,17 @@ export default (id) => ({
       }
     }`
   ],
-  editor: `editor${id}`,
+  editor: `editor`,
   settings: '{}',
   parse: 'target',
   format: 'target',
   contents: [
     {
-      name: `content${id}`,
+      name: `content`,
       options: '{}'
     },
     {
-      name: `content${id}2`,
+      name: `content2`,
       options: '{}'
     }
   ],
@@ -43,7 +43,7 @@ export default (id) => ({
       element: 'e'
     },
     {
-      name: `Component${id}`,
+      name: `Component`,
       element: 'a'
     }
   ]
