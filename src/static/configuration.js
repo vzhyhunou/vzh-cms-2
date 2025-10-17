@@ -1,5 +1,6 @@
 export const config = () => ({
-  static: {
-    locations: process.env.STATIC_LOCATIONS
+  locations: {
+    public: process.env.LOCATION_PUBLIC,
+    static: process.env.LOCATION_STATIC
   }
 });

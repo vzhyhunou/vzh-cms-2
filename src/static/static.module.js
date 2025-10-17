@@ -9,14 +9,15 @@ import { config } from './configuration';
   imports: [
     ServeStaticModule.forRootAsync({
       imports: [ConfigModule.forFeature(config)],
-      useFactory: (configService) =>
-        configService
-          .get('static.locations')
-          .split(',')
-          .map((l) => ({
-            rootPath: join(process.cwd(), l),
-            exclude: ['/static/(.*)']
-          })),
+      useFactory: (configService) => [
+        {
+          rootPath: join(process.cwd(), configService.get('locations.static')),
+          serveRoot: '/static'
+        },
+        {
+          rootPath: join(process.cwd(), configService.get('locations.public'))
+        }
+      ],
       inject: [ConfigService]
     })
   ]

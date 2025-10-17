@@ -20,7 +20,7 @@
 
 ## Getting Started
 ### Running
-- Download and install Node: https://nodejs.org/download/release/v17.9.1
+- Download and install Node: https://nodejs.org/download/release/v20.19.5
 - Download and unzip app: https://github.com/vzhyhunou/vzh-cms-2/archive/refs/heads/master.zip
 - Change current directory: `cd vzh-cms-2-master`
 - Install client packages: `npm --prefix client install`
