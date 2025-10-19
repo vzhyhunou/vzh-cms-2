@@ -5,6 +5,12 @@
       "name": "PUBLISHED"
     }
   ],
-  "title": "Not found",
-  "body": "<h1>Page not found</h1>"
+  "title": {
+    "en": "Not found",
+    "ru": "Не найдено"
+  },
+  "body": {
+    "en": "<h1>Page not found</h1>",
+    "ru": "<h1>Страница не найдена</h1>"
+  }
 }

@@ -40,6 +40,7 @@ export class SchemasService {
     if (resource === SCHEMA) {
       const entities = this.entities(item);
       await this.dataSourceService.save(entities);
+      this.settings = undefined;
     }
     const repository = this.getRepository(resource);
     const transform =
@@ -169,7 +170,7 @@ export class SchemasService {
     const { single, options, projection } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
     const target = await itemsRepository[single ? 'findOne' : 'find'](
-      parse(options, params)
+      await this.parse(options, params)
     );
     if (!target) {
       throw new NotFoundException();
@@ -177,7 +178,7 @@ export class SchemasService {
     if (!projection) {
       return target;
     }
-    return parse(projection, { target });
+    return await this.parse(projection, { target });
   }
 
   async findComponent(resource, name) {
@@ -195,14 +196,17 @@ export class SchemasService {
   }
 
   async findSettings() {
-    const repository = this.getRepository(SCHEMA);
-    const schemas = await repository.findField('settings');
-    return Object.fromEntries(
-      schemas.map(({ id, settings }) => [
-        id,
-        new Function(`return ${settings}`)()
-      ])
-    );
+    if (!this.settings) {
+      const repository = this.getRepository(SCHEMA);
+      const schemas = await repository.findField('settings');
+      this.settings = Object.fromEntries(
+        schemas.map(({ id, settings }) => [
+          id,
+          new Function(`return ${settings}`)()
+        ])
+      );
+    }
+    return this.settings;
   }
 
   async findResourceField(resource, name) {
@@ -238,6 +242,11 @@ export class SchemasService {
     return list.flatMap(({ entities }) =>
       entities.map((e) => new Function(`return ${e}`)())
     );
+  }
+
+  async parse(code, bindings) {
+    const settings = await this.findSettings();
+    return parse(code, { settings, ...bindings });
   }
 
   getRepository(resource) {

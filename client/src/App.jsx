@@ -16,7 +16,7 @@ const App = () => {
   const routes = useGetRoutes();
   const providers = useProviders();
   const { locales, locale } = useGetLocale();
-  const { messages, getMessages } = useGetMessages();
+  let { messages, getMessages } = useGetMessages();
 
   if (!routes || !providers || !locales || !messages) {
     return null;
@@ -28,8 +28,16 @@ const App = () => {
     authProvider
   } = providers;
   const i18nProvider = polyglotI18nProvider(
-    (value) =>
-      value === locale ? messages : setLocale(value).then(getMessages),
+    (value) => {
+      if (messages) {
+        try {
+          return messages;
+        } finally {
+          messages = undefined;
+        }
+      }
+      return setLocale(value).then(getMessages);
+    },
     locale,
     Object.entries(locales).map(([key, value]) => ({
       locale: key,

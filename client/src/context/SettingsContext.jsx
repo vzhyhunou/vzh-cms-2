@@ -11,13 +11,7 @@ export default ({ children }) => {
     return null;
   }
 
-  return (
-    <Context.Provider
-      value={settings}
-    >
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={settings}>{children}</Context.Provider>;
 };
 
 export const useSettings = () => useContext(Context);

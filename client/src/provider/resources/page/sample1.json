@@ -8,6 +8,12 @@
       "name": "PUBLISHED"
     }
   ],
-  "title": "Sample page 1",
-  "body": "<h1>Sample page 1</h1>"
+  "title": {
+    "en": "Sample page 1",
+    "ru": "Пример страницы 1"
+  },
+  "body": {
+    "en": "<h1>Sample page 1</h1>",
+    "ru": "<h1>Пример страницы 1</h1>"
+  }
 }
