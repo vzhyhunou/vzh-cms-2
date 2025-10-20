@@ -1,7 +1,6 @@
 import React from 'react';
 import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
 import { Route } from 'react-router-dom';
-import polyglotI18nProvider from 'ra-i18n-polyglot';
 
 import ProvidersContext, { useProviders } from './context/ProvidersContext';
 import SettingsContext from './context/SettingsContext';
@@ -11,6 +10,7 @@ import parse from './ui/parse';
 import useGetRoutes from './data/useGetRoutes';
 import useGetLocale from './locale/useGetLocale';
 import useGetMessages from './data/useGetMessages';
+import i18nProvider from './i18n/polyglot';
 
 const App = () => {
   const routes = useGetRoutes();
@@ -23,33 +23,21 @@ const App = () => {
   }
 
   const {
-    localeProvider: { setLocale },
     dataProvider: { getResources },
     authProvider
   } = providers;
-  const i18nProvider = polyglotI18nProvider(
-    (value) => {
-      if (messages) {
-        try {
-          return messages;
-        } finally {
-          messages = undefined;
-        }
-      }
-      return setLocale(value).then(getMessages);
-    },
-    locale,
-    Object.entries(locales).map(([key, value]) => ({
-      locale: key,
-      name: value
-    }))
-  );
 
   return (
     <Admin
       basename="/admin"
       dataProvider={addUploadFeature(providers)}
-      i18nProvider={i18nProvider}
+      i18nProvider={i18nProvider(
+        providers,
+        locales,
+        locale,
+        messages,
+        getMessages
+      )}
       authProvider={authProvider}
     >
       {() =>
