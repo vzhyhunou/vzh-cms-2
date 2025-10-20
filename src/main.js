@@ -11,7 +11,9 @@ async function bootstrap() {
     )
   });
   const configService = app.get(ConfigService);
-  app.getHttpAdapter().getInstance().set('json spaces', 2);
+  const instance = app.getHttpAdapter().getInstance();
+  instance.set('json replacer', (key, value) => (value ? value : undefined));
+  instance.set('json spaces', 2);
   await app.listen(configService.get('config.port'));
 }
 bootstrap();
