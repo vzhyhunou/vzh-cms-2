@@ -8,9 +8,8 @@ import AdmZip from 'adm-zip';
 import { SchemasService } from '../schemas/schemas.service';
 import { StorageService } from '../storage/storage.service';
 
-const SCHEMA = 'schema';
-const DATA_FOLDER = 'data';
-const FILES_FOLDER = 'files';
+const RESOURCES_FOLDER = 'resources';
+const STATIC_FOLDER = 'static';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService, StorageService)
@@ -34,11 +33,11 @@ export class ExportService {
         const id = this.schemasService.getId(resource, item);
         const data = JSON.stringify(item, (k, v) => (v ? v : undefined), 2);
         zip.addFile(
-          path.join(DATA_FOLDER, resource, `${id}.json`),
+          path.join(RESOURCES_FOLDER, resource, `${id}.json`),
           Buffer.from(data)
         );
         for (const origin of this.storageService.getFilenames(item)) {
-          zip.addLocalFile(origin, FILES_FOLDER);
+          zip.addLocalFile(origin, STATIC_FOLDER);
         }
       }
     }

@@ -8,8 +8,8 @@ import { SchemasService } from '../schemas/schemas.service';
 import { StorageService } from '../storage/storage.service';
 
 const SCHEMA = 'schema';
-const DATA_FOLDER = 'data';
-const FILES_FOLDER = 'files';
+const RESOURCES_FOLDER = 'resources';
+const STATIC_FOLDER = 'static';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService, StorageService)
@@ -60,20 +60,27 @@ export class ImportService {
   async consume(resourceFilter, idFilter, transformer) {
     var zip = new AdmZip(this.path);
     for (const entry of zip.getEntries()) {
-      const { entryName } = entry;
-      const [folder, resource, file] = entryName.split(path.sep);
-      switch (folder) {
-        case DATA_FOLDER:
-          const { name } = path.parse(file);
-          if (resourceFilter(resource) && idFilter(name)) {
-            const dto = zip.readAsText(entry);
-            const item = JSON.parse(dto);
-            const transformed = await transformer(item, resource);
-            await this.schemasService.save(resource, transformed);
-          }
-          break;
-        case FILES_FOLDER:
-          zip.extractEntryTo(entryName, this.storageService.path, false, true);
+      const { entryName, isDirectory } = entry;
+      if (!isDirectory) {
+        const [folder, resource, file] = entryName.split(path.sep);
+        switch (folder) {
+          case RESOURCES_FOLDER:
+            const { name } = path.parse(file);
+            if (resourceFilter(resource) && idFilter(name)) {
+              const dto = zip.readAsText(entry);
+              const item = JSON.parse(dto);
+              const transformed = await transformer(item, resource);
+              await this.schemasService.save(resource, transformed);
+            }
+            break;
+          case STATIC_FOLDER:
+            zip.extractEntryTo(
+              entryName,
+              this.storageService.path,
+              false,
+              true
+            );
+        }
       }
     }
   }
