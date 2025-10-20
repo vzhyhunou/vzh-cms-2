@@ -1,5 +1,5 @@
 export const config = () => ({
   storage: {
-    origin: process.env.STORAGE_ORIGIN
+    origin: process.env.ORIGIN_PATH
   }
 });
