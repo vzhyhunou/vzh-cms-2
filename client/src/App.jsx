@@ -16,7 +16,7 @@ const App = () => {
   const routes = useGetRoutes();
   const providers = useProviders();
   const { locales, locale } = useGetLocale();
-  let { messages, getMessages } = useGetMessages();
+  const { messages, getMessages } = useGetMessages();
 
   if (!routes || !providers || !locales || !messages) {
     return null;

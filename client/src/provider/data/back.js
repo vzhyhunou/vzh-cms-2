@@ -70,6 +70,13 @@ export default ({
       }).then(({ json }) => ({
         data: json
       })),
+    delete: (resource, {id, options}) =>
+      httpClient(`${API_URL}/${resource}/${id}`, {
+          method: 'DELETE',
+          ...options
+      }).then(({json}) => ({
+          data: json
+      })),
     getContent: (resource, { name, params, options }) => {
       const s = stringify(params);
       return httpClient(

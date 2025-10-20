@@ -49,8 +49,8 @@ export class SchemasController {
   }
 
   @Delete(':resource/:id')
-  @Bind(Param('resource'), Param('id'), Request())
-  remove(resource, id, request) {
+  @Bind(Param('resource'), Param('id'))
+  remove(resource, id) {
     return this.schemasService.remove(resource, id);
   }
 
