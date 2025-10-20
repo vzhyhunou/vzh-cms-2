@@ -32,7 +32,7 @@ export class SchemasController {
     this.storageService = storageService;
   }
 
-  @Post(':resource')
+  @Post('resource/:resource')
   @UseInterceptors(FilesInterceptor('files'))
   @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
   create(resource, dto, files, request) {
@@ -40,7 +40,7 @@ export class SchemasController {
     return this.schemasService.save(resource, transformed, { request });
   }
 
-  @Put(':resource/:id')
+  @Put('resource/:resource/:id')
   @UseInterceptors(FilesInterceptor('files'))
   @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
   update(resource, dto, files, request) {
@@ -48,13 +48,13 @@ export class SchemasController {
     return this.schemasService.save(resource, transformed, { request });
   }
 
-  @Delete(':resource/:id')
+  @Delete('resource/:resource/:id')
   @Bind(Param('resource'), Param('id'))
   remove(resource, id) {
     return this.schemasService.remove(resource, id);
   }
 
-  @Get(':resource')
+  @Get('resource/:resource')
   @Bind(Param('resource'), Query(PageablePipe))
   findAll(resource, { ids, ...rest }) {
     if (ids.length) {
@@ -63,36 +63,42 @@ export class SchemasController {
     return this.schemasService.findAll(resource, rest);
   }
 
-  @Get(':resource/:id')
+  @Get('resource/:resource/:id')
   @Bind(Param('resource'), Param('id'))
   findById(resource, id) {
     return this.schemasService.findById(resource, id);
   }
 
   @Public()
-  @Get(':resource/content/:name')
+  @Get('content/:resource/:name')
   @Bind(Param('resource'), Param('name'), Request())
   findContent(resource, name, request) {
     return this.schemasService.findContent(resource, name, { request });
   }
 
   @Public()
-  @Get(':resource/component/:name')
+  @Get('component/:resource/:name')
   @Bind(Param('resource'), Param('name'))
   findComponent(resource, name) {
     return this.schemasService.findComponent(resource, name);
   }
 
   @Public()
-  @Get()
-  @Bind(Query(), Request())
-  findResources({ type }, { user: { authorities = [] } = {} }) {
-    if (type === 'settings') {
-      return this.schemasService.findSettings();
-    }
-    if (type === 'messages') {
-      return this.schemasService.findMessages();
-    }
+  @Get('admin')
+  @Bind(Request())
+  getResources({ user: { authorities = [] } = {} }) {
     return this.schemasService.findResources(authorities);
+  }
+
+  @Public()
+  @Get('settings')
+  getSettings() {
+    return this.schemasService.findSettings();
+  }
+
+  @Public()
+  @Get('messages')
+  getMessages() {
+    return this.schemasService.findMessages();
   }
 }

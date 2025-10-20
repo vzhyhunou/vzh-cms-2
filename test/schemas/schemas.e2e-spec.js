@@ -31,12 +31,12 @@ describe('Schemas (e2e)', () => {
     expect(repository).toBeDefined();
   });
 
-  describe('/schema (GET)', () => {
+  describe('/resource/schema (GET)', () => {
     it('should return a page of schemas', async () => {
       await repository.save([schema('page'), schema('user')]);
       await request(app.getHttpServer())
         .get(
-          '/api/schema?id=Like%28%27%25g%25%27%29&parse=id&page=0&size=1&sort=id%2CASC'
+          '/api/resource/schema?id=Like%28%27%25g%25%27%29&parse=id&page=0&size=1&sort=id%2CASC'
         )
         .expect(200)
         .expect(({ body }) => {
@@ -47,7 +47,7 @@ describe('Schemas (e2e)', () => {
         });
       await request(app.getHttpServer())
         .get(
-          '/api/schema?id=Like%28%27%25g%25%27%29&parse=id&page=1&size=1&sort=id%2CASC'
+          '/api/resource/schema?id=Like%28%27%25g%25%27%29&parse=id&page=1&size=1&sort=id%2CASC'
         )
         .expect(200)
         .expect(({ body }) => {
@@ -61,7 +61,7 @@ describe('Schemas (e2e)', () => {
     it('should return an array of schemas', async () => {
       await repository.save([schema('page'), schema('user')]);
       await request(app.getHttpServer())
-        .get('/api/schema?ids=page&ids=user')
+        .get('/api/resource/schema?ids=page&ids=user')
         .expect(200)
         .expect(({ body }) => {
           expect(body).toMatchObject([{ id: 'page' }, { id: 'user' }]);
@@ -69,27 +69,27 @@ describe('Schemas (e2e)', () => {
     });
   });
 
-  it('/schema/:id (GET)', async () => {
+  it('/resource/schema/:id (GET)', async () => {
     await repository.save([schema('page'), schema('user')]);
     await request(app.getHttpServer())
-      .get('/api/schema/page')
+      .get('/api/resource/schema/page')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({ id: 'page' });
       });
   });
 
-  it('/schema (POST)', async () => {
+  it('/resource/schema (POST)', async () => {
     await repository.save(schema('user'));
     await request(app.getHttpServer())
-      .post('/api/schema')
+      .post('/api/resource/schema')
       .field('dto', JSON.stringify(schema('page')))
       .expect(201);
     const result = await repository.findById('page');
     expect(result).toMatchObject({ id: 'page' });
   });
 
-  it('/schema/:id (PUT)', async () => {
+  it('/resource/schema/:id (PUT)', async () => {
     await repository.save([schema('user'), schema('page')]);
     const dto = {
       id: 'page',
@@ -98,16 +98,18 @@ describe('Schemas (e2e)', () => {
       ]
     };
     await request(app.getHttpServer())
-      .put('/api/schema/page')
+      .put('/api/resource/schema/page')
       .field('dto', JSON.stringify(dto))
       .expect(200);
     const result = await repository.findById('page');
     expect(result).toMatchObject(dto);
   });
 
-  it('/schema/:id (DELETE)', async () => {
+  it('/resource/schema/:id (DELETE)', async () => {
     await repository.save(schema('user'));
-    await request(app.getHttpServer()).delete('/api/schema/user').expect(200);
+    await request(app.getHttpServer())
+      .delete('/api/resource/schema/user')
+      .expect(200);
     const result = await repository.findById('user');
     expect(result).toBeNull();
   });

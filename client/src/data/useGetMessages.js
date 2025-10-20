@@ -11,16 +11,16 @@ export default () => {
   }
 
   const {
-    dataProvider: { getResources }
+    dataProvider: { getMessages }
   } = providers;
-  const getMessages = useCallback(
-    () => getResources({ type: 'messages' }).then(({ data }) => data),
-    [getResources]
+  const get = useCallback(
+    () => getMessages({}).then(({ data }) => data),
+    [getMessages]
   );
 
   useEffect(() => {
-    getMessages().then(setMessages);
-  }, [getMessages]);
+    get().then(setMessages);
+  }, [get]);
 
-  return { messages, getMessages };
+  return { messages, getMessages: get };
 };

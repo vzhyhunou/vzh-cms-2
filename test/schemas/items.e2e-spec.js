@@ -32,12 +32,12 @@ describe('Items (e2e)', () => {
     expect(repository).toBeDefined();
   });
 
-  describe('/user (GET)', () => {
+  describe('/resource/user (GET)', () => {
     it('should return a page of users', async () => {
       await repository.save([{ id: 'admin' }, { id: 'manager' }]);
       await request(app.getHttpServer())
         .get(
-          '/api/user?id=Like%28%27%25d%25%27%29&parse=id&page=0&size=1&sort=id%2CASC'
+          '/api/resource/user?id=Like%28%27%25d%25%27%29&parse=id&page=0&size=1&sort=id%2CASC'
         )
         .expect(200)
         .expect(({ body }) => {
@@ -48,7 +48,7 @@ describe('Items (e2e)', () => {
         });
       await request(app.getHttpServer())
         .get(
-          '/api/user?id=Like%28%27%25d%25%27%29&parse=id&page=1&size=1&sort=id%2CASC'
+          '/api/resource/user?id=Like%28%27%25d%25%27%29&parse=id&page=1&size=1&sort=id%2CASC'
         )
         .expect(200)
         .expect(({ body }) => {
@@ -62,7 +62,7 @@ describe('Items (e2e)', () => {
     it('should return an array of users', async () => {
       await repository.save([{ id: 'admin' }, { id: 'manager' }]);
       await request(app.getHttpServer())
-        .get('/api/user?ids=admin&ids=manager')
+        .get('/api/resource/user?ids=admin&ids=manager')
         .expect(200)
         .expect(({ body }) => {
           expect(body).toMatchObject([{ id: 'admin' }, { id: 'manager' }]);
@@ -70,43 +70,45 @@ describe('Items (e2e)', () => {
     });
   });
 
-  it('/user/:id (GET)', async () => {
+  it('/resource/user/:id (GET)', async () => {
     await repository.save([{ id: 'admin' }, { id: 'manager' }]);
     await request(app.getHttpServer())
-      .get('/api/user/manager')
+      .get('/api/resource/user/manager')
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({ id: 'manager' });
       });
   });
 
-  it('/user (POST)', async () => {
+  it('/resource/user (POST)', async () => {
     await repository.save({ id: 'admin' });
     await request(app.getHttpServer())
-      .post('/api/user')
+      .post('/api/resource/user')
       .field('dto', JSON.stringify({ id: 'manager' }))
       .expect(201);
     const result = await repository.findById('manager');
     expect(result).toMatchObject({ id: 'manager' });
   });
 
-  it('/user/:id (PUT)', async () => {
+  it('/resource/user/:id (PUT)', async () => {
     await repository.save([{ id: 'admin' }, { id: 'manager' }]);
     const dto = {
       id: 'manager',
       data: 'a'
     };
     await request(app.getHttpServer())
-      .put('/api/user/manager')
+      .put('/api/resource/user/manager')
       .field('dto', JSON.stringify(dto))
       .expect(200);
     const result = await repository.findById('manager');
     expect(result).toMatchObject(dto);
   });
 
-  it('/user/:id (DELETE)', async () => {
+  it('/resource/user/:id (DELETE)', async () => {
     await repository.save({ id: 'admin' });
-    await request(app.getHttpServer()).delete('/api/user/admin').expect(200);
+    await request(app.getHttpServer())
+      .delete('/api/resource/user/admin')
+      .expect(200);
     const result = await repository.findById('admin');
     expect(result).toBeNull();
   });

@@ -11,12 +11,12 @@ export default () => {
   }
 
   const {
-    dataProvider: { getResources }
+    dataProvider: { getSettings }
   } = providers;
 
   useEffect(() => {
-    getResources({ type: 'settings' }).then(({ data }) => setSettings(data));
-  }, [getResources]);
+    getSettings({}).then(({ data }) => setSettings(data));
+  }, [getSettings]);
 
   return settings;
 };
