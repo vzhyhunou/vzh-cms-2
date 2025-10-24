@@ -2,6 +2,23 @@ import decodeJwt from 'jwt-decode';
 
 const TOKEN = 'token';
 
+const setItem = value => localStorage.setItem(TOKEN, value);
+const getItem = () => localStorage.getItem(TOKEN);
+const removeItem = () => localStorage.removeItem(TOKEN);
+const getClaims = () => {
+  const token = getItem();
+  if (!token) {
+    return {};
+  }
+  const claims = decodeJwt(token);
+  const { exp } = claims;
+  if (exp > Date.now() / 1000) {
+    return claims;
+  }
+  removeItem();
+  return {};
+};
+
 export default () => ({
   async login({ username, password }) {
     const credentials = btoa(`${username}:${password}`);
@@ -11,52 +28,39 @@ export default () => ({
     if (status < 200 || status >= 300) {
       throw new Error(statusText);
     }
-    await this.setToken(await response.text());
+    setItem(await response.text());
     return { redirectTo: '/' };
   },
   async logout() {
-    await this.removeToken();
+    removeItem();
     return '/';
   },
   async checkError({ status }) {
     if (status === 401 || status === 403) {
-      await this.removeToken();
+      removeItem();
       throw new Error();
     }
   },
   async checkAuth() {
-    if (!(await this.getPermissions())) {
+    if (!(getItem())) {
       throw new Error();
     }
   },
   async getPermissions() {
-    const { roles } = await this.getClaims();
+    const { roles } = getClaims();
     return roles;
   },
   async getIdentity() {
-    const { sub } = await this.getClaims();
+    const { sub } = getClaims();
     return { id: sub };
   },
-  async getClaims() {
-    const token = await this.getToken();
-    if (!token) {
-      return {};
-    }
-    const claims = decodeJwt(token);
-    const { exp } = claims;
-    if (exp > Date.now() / 1000) {
-      return claims;
-    }
-    await this.removeToken();
-    return {};
-  },
   async setToken(value) {
-    localStorage.setItem(TOKEN, value);
+    setItem(value);
   },
   async getToken() {
-    return localStorage.getItem(TOKEN);
+    return getItem();
   },
   async removeToken() {
-    localStorage.removeItem(TOKEN);
+    removeItem();
   }
 });
