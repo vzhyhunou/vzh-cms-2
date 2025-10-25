@@ -15,6 +15,7 @@ import {
   Request
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { I18nContext } from 'nestjs-i18n';
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pipe/pageable.pipe';
@@ -73,7 +74,10 @@ export class SchemasController {
   @Get('content/:resource/:name')
   @Bind(Param('resource'), Param('name'), Request())
   findContent(resource, name, request) {
-    return this.schemasService.findContent(resource, name, { request });
+    return this.schemasService.findContent(resource, name, {
+      request,
+      system: { locale: I18nContext.current().lang }
+    });
   }
 
   @Public()
@@ -99,6 +103,6 @@ export class SchemasController {
   @Public()
   @Get('messages')
   getMessages() {
-    return this.schemasService.findMessages();
+    return this.schemasService.findMessages(I18nContext.current().lang);
   }
 }

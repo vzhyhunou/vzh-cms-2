@@ -1,5 +1,4 @@
 import { Dependencies, Injectable } from '@nestjs/common';
-import { I18nContext } from 'nestjs-i18n';
 import merge from 'lodash/merge';
 
 import customRepository from './schemas.repository';
@@ -178,7 +177,7 @@ export class SchemasService {
     if (!projection) {
       return target;
     }
-    return await this.parse(projection, { target });
+    return await this.parse(projection, { ...params, target });
   }
 
   async findComponent(resource, name) {
@@ -226,12 +225,9 @@ export class SchemasService {
     }));
   }
 
-  async findMessages() {
+  async findMessages(locale) {
     const repository = this.getRepository(SCHEMA);
-    const schemas = await repository.findRelation(
-      'messages',
-      I18nContext.current().lang
-    );
+    const schemas = await repository.findRelation('messages', locale);
     return schemas
       .map(({ messages }) => new Function(`return ${messages[0].value}`)())
       .reduce(merge, {});
