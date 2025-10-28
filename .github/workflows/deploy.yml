@@ -17,20 +17,17 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install client with NPM
-      working-directory: client
-      run: npm i
-    - name: Test client with NPM
-      working-directory: client
-      run: npm run test
-    - name: Build client with NPM
-      working-directory: client
-      run: npm run build
     - name: Install with NPM
       run: npm i
-    - name: Test with NPM
-      run: npm run test
-    - name: Test E2E with NPM
-      run: npm run test:e2e
-    - name: Build with NPM
-      run: npm run build
+    - name: Fix install
+      run: npm i @rollup/rollup-linux-x64-gnu
+    - name: Test client with NPM
+      run: npm run test --workspace=client
+    - name: Build client with NPM
+      run: npm run build --workspace=client
+    - name: Test server with NPM
+      run: npm run test --workspace=server
+    - name: Test server E2E with NPM
+      run: npm run test:e2e --workspace=server
+    - name: Build server with NPM
+      run: npm run build --workspace=server
