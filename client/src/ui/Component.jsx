@@ -1,20 +1,34 @@
 import React from 'react';
 
-import Parser from './Parser';
-import useGetComponent from '../provider/data/useGetComponent';
+import Parser, { AdminParser } from './Parser';
+import useGetComponent from '../data/useGetComponent';
 
-const Component = ({ resource, name, ...props }) => {
-  const { data, isLoading, error } = useGetComponent(resource, { name });
+const Component = ({ schema, name, ...props }) => {
+  const { data, isLoading, error } = useGetComponent(schema, { name });
 
   if (isLoading) {
     return null;
   }
 
   if (error && error.status === 404) {
-    return <Component resource="page" name="one" id="none" />;
+    return <Component schema="page" name="one" id="none" />;
   }
 
-  return <Parser jsx={data} bindings={{ props }} />;
+  return <Parser code={data} bindings={{ props }} />;
+};
+
+export const AdminComponent = ({ schema, name, ...props }) => {
+  const { data, isLoading, error } = useGetComponent(schema, { name });
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (error && error.status === 404) {
+    return <Component schema="page" name="one" id="none" />;
+  }
+
+  return <AdminParser code={data} bindings={{ props }} />;
 };
 
 export default Component;

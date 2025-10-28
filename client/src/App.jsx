@@ -1,24 +1,88 @@
 import React from 'react';
-import { Route, useParams } from 'react-router-dom';
+import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
+import { Route } from 'react-router-dom';
 
-import Context from './Context';
-import Admin from './Admin';
-import Component from './ui/Component';
+import ProvidersContext, { useProviders } from './context/ProvidersContext';
+import SettingsContext from './context/SettingsContext';
+import Parser, { AdminParser } from './ui/Parser';
+import addUploadFeature from './data/upload';
+import parse from './ui/parse';
+import useGetRoutes from './data/useGetRoutes';
+import useGetLocale from './locale/useGetLocale';
+import useGetMessages from './data/useGetMessages';
+import i18nProvider from './i18n/polyglot';
 
-const C = (props) => {
-  const { '*': extra, ...p } = useParams();
-  return <Component {...{ ...p, ...props }} />;
+const App = () => {
+  const routes = useGetRoutes();
+  const providers = useProviders();
+  const { locales, locale } = useGetLocale();
+  const { messages, getMessages } = useGetMessages();
+
+  if (!routes || !providers || !locales || !messages) {
+    return null;
+  }
+
+  const {
+    dataProvider: { getResources },
+    authProvider
+  } = providers;
+
+  return (
+    <Admin
+      basename="/admin"
+      dataProvider={addUploadFeature(providers)}
+      i18nProvider={i18nProvider(
+        providers,
+        locales,
+        locale,
+        messages,
+        getMessages
+      )}
+      authProvider={authProvider}
+    >
+      {() =>
+        getResources({}).then(({ data }) => {
+          const resources = data
+            .map(({ id, List, Create, Edit }) => ({
+              id,
+              ...Object.fromEntries(
+                Object.entries({ list: List, create: Create, edit: Edit }).map(
+                  ([k, v]) => [k, <AdminParser code={v} />]
+                )
+              )
+            }))
+            .map(({ id, ...rest }) => ({
+              id,
+              resource: <Resource key={id} name={id} {...rest} />
+            }));
+          return (
+            <>
+              <CustomRoutes noLayout>
+                <Route path="admin">
+                  <Route path="" element={<Layout />} />
+                  {resources.map(({ id, resource }) => (
+                    <Route
+                      key={id}
+                      path={`${id}/*`}
+                      element={<Layout>{resource}</Layout>}
+                    />
+                  ))}
+                </Route>
+                {parse(routes, { Parser })}
+              </CustomRoutes>
+              {resources.map(({ resource }) => resource)}
+            </>
+          );
+        })
+      }
+    </Admin>
+  );
 };
 
 export default ({ config }) => (
-  <Context {...config}>
-    <Admin>
-      <Route element={<C resource="page" name="one" id="layout" />}>
-        <Route path="" element={<C resource="page" name="one" id="home" />} />
-        <Route path=":resource/:id" element={<C name="one" />} />
-        <Route path=":id" element={<C resource="page" name="one" />} />
-        <Route path="*" element={<C resource="page" name="one" id="none" />} />
-      </Route>
-    </Admin>
-  </Context>
+  <ProvidersContext {...config}>
+    <SettingsContext>
+      <App />
+    </SettingsContext>
+  </ProvidersContext>
 );

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import useGetContent from '../provider/data/useGetContent';
+import useGetContent from '../data/useGetContent';
 import Component from './Component';
 
 export default ({ resource, name, children, ...params }) => {
@@ -12,8 +12,8 @@ export default ({ resource, name, children, ...params }) => {
   }
 
   if (error && error.status === 404) {
-    return <Component resource="page" name="one" id="none" />;
+    return <Component schema="page" name="one" id="none" />;
   }
 
-  return Array.isArray(data) ? data.map((i) => children(i)) : children(data);
+  return children(data);
 };

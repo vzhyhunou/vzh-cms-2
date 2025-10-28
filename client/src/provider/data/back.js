@@ -3,11 +3,18 @@ import { fetchUtils } from 'react-admin';
 
 const API_URL = '/api';
 
-export default ({ authProvider: { getToken } }) => {
+export default ({
+  localeProvider: { getLocale },
+  authProvider: { getToken }
+}) => {
   const httpClient = (url, options = {}) =>
-    Promise.all([getToken()])
-      .then(([token]) => ({
+    Promise.all([getLocale(), getToken()])
+      .then(([locale, token]) => ({
         ...options,
+        headers: new Headers({
+          Accept: 'application/json',
+          'Accept-Language': locale
+        }),
         ...(token
           ? {
               user: {
@@ -30,7 +37,7 @@ export default ({ authProvider: { getToken } }) => {
         ...filter
       };
       return httpClient(
-        `${API_URL}/${resource}?${stringify(query)}`,
+        `${API_URL}/resource/${resource}?${stringify(query)}`,
         options
       ).then(({ json: { content, page } }) => ({
         data: content,
@@ -38,17 +45,20 @@ export default ({ authProvider: { getToken } }) => {
       }));
     },
     getOne: (resource, { id, options }) =>
-      httpClient(`${API_URL}/${resource}/${id}`, options).then(({ json }) => ({
-        data: json
-      })),
-    getMany: (resource, { ids, options }) =>
-      httpClient(`${API_URL}/${resource}?${stringify({ ids })}`, options).then(
+      httpClient(`${API_URL}/resource/${resource}/${id}`, options).then(
         ({ json }) => ({
           data: json
         })
       ),
+    getMany: (resource, { ids, options }) =>
+      httpClient(
+        `${API_URL}/resource/${resource}?${stringify({ ids })}`,
+        options
+      ).then(({ json }) => ({
+        data: json
+      })),
     create: (resource, { data, options }) =>
-      httpClient(`${API_URL}/${resource}`, {
+      httpClient(`${API_URL}/resource/${resource}`, {
         method: 'POST',
         body: data,
         ...options
@@ -56,9 +66,16 @@ export default ({ authProvider: { getToken } }) => {
         data: json
       })),
     update: (resource, { id, data, options }) =>
-      httpClient(`${API_URL}/${resource}/${id}`, {
+      httpClient(`${API_URL}/resource/${resource}/${id}`, {
         method: 'PUT',
         body: data,
+        ...options
+      }).then(({ json }) => ({
+        data: json
+      })),
+    delete: (resource, { id, options }) =>
+      httpClient(`${API_URL}/resource/${resource}/${id}`, {
+        method: 'DELETE',
         ...options
       }).then(({ json }) => ({
         data: json
@@ -66,25 +83,29 @@ export default ({ authProvider: { getToken } }) => {
     getContent: (resource, { name, params, options }) => {
       const s = stringify(params);
       return httpClient(
-        `${API_URL}/${resource}/content/${name}${s ? `?${s}` : ''}`,
+        `${API_URL}/content/${resource}/${name}${s ? `?${s}` : ''}`,
         options
       ).then(({ json }) => ({
         data: json
       }));
     },
     getComponent: (resource, { name, options }) =>
-      httpClient(`${API_URL}/${resource}/component/${name}`, options).then(
+      httpClient(`${API_URL}/component/${resource}/${name}`, options).then(
         ({ body }) => ({
           data: body
         })
       ),
-    getResources: ({ config, options }) => {
-      const s = stringify({ config });
-      return httpClient(`${API_URL}${s ? `?${s}` : ''}`, options).then(
-        ({ json }) => ({
-          data: json
-        })
-      );
-    }
+    getResources: ({ options }) =>
+      httpClient(`${API_URL}/admin`, options).then(({ json }) => ({
+        data: json
+      })),
+    getSettings: ({ options }) =>
+      httpClient(`${API_URL}/settings`, options).then(({ json }) => ({
+        data: json
+      })),
+    getMessages: ({ options }) =>
+      httpClient(`${API_URL}/messages`, options).then(({ json }) => ({
+        data: json
+      }))
   };
 };

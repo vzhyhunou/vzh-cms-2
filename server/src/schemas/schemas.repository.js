@@ -1,0 +1,80 @@
+import { In } from 'typeorm';
+
+import '../common/repository/base.repository';
+
+export default {
+  findField(field) {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        [field]: true
+      }
+    });
+  },
+  findResourceField(resource, name) {
+    return this.findOne({
+      loadEagerRelations: false,
+      select: {
+        [name]: true
+      },
+      where: {
+        id: resource
+      }
+    });
+  },
+  findRelation(relation, name) {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true
+      },
+      relations: {
+        [relation]: true
+      },
+      where: {
+        [relation]: {
+          name
+        }
+      }
+    });
+  },
+  findResourceRelation(resource, relation, name) {
+    return this.findOne({
+      loadEagerRelations: false,
+      select: {
+        id: true
+      },
+      relations: {
+        [relation]: true
+      },
+      where: {
+        id: resource,
+        [relation]: {
+          name
+        }
+      }
+    });
+  },
+  findResources(authorities) {
+    return this.find({
+      loadEagerRelations: false,
+      select: {
+        id: true,
+        components: {
+          name: true,
+          element: true
+        }
+      },
+      relations: {
+        components: true
+      },
+      where: {
+        components: {
+          name: In(['List', 'Create', 'Edit'])
+        },
+        editor: In(authorities)
+      }
+    });
+  }
+};

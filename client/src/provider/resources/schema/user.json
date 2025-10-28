@@ -5,32 +5,32 @@
     "{\n  name: 'userTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    user: {\n      type: 'many-to-one',\n      target: 'user',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
   ],
   "editor": "MANAGER",
+  "settings": "{\n  tags: [\n    'ADMIN',\n    'MANAGER',\n    'PAGES_EDITOR'\n  ]\n}",
+  "parse": "{\n  ...target,\n  password: /^\\$2[ayb]\\$.{56}$/.test(target.password) ? target.password : hashSync(target.password, 10),\n  date: new Date(),\n  userId: request.user?.username\n}",
   "contents": [
     {
       "name": "authorities",
       "single": true,
-      "options": "{\n  where: {\n    id: request.system?.username || IsNull(),\n    tags: {\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
+      "options": "{\n  where: {\n    id: system.username || IsNull(),\n    tags: {\n      start: Raw(alias => `${alias} is null or ${alias} < :current`, {current: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :current`, {current: new Date()})\n    }\n  }\n}",
       "projection": "{\n  password: target.password,\n  authorities: target.tags.map(({ name }) => name)\n}"
-    }
-  ],
-  "config": [
-    {
-      "name": "tags",
-      "value": "[\n  'ADMIN',\n  'MANAGER',\n  'PAGES_EDITOR'\n]"
     }
   ],
   "components": [
     {
-      "name": "list",
-      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <TransformInput expression=\"{parse: text => `{name: '${text}'}`, format: text => text ? text.replace(new RegExp(`.*'(.*)'.*`), '$1') : '', choices: config.user.tags.map(tag => ({id: tag, name: tag})), source}\" source=\"tags\">\n  <SelectInput/>\n </TransformInput>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
+      "name": "Create",
+      "element": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required()]}/>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>"
     },
     {
-      "name": "create",
-      "element": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required()]}/>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <TransformField expression=\"{choices: config.user.tags.map(tag => ({id: tag, name: tag}))}\">\n      <SelectInput source=\"name\" validate={[required()]}/>\n     </TransformField>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>"
+      "name": "Edit",
+      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled>\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled>\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
     },
     {
-      "name": "edit",
-      "element": "<Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled source=\"userId\">\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled source=\"date\">\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <TransformField expression=\"{choices: config.user.tags.map(tag => ({id: tag, name: tag}))}\">\n      <SelectInput source=\"name\" validate={[required()]}/>\n     </TransformField>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>"
+      "name": "List",
+      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <Component schema=\"schema\" name=\"ParseInput\" component={SelectInput} source=\"tags\" parse={value => `{name: '${value}'}`} choices={settings.user.tags.map(tag => ({id: tag, name: tag}))}/>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
     }
-  ]
+  ],
+  "messages": {
+    "en": "{\n    resources: {\n        user: {\n            name: 'Users',\n            tags: {\n                'ADMIN': 'Administrator',\n                'MANAGER': 'Manager',\n                'PAGES_EDITOR': 'Pages editor'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                password: 'Password',\n                tags: 'Tags'\n            }\n        }\n    }\n}",
+    "ru": "{\n    resources: {\n        user: {\n            name: 'Пользователи',\n            tags: {\n                'ADMIN': 'Администратор',\n                'MANAGER': 'Менеджер',\n                'PAGES_EDITOR': 'Редактор страниц'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                password: 'Пароль',\n                tags: 'Теги'\n            }\n        }\n    }\n}"
+  }
 }

@@ -2,12 +2,21 @@ import decodeJwt from 'jwt-decode';
 
 const TOKEN = 'token';
 
-const setItem = (value) => localStorage.setItem(TOKEN, value);
+const setItem = value => localStorage.setItem(TOKEN, value);
 const getItem = () => localStorage.getItem(TOKEN);
 const removeItem = () => localStorage.removeItem(TOKEN);
 const getClaims = () => {
   const token = getItem();
-  return token ? decodeJwt(token) : {};
+  if (!token) {
+    return {};
+  }
+  const claims = decodeJwt(token);
+  const { exp } = claims;
+  if (exp > Date.now() / 1000) {
+    return claims;
+  }
+  removeItem();
+  return {};
 };
 
 export default () => ({
@@ -33,7 +42,7 @@ export default () => ({
     }
   },
   async checkAuth() {
-    if (!getItem()) {
+    if (!(getItem())) {
       throw new Error();
     }
   },
@@ -50,5 +59,8 @@ export default () => ({
   },
   async getToken() {
     return getItem();
+  },
+  async removeToken() {
+    removeItem();
   }
 });
