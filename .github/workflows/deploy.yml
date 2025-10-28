@@ -9,7 +9,7 @@ jobs:
     permissions: write-all
     strategy:
           matrix:
-            node-version: [25]
+            node-version: [20]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -19,6 +19,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install with NPM
       run: npm i
+    - name: Fix install
+      run: npm i @rollup/rollup-win32-x64-msvc
     - name: Test client with NPM
       run: npm run test --workspace=client
     - name: Build client with NPM
