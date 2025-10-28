@@ -23,10 +23,9 @@
 - Download and install Node: https://nodejs.org/download/release/v20.19.5
 - Download and unzip app: https://github.com/vzhyhunou/vzh-cms-2/archive/refs/heads/master.zip
 - Change current directory: `cd vzh-cms-2-master`
-- Install client packages: `npm --prefix client install`
-- Build client app: `npm --prefix client run build`
-- Install server packages: `npm install`
-- Build server app: `npm run build`
+- Install packages: `npm install`
+- Build client app: `npm run build --workspace=client`
+- Build server app: `npm run build --workspace=server`
 - Run app: `node dist/main.js`
 ### Usage
 - Home page: http://localhost:8090
