@@ -20,10 +20,7 @@ const config = ({
     build: {
         outDir: BUILD_PATH
     },
-    base: REACT_APP_BASE,
-    resolve: {
-        preserveSymlinks: true
-    }
+    base: REACT_APP_BASE
 });
 
 const srcConfig = {
