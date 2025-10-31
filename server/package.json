@@ -2,7 +2,6 @@
   "name": "@vzhyhunou/vzh-cms-server-2",
   "version": "0.0.1",
   "scripts": {
-    "clean": "rimraf ../dist coverage",
     "format": "prettier --write '{src,test}/**/*.{js,json}'",
     "build": "babel src -d ../dist --ignore '**/*.spec.js'",
     "start": "babel-node index.js",
@@ -13,6 +12,7 @@
     "test:e2e": "cross-env NODE_ENV=development jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@vzhyhunou/vzh-cms-common-2": "^0.0.1",
     "@babel/runtime": "^7.23.9",
     "@babel/standalone": "^7.28.3",
     "@nestjs/common": "^11.1.6",

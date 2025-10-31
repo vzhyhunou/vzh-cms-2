@@ -1,13 +1,13 @@
 import { Test } from '@nestjs/testing';
 import { getEntityManagerToken } from '@nestjs/typeorm';
 import { Like } from 'typeorm';
+import { SchemasRepository } from '@vzhyhunou/vzh-cms-common-2';
 
 import schema from './schema.fixture';
 import entity from './entity.fixture';
 import { DataSourceModule } from '../../src/datasource/datasource.module';
 import { DataSourceService } from '../../src/datasource/datasource.service';
 import { ConfigModule } from '../../src/config/config.module';
-import customRepository from '../../src/schemas/schemas.repository';
 
 const SCHEMA = 'schema';
 
@@ -26,7 +26,7 @@ describe('SchemasRepository', () => {
     await dataSourceService.save(
       entity.entities.map((e) => new Function(`return ${e}`)())
     );
-    subj = dataSourceService.getRepository(SCHEMA).extend(customRepository);
+    subj = dataSourceService.getRepository(SCHEMA).extend(SchemasRepository);
   });
 
   it('should be defined', () => {

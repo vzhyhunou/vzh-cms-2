@@ -1,5 +1,5 @@
 import * as typeorm from 'typeorm';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import * as utils from './utils';
 

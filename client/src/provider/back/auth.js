@@ -2,7 +2,7 @@ import decodeJwt from 'jwt-decode';
 
 const TOKEN = 'token';
 
-const setItem = value => localStorage.setItem(TOKEN, value);
+const setItem = (value) => localStorage.setItem(TOKEN, value);
 const getItem = () => localStorage.getItem(TOKEN);
 const removeItem = () => localStorage.removeItem(TOKEN);
 const getClaims = () => {
@@ -42,7 +42,7 @@ export default () => ({
     }
   },
   async checkAuth() {
-    if (!(getItem())) {
+    if (!getItem()) {
       throw new Error();
     }
   },

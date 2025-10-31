@@ -1,0 +1,12 @@
+{
+  "name": "file",
+  "columns": {
+    "id": {
+      "type": "varchar",
+      "primary": true
+    },
+    "value": {
+      "type": "text"
+    }
+  }
+}
