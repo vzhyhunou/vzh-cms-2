@@ -1,0 +1,31 @@
+{
+  "name": "@vzhyhunou/vzh-cms-common-2",
+  "version": "0.0.1",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "typeorm": "^0.3.27",
+    "@babel/standalone": "^7.28.3",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "eslint": "^8.42.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "supertest": "^6.3.4",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.7"
+  },
+  "scripts": {
+    "clean": "rimraf dist coverage",
+    "format": "prettier --write '{src,test}/**/*.{js,json}'",
+    "build": "babel src -d dist --ignore '**/*.spec.js'",
+    "lint": "eslint '{src,test}/**/*.js'",
+    "test": "cross-env NODE_ENV=development jest",
+    "test:cov": "cross-env NODE_ENV=development jest --coverage",
+    "test:e2e": "cross-env NODE_ENV=development jest --config ./test/jest-e2e.json"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  }
+}

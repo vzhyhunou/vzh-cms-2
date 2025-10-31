@@ -1,8 +1,16 @@
 {
   "name": "@vzhyhunou/vzh-cms-2",
   "version": "0.0.1",
+  "devDependencies": {
+    "rimraf": "^5.0.7"
+  },
+  "scripts": {
+    "clean": "rimraf dist coverage"
+  },
+  "private": true,
   "workspaces": [
     "client",
-    "server"
+    "server",
+    "common"
   ]
 }

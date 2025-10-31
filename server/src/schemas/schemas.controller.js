@@ -18,8 +18,8 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { I18nContext } from 'nestjs-i18n';
 
 import { SchemasService } from './schemas.service';
-import { PageablePipe } from '../common/pipe/pageable.pipe';
-import { MultipartPipe } from '../common/pipe/multipart.pipe';
+import { PageablePipe } from '../common/pageable.pipe';
+import { MultipartPipe } from '../common/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 import { Public } from '../auth/public.decorator';

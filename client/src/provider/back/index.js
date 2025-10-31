@@ -1,7 +1,7 @@
-import getLocaleProvider from './locale';
-import getFuncProvider from './func/back';
-import getAuthProvider from './auth/back';
-import getDataProvider from './data/back';
+import getLocaleProvider from '../common/locale';
+import getFuncProvider from './func';
+import getAuthProvider from './auth';
+import getDataProvider from './data';
 
 export default (props) => {
   const localeProvider = getLocaleProvider(props);

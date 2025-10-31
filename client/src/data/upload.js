@@ -49,72 +49,85 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
     return createFormData(sanitized, files);
   };
 
-  const res = (data) => {
+  const res = async (data) => {
     const sanitized = cloneDeep(data);
 
-    dump(sanitized)
-      .map((k) => ({ k, v: get(sanitized, k) }))
-      .filter(({ v }) => typeof v === 'string')
-      .filter(({ v }) => FIELD_PATTERN.test(v))
-      .forEach(({ k, v }) =>
-        set(sanitized, k, {
-          src: originByData(v),
-          title: v
-        })
-      );
-
-    dump(sanitized)
-      .map((k) => ({ k, v: get(sanitized, k) }))
-      .filter(({ v }) => typeof v === 'string')
-      .map(({ k, v }) => ({
-        k,
-        v: [...new Set([...v.matchAll(MATCH_PATTERN)].map((m) => m[1]))]
-      }))
-      .filter(({ v }) => v.length)
-      .forEach(({ k, v }) =>
-        set(
-          sanitized,
-          `@files.${k}`,
-          v.map((n) => ({
-            src: originByData(n),
-            title: n
-          }))
+    await Promise.all(
+      dump(sanitized)
+        .map((k) => ({ k, v: get(sanitized, k) }))
+        .filter(({ v }) => typeof v === 'string')
+        .filter(({ v }) => FIELD_PATTERN.test(v))
+        .map(async ({ k, v }) =>
+          set(sanitized, k, {
+            src: await originByData(v),
+            title: v
+          })
         )
-      );
+    );
+
+    await Promise.all(
+      dump(sanitized)
+        .map((k) => ({ k, v: get(sanitized, k) }))
+        .filter(({ v }) => typeof v === 'string')
+        .map(({ k, v }) => ({
+          k,
+          v: [...new Set([...v.matchAll(MATCH_PATTERN)].map((m) => m[1]))]
+        }))
+        .filter(({ v }) => v.length)
+        .map(async ({ k, v }) =>
+          set(
+            sanitized,
+            `@files.${k}`,
+            await Promise.all(
+              v.map(async (n) => ({
+                src: await originByData(n),
+                title: n
+              }))
+            )
+          )
+        )
+    );
 
     return sanitized;
   };
 
-  const cnt = (data) => {
+  const cnt = async (data) => {
     const sanitized = cloneDeep(data);
 
-    dump(sanitized)
-      .map((k) => ({ k, v: get(sanitized, k) }))
-      .filter(({ v }) => typeof v === 'string')
-      .filter(({ v }) => FIELD_PATTERN.test(v))
-      .forEach(({ k, v }) =>
-        set(sanitized, k, {
-          src: originByData(v),
-          title: v
-        })
-      );
-
-    dump(sanitized)
-      .map((k) => ({ k, v: get(sanitized, k) }))
-      .filter(({ v }) => typeof v === 'string')
-      .map(({ k, v }) => ({
-        k,
-        v,
-        s: [...new Set([...v.matchAll(MATCH_PATTERN)].map((m) => m[1]))]
-      }))
-      .filter(({ s }) => s.length)
-      .forEach(({ k, v, s }) =>
-        set(
-          sanitized,
-          k,
-          s.reduce((r, n) => r.replaceAll(n, originByData(n)), v)
+    await Promise.all(
+      dump(sanitized)
+        .map((k) => ({ k, v: get(sanitized, k) }))
+        .filter(({ v }) => typeof v === 'string')
+        .filter(({ v }) => FIELD_PATTERN.test(v))
+        .map(async ({ k, v }) =>
+          set(sanitized, k, {
+            src: await originByData(v),
+            title: v
+          })
         )
-      );
+    );
+
+    await Promise.all(
+      dump(sanitized)
+        .map((k) => ({ k, v: get(sanitized, k) }))
+        .filter(({ v }) => typeof v === 'string')
+        .map(({ k, v }) => ({
+          k,
+          v,
+          s: [...new Set([...v.matchAll(MATCH_PATTERN)].map((m) => m[1]))]
+        }))
+        .filter(({ s }) => s.length)
+        .map(async ({ k, v, s }) =>
+          set(
+            sanitized,
+            k,
+            await s.reduce(
+              async (r, n) => (await r).replaceAll(n, await originByData(n)),
+              Promise.resolve(v)
+            )
+          )
+        )
+    );
 
     return sanitized;
   };
@@ -126,20 +139,27 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
     update: (resource, { data, ...rest }) =>
       dataProvider.update(resource, { ...rest, data: req(data) }),
     getOne: (resource, params) =>
-      dataProvider
-        .getOne(resource, params)
-        .then(({ data, ...rest }) => ({ ...rest, data: res(data) })),
+      dataProvider.getOne(resource, params).then(async ({ data, ...rest }) => ({
+        ...rest,
+        data: await res(data)
+      })),
     getList: (resource, params) =>
       dataProvider
         .getList(resource, params)
-        .then(({ data, ...rest }) => ({ ...rest, data: data.map(res) })),
+        .then(async ({ data, ...rest }) => ({
+          ...rest,
+          data: await Promise.all(data.map(res))
+        })),
     getMany: (resource, params) =>
       dataProvider
         .getMany(resource, params)
-        .then(({ data, ...rest }) => ({ ...rest, data: data.map(res) })),
+        .then(async ({ data, ...rest }) => ({
+          ...rest,
+          data: await Promise.all(data.map(res))
+        })),
     getContent: (resource, params) =>
       dataProvider
         .getContent(resource, params)
-        .then(({ data, ...rest }) => ({ ...rest, data: cnt(data) }))
+        .then(async ({ data, ...rest }) => ({ ...rest, data: await cnt(data) }))
   };
 };

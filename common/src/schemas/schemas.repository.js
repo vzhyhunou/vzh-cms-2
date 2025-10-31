@@ -1,6 +1,6 @@
 import { In } from 'typeorm';
 
-import '../common/repository/base.repository';
+import '../common/base.repository';
 
 export default {
   findField(field) {

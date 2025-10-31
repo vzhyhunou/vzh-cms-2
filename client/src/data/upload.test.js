@@ -22,7 +22,7 @@ const run = async (
       return Promise.resolve({ data: response });
     }
   };
-  const funcProvider = { originByData: (n) => `sample/${n}` };
+  const funcProvider = { originByData: async (n) => `sample/${n}` };
   const provider = addUploadFeature({ dataProvider, funcProvider });
   const { data } = await provider[method](undefined, { data: request });
   expect(data).toMatchObject(expectedResponse);
