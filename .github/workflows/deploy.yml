@@ -25,13 +25,13 @@ jobs:
       run: npm run test --workspace=common
     - name: Build common with NPM
       run: npm run build --workspace=common
-    - name: Test client with NPM
-      run: npm run test --workspace=client
-    - name: Build client with NPM
-      run: npm run build --workspace=client
     - name: Test server with NPM
       run: npm run test --workspace=server
     - name: Test server E2E with NPM
       run: npm run test:e2e --workspace=server
     - name: Build server with NPM
       run: npm run build --workspace=server
+    - name: Test client with NPM
+      run: npm run test --workspace=client
+    - name: Build client with NPM
+      run: npm run build --workspace=client

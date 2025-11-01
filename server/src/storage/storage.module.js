@@ -2,19 +2,18 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 
-import { config } from './configuration';
 import { hashStorage } from './storage.engine';
 import { StorageService } from './storage.service';
 
 @Module({
   imports: [
-    ConfigModule.forFeature(config),
+    ConfigModule,
     MulterModule.registerAsync({
       inject: [ConfigService],
-      imports: [ConfigModule.forFeature(config)],
+      imports: [ConfigModule],
       useFactory: (configService) => ({
         storage: hashStorage({
-          destination: configService.get('storage.origin'),
+          destination: configService.get('locations.origin'),
           filename: (req, { hash, mimetype }, cb) =>
             cb(null, `${hash}.${mimetype.split('/')[1]}`)
         })

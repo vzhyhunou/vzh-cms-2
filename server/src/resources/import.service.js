@@ -14,9 +14,7 @@ const STATIC_FOLDER = 'static';
 @Dependencies(ConfigService, SchemasService, StorageService)
 export class ImportService extends AbstractImportService {
   constructor(configService, schemasService, storageService) {
-    super(schemasService);
-    const logger = new Logger(ImportService.name);
-    this.log = (msg) => logger.log(msg);
+    super(schemasService, new Logger(ImportService.name));
     this.path = configService.get('resources.imp.path');
     this.storageService = storageService;
   }

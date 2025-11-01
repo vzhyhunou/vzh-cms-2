@@ -22,8 +22,7 @@
     "build": "babel src -d dist --ignore '**/*.spec.js'",
     "lint": "eslint '{src,test}/**/*.js'",
     "test": "cross-env NODE_ENV=development jest",
-    "test:cov": "cross-env NODE_ENV=development jest --coverage",
-    "test:e2e": "cross-env NODE_ENV=development jest --config ./test/jest-e2e.json"
+    "test:cov": "cross-env NODE_ENV=development jest --coverage"
   },
   "exports": {
     ".": "./dist/index.js"

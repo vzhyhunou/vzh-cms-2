@@ -3,12 +3,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { config } from './configuration';
-
 @Module({
   imports: [
     ServeStaticModule.forRootAsync({
-      imports: [ConfigModule.forFeature(config)],
+      imports: [ConfigModule],
       useFactory: (configService) => [
         {
           rootPath: join(process.cwd(), configService.get('locations.static')),
