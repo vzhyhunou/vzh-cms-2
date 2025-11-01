@@ -1,11 +1,7 @@
 {
   "name": "@vzhyhunou/vzh-cms-2",
   "version": "0.0.1",
-  "devDependencies": {
-    "rimraf": "^5.0.7"
-  },
   "scripts": {
-    "clean": "rimraf dist coverage",
     "format": "npm run format --workspace=common && npm run format --workspace=server && npm run format --workspace=client",
     "build": "npm run build --workspace=common && npm run build --workspace=server && npm run build --workspace=client"
   },

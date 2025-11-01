@@ -42,8 +42,9 @@
     "rimraf": "^5.0.7"
   },
   "scripts": {
+    "clean": "rimraf dist coverage",
     "format": "prettier --write '{src,test}/**/*.{js,json}'",
-    "build": "babel src -d ../dist --ignore '**/*.spec.js'",
+    "build": "babel src -d dist --ignore '**/*.spec.js'",
     "start": "babel-node index.js",
     "start:dev": "cross-env NODE_ENV=development nodemon",
     "lint": "eslint '{src,test}/**/*.js'",

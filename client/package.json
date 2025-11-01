@@ -30,7 +30,7 @@
     "format": "prettier --write '{src,test}/**/*.{js,json,jsx}'",
     "start": "cross-env REACT_APP_SRC=back vite",
     "start:fake": "cross-env REACT_APP_SRC=fake vite",
-    "build": "cross-env BUILD_PATH=../dist/public REACT_APP_SRC=back vite build",
+    "build": "cross-env BUILD_PATH=../server/dist/public REACT_APP_SRC=back vite build",
     "build:fake": "cross-env rimraf ../docs && BUILD_PATH=../docs REACT_APP_SRC=fake REACT_APP_BASE=/vzh-cms-2 vite build",
     "test": "cross-env REACT_APP_SRC=back jest"
   }

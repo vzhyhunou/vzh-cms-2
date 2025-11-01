@@ -25,6 +25,7 @@
 - Change current directory: `cd vzh-cms-2-master`
 - Install packages: `npm install`
 - Build app: `npm run build`
+- Change current directory: `cd server`
 - Run app: `node dist/main.js`
 ### Usage
 - Home page: http://localhost:8090
