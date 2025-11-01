@@ -23,11 +23,15 @@ jobs:
       run: npm i @rollup/rollup-linux-x64-gnu
     - name: Test common with NPM
       run: npm run test --workspace=common
+    - name: Build common with NPM
+      run: npm run build --workspace=common
     - name: Test server with NPM
       run: npm run test --workspace=server
     - name: Test server E2E with NPM
       run: npm run test:e2e --workspace=server
+    - name: Build server with NPM
+      run: npm run build --workspace=server
     - name: Test client with NPM
       run: npm run test --workspace=client
-    - name: Build with NPM
-      run: npm run build
+    - name: Build client with NPM
+      run: npm run build --workspace=client
