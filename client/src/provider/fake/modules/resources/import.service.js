@@ -6,8 +6,7 @@ const FILE = 'file';
 
 export class ImportService extends AbstractImportService {
   constructor(schemasService) {
-    super(schemasService);
-    this.log = (msg) => console.log(msg);
+    super(schemasService, console);
   }
 
   async consume(resourceFilter, idFilter, transformer) {
