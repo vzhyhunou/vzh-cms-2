@@ -1,16 +1,6 @@
 {
   "name": "@vzhyhunou/vzh-cms-server-2",
   "version": "0.0.1",
-  "scripts": {
-    "format": "prettier --write '{src,test}/**/*.{js,json}'",
-    "build": "babel src -d ../dist --ignore '**/*.spec.js'",
-    "start": "babel-node index.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon",
-    "lint": "eslint '{src,test}/**/*.js'",
-    "test": "cross-env NODE_ENV=development jest",
-    "test:cov": "cross-env NODE_ENV=development jest --coverage",
-    "test:e2e": "cross-env NODE_ENV=development jest --config ./test/jest-e2e.json"
-  },
   "dependencies": {
     "@vzhyhunou/vzh-cms-common-2": "^0.0.1",
     "@babel/runtime": "^7.23.9",
@@ -51,5 +41,15 @@
     "supertest": "^6.3.4",
     "cross-env": "^7.0.3",
     "rimraf": "^5.0.7"
+  },
+  "scripts": {
+    "format": "prettier --write '{src,test}/**/*.{js,json}'",
+    "build": "babel src -d ../dist --ignore '**/*.spec.js'",
+    "start": "babel-node index.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon",
+    "lint": "eslint '{src,test}/**/*.js'",
+    "test": "cross-env NODE_ENV=development jest",
+    "test:cov": "cross-env NODE_ENV=development jest --coverage",
+    "test:e2e": "cross-env NODE_ENV=development jest --config ./test/jest-e2e.json"
   }
 }

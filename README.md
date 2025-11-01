@@ -24,9 +24,7 @@
 - Download and unzip app: https://github.com/vzhyhunou/vzh-cms-2/archive/refs/heads/master.zip
 - Change current directory: `cd vzh-cms-2-master`
 - Install packages: `npm install`
-- Build common package: `npm run build --workspace=common`
-- Build client package: `npm run build --workspace=client`
-- Build server package: `npm run build --workspace=server`
+- Build app: `npm run build`
 - Run app: `node dist/main.js`
 ### Usage
 - Home page: http://localhost:8090
