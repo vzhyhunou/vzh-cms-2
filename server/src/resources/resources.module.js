@@ -4,7 +4,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 import { ImportService } from './import.service';
 import { ImportInitializer } from './import.initializer';
-import config from './configuration';
 import { ImportController } from './import.controller';
 import { SchemasModule } from '../schemas/schemas.module';
 import { ExportService } from './export.service';
@@ -14,7 +13,7 @@ import { StorageModule } from '../storage/storage.module';
 
 @Module({
   imports: [
-    ConfigModule.forFeature(config),
+    ConfigModule,
     ScheduleModule.forRoot(),
     SchemasModule,
     StorageModule

@@ -8,7 +8,7 @@ const MATCH_PATTERN = /\\?"([0-9a-fA-F]{32}.[a-zA-Z0-9]+)\\?"/g;
 @Dependencies(ConfigService)
 export class StorageService {
   constructor(configService) {
-    this.path = configService.get('storage.origin');
+    this.path = configService.get('locations.origin');
   }
 
   replaceFilenames(dto, files) {
