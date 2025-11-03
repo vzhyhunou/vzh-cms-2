@@ -1,6 +1,3 @@
-export default () => {
-  const conf = {
-    logger: ['log', 'fatal', 'error', 'warn', 'debug']
-  };
-  return conf;
+export default {
+  logger: ['log', 'fatal', 'error', 'warn', 'debug']
 };

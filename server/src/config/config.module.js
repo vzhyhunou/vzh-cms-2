@@ -16,7 +16,7 @@ import path from 'path';
           (args) => () =>
             args
               .filter((c) => c)
-              .map((c) => c.default())
+              .map((c) => c.default)
               .reduce(merge, {})
         )
       ]
