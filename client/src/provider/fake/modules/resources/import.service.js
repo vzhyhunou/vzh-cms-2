@@ -30,6 +30,9 @@ export class ImportService extends AbstractImportService {
               await this.schemasService.save(STATIC, item);
             }
           }
+          break;
+        }
+        default: {
         }
       }
     }

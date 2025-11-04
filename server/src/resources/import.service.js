@@ -45,6 +45,9 @@ export class ImportService extends AbstractImportService {
                 true
               );
             }
+            break;
+          }
+          default: {
           }
         }
       }
