@@ -7,8 +7,8 @@ import { AbstractImportService } from '@vzhyhunou/vzh-cms-common-2';
 import { SchemasService } from '../schemas/schemas.service';
 import { StorageService } from '../storage/storage.service';
 
-const RESOURCES_FOLDER = 'resources';
-const STATIC_FOLDER = 'static';
+const RESOURCES = 'resources';
+const STATIC = 'static';
 
 @Injectable()
 @Dependencies(ConfigService, SchemasService, StorageService)
@@ -19,16 +19,16 @@ export class ImportService extends AbstractImportService {
     this.storageService = storageService;
   }
 
-  async consume(resourceFilter, idFilter, transformer) {
+  async consume(filter, transformer) {
     var zip = new AdmZip(this.path);
     for (const entry of zip.getEntries()) {
       const { entryName, isDirectory } = entry;
       if (!isDirectory) {
         const [folder, resource, file] = entryName.split(path.sep);
         switch (folder) {
-          case RESOURCES_FOLDER: {
+          case RESOURCES: {
             const { name } = path.parse(file);
-            if (resourceFilter(resource) && idFilter(name)) {
+            if (filter(resource, name)) {
               const dto = zip.readAsText(entry);
               const item = JSON.parse(dto);
               const transformed = await transformer(item, resource);
@@ -36,13 +36,18 @@ export class ImportService extends AbstractImportService {
             }
             break;
           }
-          case STATIC_FOLDER: {
-            zip.extractEntryTo(
-              entryName,
-              this.storageService.path,
-              false,
-              true
-            );
+          case STATIC: {
+            if (filter()) {
+              zip.extractEntryTo(
+                entryName,
+                this.storageService.path,
+                false,
+                true
+              );
+            }
+            break;
+          }
+          default: {
           }
         }
       }

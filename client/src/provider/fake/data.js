@@ -1,3 +1,6 @@
+import md5 from 'js-md5';
+
+const STATIC = 'static';
 const log = (type, args, response) => {
   if (console.group) {
     console.groupCollapsed(type, JSON.stringify(args));
@@ -8,9 +11,25 @@ const log = (type, args, response) => {
     console.log('FakeRest response', response);
   }
 };
+const processFile = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  })
+    .then((picture64) => ({
+      value: picture64.match(/,(.*)/)[1],
+      type: picture64.match(/\/(.*);/)[1]
+    }))
+    .then(({ value, type }) => ({
+      value,
+      id: `${md5(value)}.${type}`
+    }));
 
 export default ({
   schemasService,
+  storageService: { replaceFilenames },
   localeProvider: { getLocale },
   authProvider: { getPermissions, getIdentity }
 }) => {
@@ -24,6 +43,25 @@ export default ({
       log(type, args, data);
       return data;
     };
+  const save = (resource, { data }, { username }) =>
+    Promise.all(
+      data
+        .getAll('files')
+        .map((file) =>
+          processFile(file).then((item) =>
+            schemasService
+              .save(STATIC, item)
+              .then(({ id }) => ({ originalname: file.name, filename: id }))
+          )
+        )
+    )
+      .then((files) => replaceFilenames(data.get('dto'), files))
+      .then((data) =>
+        schemasService.save(resource, data, {
+          request: { user: { username } }
+        })
+      )
+      .then((data) => ({ data }));
 
   return {
     getList: handle('getList', (resource, { pagination, sort, filter }) => {
@@ -48,20 +86,8 @@ export default ({
     getMany: handle('getMany', (resource, { ids }) =>
       schemasService.findByIdIn(resource, ids).then((data) => ({ data }))
     ),
-    create: handle('create', (resource, { data }, { username }) =>
-      schemasService
-        .save(resource, JSON.parse(data.get('dto')), {
-          request: { user: { username } }
-        })
-        .then((data) => ({ data }))
-    ),
-    update: handle('update', (resource, { data }, { username }) =>
-      schemasService
-        .save(resource, JSON.parse(data.get('dto')), {
-          request: { user: { username } }
-        })
-        .then((data) => ({ data }))
-    ),
+    create: handle('create', save),
+    update: handle('update', save),
     delete: handle('delete', (resource, { id }) =>
       schemasService.remove(resource, id)
     ),

@@ -24,7 +24,7 @@ export class SchemasService {
         ? item.parse
         : await this.findResourceField(resource, 'parse');
     if (transform) {
-      item = parse(transform, { ...params, target: item });
+      item = await parse(transform, { ...params, target: item });
     }
     return await repository.save(item);
   }
@@ -45,7 +45,12 @@ export class SchemasService {
   async findAll(resource, { page, size, sort, parse: p, ...rest }) {
     const repository = this.getRepository(resource);
     const filter = Object.fromEntries(
-      Object.entries(rest).map(([k, v]) => [k, p.includes(k) ? parse(v) : v])
+      await Promise.all(
+        Object.entries(rest).map(async ([k, v]) => [
+          k,
+          p.includes(k) ? await parse(v) : v
+        ])
+      )
     );
     let [content, totalElements] = await repository.findAndCount({
       where: filter,
@@ -55,7 +60,9 @@ export class SchemasService {
     });
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
-      content = content.map((item) => parse(transform, { target: item }));
+      content = await Promise.all(
+        content.map(async (item) => await parse(transform, { target: item }))
+      );
     }
     return {
       content,
@@ -79,7 +86,7 @@ export class SchemasService {
               where: {}
             });
             if (value && transform) {
-              value = parse(transform, { target: value });
+              value = await parse(transform, { target: value });
             }
             return { value, done: !value };
           }
@@ -118,7 +125,7 @@ export class SchemasService {
     }
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
-      item = parse(transform, { target: item });
+      item = await parse(transform, { target: item });
     }
     return item;
   }
@@ -128,7 +135,9 @@ export class SchemasService {
     let content = await repository.findByIdIn(ids);
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
-      content = content.map((item) => parse(transform, { target: item }));
+      content = await Promise.all(
+        content.map(async (item) => await parse(transform, { target: item }))
+      );
     }
     return content;
   }
@@ -154,7 +163,7 @@ export class SchemasService {
     if (!projection) {
       return target;
     }
-    return await this.parse(projection, { ...params, target });
+    return this.parse(projection, { ...params, target });
   }
 
   async findComponent(resource, name) {
@@ -219,7 +228,8 @@ export class SchemasService {
 
   async parse(code, bindings) {
     const settings = await this.findSettings();
-    return parse(code, { settings, ...bindings });
+    const content = (...args) => this.findContent(...args);
+    return parse(code, { settings, content, ...bindings });
   }
 
   getRepository(resource) {

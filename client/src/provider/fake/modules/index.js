@@ -1,5 +1,9 @@
 import { DataSource } from 'typeorm';
-import { SchemasService, DataSourceService } from '@vzhyhunou/vzh-cms-common-2';
+import {
+  SchemasService,
+  DataSourceService,
+  StorageService
+} from '@vzhyhunou/vzh-cms-common-2';
 
 import { ImportService } from './resources/import.service';
 import sourceConfig from './datasource/configuration';
@@ -11,5 +15,6 @@ export default async () => {
   const schemasService = new SchemasService(dataSourceService);
   const importService = new ImportService(schemasService);
   await importService.imp();
-  return { schemasService };
+  const storageService = new StorageService();
+  return { schemasService, storageService };
 };

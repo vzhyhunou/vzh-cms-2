@@ -1,11 +1,7 @@
-import schema from './schema';
-import user from './user';
-import page from './page';
-import file from './file';
+import resources from './resources';
+import files from './static';
 
 export default {
-  schema,
-  user,
-  page,
-  file
+  resources,
+  static: files
 };

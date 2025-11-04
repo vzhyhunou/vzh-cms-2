@@ -5,7 +5,7 @@ import getDataProvider from './data';
 import getServices from './modules';
 
 export default async (props) => {
-  const { schemasService } = await getServices();
+  const { schemasService, storageService } = await getServices();
 
   const localeProvider = getLocaleProvider(props);
   const funcProvider = getFuncProvider({
@@ -18,6 +18,7 @@ export default async (props) => {
   });
   const dataProvider = getDataProvider({
     schemasService,
+    storageService,
     localeProvider,
     authProvider,
     ...props

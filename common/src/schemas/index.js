@@ -1,4 +1,6 @@
-import { SchemasService } from './schemas.service';
 import SchemasRepository from './schemas.repository';
 
-export { SchemasService, SchemasRepository };
+export * from './schemas.service';
+export * from './schemas.exception';
+
+export { SchemasRepository };
