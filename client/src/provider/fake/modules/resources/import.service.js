@@ -2,25 +2,32 @@ import { AbstractImportService } from '@vzhyhunou/vzh-cms-common-2';
 
 import data from './data';
 
-const FILE = 'file';
+const RESOURCES = 'resources';
+const STATIC = 'static';
 
 export class ImportService extends AbstractImportService {
   constructor(schemasService) {
     super(schemasService, console);
   }
 
-  async consume(resourceFilter, idFilter, transformer) {
-    for (const [resource, items] of Object.entries(data)) {
-      for (const [name, item] of Object.entries(items)) {
-        switch (resource) {
-          case FILE: {
-            await this.schemasService.save(FILE, item);
-            break;
+  async consume(filter, transformer) {
+    for (const [folder, resources] of Object.entries(data)) {
+      switch (folder) {
+        case RESOURCES: {
+          for (const [resource, items] of Object.entries(resources)) {
+            for (const [name, item] of Object.entries(items)) {
+              if (filter(resource, name)) {
+                const transformed = await transformer(item, resource);
+                await this.schemasService.save(resource, transformed);
+              }
+            }
           }
-          default: {
-            if (resourceFilter(resource) && idFilter(name)) {
-              const transformed = await transformer(item, resource);
-              await this.schemasService.save(resource, transformed);
+          break;
+        }
+        case STATIC: {
+          if (filter()) {
+            for (const item of resources) {
+              await this.schemasService.save(STATIC, item);
             }
           }
         }
