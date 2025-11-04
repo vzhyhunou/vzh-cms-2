@@ -1,13 +1,17 @@
 import b from './bindings';
 
-export default (code, { request = {}, system = {}, ...rest } = {}) => {
+const parse = (code, { request = {}, system = {}, ...rest } = {}) => {
   const params = {
+    parse,
     ...b,
     ...rest,
     request,
     system
   };
-  return new Function(...Object.keys(params), `return ${code}`)(
-    ...Object.values(params)
-  );
+  return new Function(
+    ...Object.keys(params),
+    `return (async () => (${code}))()`
+  )(...Object.values(params));
 };
+
+export default parse;
