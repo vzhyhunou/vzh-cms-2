@@ -1,3 +1,1 @@
-import { AbstractImportService } from './import.service';
-
-export { AbstractImportService };
+export * from './import.service';

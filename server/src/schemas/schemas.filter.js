@@ -1,6 +1,5 @@
 import { Catch, NotFoundException } from '@nestjs/common';
-
-import { NotFoundException as Exception } from './schemas.exception';
+import { NotFoundException as Exception } from '@vzhyhunou/vzh-cms-common-2';
 
 @Catch(Exception)
 export class HttpExceptionFilter {
