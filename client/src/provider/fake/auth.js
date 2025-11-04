@@ -16,8 +16,8 @@ export default ({ schemasService }) => {
         }
       );
       const token = sign(
-        { sub: username, roles: authorities, exp: 1761907591 },
-        ''
+        { sub: username, roles: authorities, exp: Date.now() / 1000 + 86400 },
+        'JwtSecretKey'
       );
       await setToken(token);
       return { redirectTo: '/' };
