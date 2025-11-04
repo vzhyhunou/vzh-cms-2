@@ -15,7 +15,7 @@ export class StorageService {
     return JSON.parse(
       files.reduce(
         (r, { originalname, filename }) => r.replaceAll(originalname, filename),
-        JSON.stringify(dto)
+        dto
       )
     );
   }

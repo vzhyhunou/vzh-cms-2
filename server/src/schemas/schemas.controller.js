@@ -19,7 +19,6 @@ import { I18nContext } from 'nestjs-i18n';
 
 import { SchemasService } from './schemas.service';
 import { PageablePipe } from '../common/pageable.pipe';
-import { MultipartPipe } from '../common/multipart.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 import { Public } from '../auth/public.decorator';
@@ -35,16 +34,16 @@ export class SchemasController {
 
   @Post('resource/:resource')
   @UseInterceptors(FilesInterceptor('files'))
-  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
-  create(resource, dto, files, request) {
+  @Bind(Param('resource'), Body(), UploadedFiles(), Request())
+  create(resource, { dto }, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
     return this.schemasService.save(resource, transformed, { request });
   }
 
   @Put('resource/:resource/:id')
   @UseInterceptors(FilesInterceptor('files'))
-  @Bind(Param('resource'), Body(MultipartPipe), UploadedFiles(), Request())
-  update(resource, dto, files, request) {
+  @Bind(Param('resource'), Body(), UploadedFiles(), Request())
+  update(resource, { dto }, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
     return this.schemasService.save(resource, transformed, { request });
   }
