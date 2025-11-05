@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 
 import SchemasRepository from './schemas.repository';
-import { NotFoundException } from './schemas.exception';
+import { NotFoundException, ConflictException } from './schemas.exception';
 import parse from './parse';
 import { transform } from './utils';
 
@@ -18,7 +18,6 @@ export class SchemasService {
       await this.dataSourceService.save(entities);
       this.settings = undefined;
     }
-    const repository = this.getRepository(resource);
     const transform =
       resource === SCHEMA && item.id === SCHEMA
         ? item.parse
@@ -26,7 +25,32 @@ export class SchemasService {
     if (transform) {
       item = await parse(transform, { ...params, target: item });
     }
+    const repository = this.getRepository(resource);
     return await repository.save(item);
+  }
+
+  async create(resource, item, params) {
+    const repository = this.getRepository(resource);
+    const id = repository.getId(item);
+    const databaseItem = await repository.findById(id);
+    if (databaseItem) {
+      throw new ConflictException();
+    }
+    return await this.save(resource, item, params);
+  }
+
+  async update(resource, item, params) {
+    const repository = this.getRepository(resource);
+    const id = repository.getId(item);
+    const databaseItem = await repository.findById(id);
+    if (!databaseItem) {
+      throw new NotFoundException();
+    }
+    if (resource === SCHEMA) {
+      const entities = this.entities(databaseItem);
+      await this.dataSourceService.remove(entities);
+    }
+    return await this.save(resource, item, params);
   }
 
   async remove(resource, id) {

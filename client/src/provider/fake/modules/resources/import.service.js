@@ -10,7 +10,7 @@ export class ImportService extends AbstractImportService {
     super(schemasService, console);
   }
 
-  async consume(filter, transformer) {
+  async consume(filter, transformer, method) {
     for (const [folder, resources] of Object.entries(data)) {
       switch (folder) {
         case RESOURCES: {
@@ -18,7 +18,7 @@ export class ImportService extends AbstractImportService {
             for (const [name, item] of Object.entries(items)) {
               if (filter(resource, name)) {
                 const transformed = await transformer(item, resource);
-                await this.schemasService.save(resource, transformed);
+                await this.schemasService[method](resource, transformed);
               }
             }
           }
@@ -27,7 +27,7 @@ export class ImportService extends AbstractImportService {
         case STATIC: {
           if (filter()) {
             for (const item of resources) {
-              await this.schemasService.save(STATIC, item);
+              await this.schemasService.create(STATIC, item);
             }
           }
           break;

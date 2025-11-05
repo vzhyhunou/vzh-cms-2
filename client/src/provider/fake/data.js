@@ -43,25 +43,18 @@ export default ({
       log(type, args, data);
       return data;
     };
-  const save = (resource, { data }, { username }) =>
+  const processFiles = (data) =>
     Promise.all(
       data
         .getAll('files')
         .map((file) =>
           processFile(file).then((item) =>
             schemasService
-              .save(STATIC, item)
+              .create(STATIC, item)
               .then(({ id }) => ({ originalname: file.name, filename: id }))
           )
         )
-    )
-      .then((files) => replaceFilenames(data.get('dto'), files))
-      .then((data) =>
-        schemasService.save(resource, data, {
-          request: { user: { username } }
-        })
-      )
-      .then((data) => ({ data }));
+    ).then((files) => replaceFilenames(data.get('dto'), files));
 
   return {
     getList: handle('getList', (resource, { pagination, sort, filter }) => {
@@ -86,8 +79,24 @@ export default ({
     getMany: handle('getMany', (resource, { ids }) =>
       schemasService.findByIdIn(resource, ids).then((data) => ({ data }))
     ),
-    create: handle('create', save),
-    update: handle('update', save),
+    create: handle('create', (resource, { data }, { username }) =>
+      processFiles(data)
+        .then((data) =>
+          schemasService.create(resource, data, {
+            request: { user: { username } }
+          })
+        )
+        .then((data) => ({ data }))
+    ),
+    update: handle('update', (resource, { data }, { username }) =>
+      processFiles(data)
+        .then((data) =>
+          schemasService.update(resource, data, {
+            request: { user: { username } }
+          })
+        )
+        .then((data) => ({ data }))
+    ),
     delete: handle('delete', (resource, { id }) =>
       schemasService.remove(resource, id)
     ),

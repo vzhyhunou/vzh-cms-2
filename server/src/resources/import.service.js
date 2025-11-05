@@ -19,7 +19,7 @@ export class ImportService extends AbstractImportService {
     this.storageService = storageService;
   }
 
-  async consume(filter, transformer) {
+  async consume(filter, transformer, method) {
     var zip = new AdmZip(this.path);
     for (const entry of zip.getEntries()) {
       const { entryName, isDirectory } = entry;
@@ -32,7 +32,7 @@ export class ImportService extends AbstractImportService {
               const dto = zip.readAsText(entry);
               const item = JSON.parse(dto);
               const transformed = await transformer(item, resource);
-              await this.schemasService.save(resource, transformed);
+              await this.schemasService[method](resource, transformed);
             }
             break;
           }

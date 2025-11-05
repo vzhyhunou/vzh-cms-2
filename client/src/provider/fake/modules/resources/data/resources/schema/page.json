@@ -8,8 +8,8 @@
   ],
   "editor": "PAGES_EDITOR",
   "settings": "{\n  tags: [\n    'MENU',\n    'PUBLISHED'\n  ]\n}",
-  "parse": "{\n  ...target,\n  date: new Date(),\n  userId: request.user?.username,\n  title: target.title && Object.entries(target.title).map(([locale, value]) => ({locale, value})),\n  body: target.body && Object.entries(target.body).map(([locale, value]) => ({locale, value}))\n}",
-  "format": "{\n  ...target,\n  title: Object.fromEntries(target.title.map(({locale, value}) => [locale, value])),\n  body: Object.fromEntries(target.body.map(({locale, value}) => [locale, value]))\n}",
+  "parse": "{\n  ...target,\n  date: new Date(),\n  userId: request.user?.username,\n  title: target.title && Object.entries(target.title).map(([locale, value], index) => ({id: target.titleIds?.[index], locale, value})),\n  body: target.body && Object.entries(target.body).map(([locale, value], index) => ({id: target.bodyIds?.[index], locale, value}))\n}",
+  "format": "{\n  ...target,\n  title: Object.fromEntries(target.title.map(({locale, value}) => [locale, value])),\n  titleIds: target.title.map(({id}) => id),\n  body: Object.fromEntries(target.body.map(({locale, value}) => [locale, value])),\n  bodyIds: target.body.map(({id}) => id)\n}",
   "contents": [
     {
       "name": "one",

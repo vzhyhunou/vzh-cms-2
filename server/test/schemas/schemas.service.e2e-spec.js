@@ -36,23 +36,23 @@ describe('SchemasService (e2e)', () => {
       let entities = await repository.find();
       expect(entities).toHaveLength(0);
 
-      await subj.save(SCHEMA, schema('user'));
+      await subj.create(SCHEMA, schema('user'));
       entities = await repository.find();
       expect(entities).toMatchObject([{ id: 'user' }]);
 
       const usersRepository = subj.getRepository('user');
 
-      await subj.save('user', { id: 'admin' });
+      await subj.create('user', { id: 'admin' });
       entities = await usersRepository.find();
       expect(entities).toMatchObject([{ id: 'admin' }]);
 
-      await subj.save(SCHEMA, schema('page'));
+      await subj.create(SCHEMA, schema('page'));
       entities = await repository.find();
       expect(entities).toMatchObject([{ id: 'user' }, { id: 'page' }]);
 
       const pagesRepository = subj.getRepository('page');
 
-      await subj.save('page', { id: 'home' });
+      await subj.create('page', { id: 'home' });
       entities = await pagesRepository.find();
       expect(entities).toMatchObject([{ id: 'home' }]);
     });

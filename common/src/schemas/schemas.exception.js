@@ -3,3 +3,9 @@ export class NotFoundException extends Error {
     super('Not Found');
   }
 }
+
+export class ConflictException extends Error {
+  constructor() {
+    super('Conflict');
+  }
+}

@@ -24,7 +24,7 @@ describe('Items (e2e)', () => {
     await app.init();
 
     await service.save(SCHEMA, entity);
-    await service.save(SCHEMA, schema('user'));
+    await service.create(SCHEMA, schema('user'));
     repository = service.getRepository('user');
   });
 

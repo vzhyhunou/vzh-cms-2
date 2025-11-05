@@ -8,8 +8,8 @@
   ],
   "editor": "ADMIN",
   "settings": "{\n  locales: {\n    en: 'English',\n    ru: 'Русский'\n  }\n}",
-  "parse": "{\n  ...target,\n  date: new Date(),\n  userId: request.user?.username,\n  messages: Object.entries(target.messages).map(([name, value]) => ({name, value}))\n}",
-  "format": "{\n  ...target,\n  messages: Object.fromEntries(target.messages.map(({name, value}) => [name, value]))\n}",
+  "parse": "{\n  ...target,\n  date: new Date(),\n  userId: request.user?.username,\n  messages: Object.entries(target.messages).map(([name, value], index) => ({id: target.messagesIds?.[index], name, value}))\n}",
+  "format": "{\n  ...target,\n  messages: Object.fromEntries(target.messages.map(({name, value}) => [name, value])),\n  messagesIds: target.messages.map(({id}) => id)\n}",
   "components": [
     {
       "name": "CodeInput",

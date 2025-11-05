@@ -37,7 +37,7 @@ export class SchemasController {
   @Bind(Param('resource'), Body(), UploadedFiles(), Request())
   create(resource, { dto }, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasService.save(resource, transformed, { request });
+    return this.schemasService.create(resource, transformed, { request });
   }
 
   @Put('resource/:resource/:id')
@@ -45,7 +45,7 @@ export class SchemasController {
   @Bind(Param('resource'), Body(), UploadedFiles(), Request())
   update(resource, { dto }, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasService.save(resource, transformed, { request });
+    return this.schemasService.update(resource, transformed, { request });
   }
 
   @Delete('resource/:resource/:id')
