@@ -8,8 +8,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { EditorView } from '@codemirror/view';
 import { oneDark } from '@codemirror/theme-one-dark';
 
-import Content from './Content';
-import Component from './Component';
+import ui from '.';
 
 export default (({ default: React, ...react }) => ({
   React,
@@ -18,8 +17,7 @@ export default (({ default: React, ...react }) => ({
   ...mui,
   ...router,
   ...form,
-  Content,
-  Component,
+  ...ui,
   CodeMirror,
   javascript,
   EditorView,

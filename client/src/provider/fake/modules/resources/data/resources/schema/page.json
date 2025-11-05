@@ -12,21 +12,21 @@
   "format": "{\n  ...target,\n  title: Object.fromEntries(target.title.map(({locale, value}) => [locale, value])),\n  titleIds: target.title.map(({id}) => id),\n  body: Object.fromEntries(target.body.map(({locale, value}) => [locale, value])),\n  bodyIds: target.body.map(({id}) => id)\n}",
   "contents": [
     {
+      "name": "menu",
+      "options": "((currentLocale, defaultLocale) => ({\n  select: {\n    id: true\n  },\n  loadEagerRelations: false,\n  relations: {\n    title: true\n  },\n  where: {\n    tags: {\n      name: 'MENU',\n      start: Raw(alias => `${alias} is null or ${alias} < :p1`, {p1: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :p2`, {p2: new Date()})\n    },\n    title: {\n      locale: Or(Equal(currentLocale), Equal(defaultLocale))\n    }\n  }\n}))(system.locale, Object.keys(settings.schema.locales)[0])",
+      "projection": "((currentLocale, defaultLocale) => target.map(({id, title}) => ({\n  id,\n  title: title.find(({locale}) => locale === currentLocale)?.value || title.find(({locale}) => locale === defaultLocale)?.value\n})))(system.locale, Object.keys(settings.schema.locales)[0])"
+    },
+    {
       "name": "one",
       "single": true,
       "options": "((currentLocale, defaultLocale) => ({\n  select: {\n    id: true\n  },\n  loadEagerRelations: false,\n  relations: {\n    title: true,\n    body: true\n  },\n  where: {\n    id: request.query.id,\n    tags: !request.user?.authorized && {\n      name: 'PUBLISHED',\n      start: Raw(alias => `${alias} is null or ${alias} < :p1`, {p1: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :p2`, {p2: new Date()})\n    },\n    title: {\n      locale: Or(Equal(currentLocale), Equal(defaultLocale), IsNull())\n    },\n    body: {\n      locale: Or(Equal(currentLocale), Equal(defaultLocale))\n    }\n  }\n}))(system.locale, Object.keys(settings.schema.locales)[0])",
       "projection": "((currentLocale, defaultLocale) => ({\n  title: target.title.find(({locale}) => locale === currentLocale)?.value || target.title.find(({locale}) => locale === defaultLocale)?.value,\n  code: transform(target.body.find(({locale}) => locale === currentLocale)?.value || target.body.find(({locale}) => locale === defaultLocale)?.value)\n}))(system.locale, Object.keys(settings.schema.locales)[0])"
-    },
-    {
-      "name": "menu",
-      "options": "((currentLocale, defaultLocale) => ({\n  select: {\n    id: true\n  },\n  loadEagerRelations: false,\n  relations: {\n    title: true\n  },\n  where: {\n    tags: {\n      name: 'MENU',\n      start: Raw(alias => `${alias} is null or ${alias} < :p1`, {p1: new Date()}),\n      end: Raw(alias => `${alias} is null or ${alias} > :p2`, {p2: new Date()})\n    },\n    title: {\n      locale: Or(Equal(currentLocale), Equal(defaultLocale))\n    }\n  }\n}))(system.locale, Object.keys(settings.schema.locales)[0])",
-      "projection": "((currentLocale, defaultLocale) => target.map(({id, title}) => ({\n  id,\n  title: title.find(({locale}) => locale === currentLocale)?.value || title.find(({locale}) => locale === defaultLocale)?.value\n})))(system.locale, Object.keys(settings.schema.locales)[0])"
     }
   ],
   "components": [
     {
       "name": "Create",
-      "element": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required()]}/>\n   <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>\n    <TextInput source=\"title\"/>\n    <Component schema=\"schema\" name=\"CodeInput\" source=\"body\"/>\n    <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n     <Component schema=\"page\" name=\"ImageInput\"/>\n    </ImageInput>\n   </TranslatableInputs>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.page.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>"
+      "element": "<Create>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <TextInput source=\"id\" validate={[required(), (({getOne}) => id => getOne('page', {id}).then(() => 'resources.validation.id', () => {}))(useDataProvider())]}/>\n   <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>\n    <TextInput source=\"title\"/>\n    <Component schema=\"schema\" name=\"CodeInput\" source=\"body\"/>\n    <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n     <Component schema=\"page\" name=\"ImageInput\"/>\n    </ImageInput>\n   </TranslatableInputs>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.page.tags.map(tag => ({id: tag, name: tag}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Create>"
     },
     {
       "name": "Edit",
