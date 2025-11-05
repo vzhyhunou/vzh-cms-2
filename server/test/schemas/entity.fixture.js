@@ -93,7 +93,6 @@ export default {
       },
       indices: [
         {
-          synchronize: false,
           unique: true,
           columns: ['schema', 'name']
         }
