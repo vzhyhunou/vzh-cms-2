@@ -6,28 +6,19 @@ export class DataSourceService {
   }
 
   async save(values) {
-    this.saveSchema(values);
-    await this.synchronize();
-  }
-
-  saveSchema(values) {
-    this.removeSchema(values);
     this.dataSource.options.entities = [
       ...this.dataSource.options.entities,
       ...values.map((entity) => new EntitySchema(entity))
     ];
-  }
-
-  async remove(values) {
-    this.removeSchema(values);
     await this.synchronize();
   }
 
-  removeSchema(values) {
+  async remove(values) {
     const names = values.map(({ name }) => name);
     this.dataSource.options.entities = this.dataSource.options.entities.filter(
       ({ options: { name } }) => !names.includes(name)
     );
+    await this.synchronize();
   }
 
   async synchronize() {
