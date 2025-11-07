@@ -3,4 +3,6 @@ import Component from './Component';
 import CodeInput from './CodeInput';
 import ParseInput from './ParseInput';
 
-export default { Content, Component, CodeInput, ParseInput };
+export * from './validation';
+
+export { Content, Component, CodeInput, ParseInput };

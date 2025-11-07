@@ -4,7 +4,7 @@ import * as form from 'react-hook-form';
 import * as admin from 'react-admin';
 import * as mui from '@mui/material';
 
-import ui from '.';
+import * as ui from '.';
 
 export default (({ default: React, ...react }) => ({
   React,
