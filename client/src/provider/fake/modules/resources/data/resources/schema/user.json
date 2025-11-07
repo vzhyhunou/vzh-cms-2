@@ -26,7 +26,7 @@
     },
     {
       "name": "List",
-      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <Component schema=\"schema\" name=\"ParseInput\" component={SelectInput} source=\"tags\" parse={value => `{name: '${value}'}`} choices={settings.user.tags.map(tag => ({id: tag, name: tag}))}/>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
+      "element": "<List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <ParseInput component={SelectInput} source=\"tags\" parse={value => `{name: '${value}'}`} choices={settings.user.tags.map(tag => ({id: tag, name: tag}))}/>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\">\n   <SingleFieldList linkType={false}>\n    <ChipField source=\"name\" size=\"small\"/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>"
     }
   ],
   "messages": {
