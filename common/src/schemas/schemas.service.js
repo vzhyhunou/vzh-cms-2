@@ -29,12 +29,25 @@ export class SchemasService {
     return await repository.save(item);
   }
 
+  async verifyEntities(item) {
+    const others = Object.entries(await this.findEntities())
+      .filter(([key]) => key !== item.id)
+      .flatMap(([key, value]) => value);
+    const current = this.entities(item).map(({ name }) => name);
+    if (current.some((name) => others.includes(name))) {
+      throw new ConflictException();
+    }
+  }
+
   async create(resource, item, params) {
     const repository = this.getRepository(resource);
     const id = repository.getId(item);
     const databaseItem = await repository.findById(id);
     if (databaseItem) {
       throw new ConflictException();
+    }
+    if (resource === SCHEMA) {
+      await this.verifyEntities(item);
     }
     return await this.save(resource, item, params);
   }
@@ -47,6 +60,7 @@ export class SchemasService {
       throw new NotFoundException();
     }
     if (resource === SCHEMA) {
+      await this.verifyEntities(item);
       const entities = this.entities(databaseItem);
       await this.dataSourceService.remove(entities);
     }
@@ -137,6 +151,17 @@ export class SchemasService {
       schemas.map(({ id, ...rest }) => [
         id,
         Object.keys(this.entities(rest).find(({ name }) => name === id).columns)
+      ])
+    );
+  }
+
+  async findEntities() {
+    const repository = this.getRepository(SCHEMA);
+    const schemas = await repository.findField('entities');
+    return Object.fromEntries(
+      schemas.map(({ id, ...rest }) => [
+        id,
+        this.entities(rest).map(({ name }) => name)
       ])
     );
   }
