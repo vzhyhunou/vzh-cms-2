@@ -7,7 +7,7 @@ export default {
   type: 'sqljs',
   driver: sqlJs,
   sqlJsConfig: {
-    locateFile: () => `/sql-wasm.wasm`
+    locateFile: (path, prefix) => `${prefix || '/'}${path}`
   },
   entities: [new EntitySchema(fileSchema)],
   logging: true
