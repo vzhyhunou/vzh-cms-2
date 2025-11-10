@@ -6,7 +6,7 @@ import * as mui from '@mui/material';
 
 import * as ui from '.';
 
-export default (({ default: React, ...react }) => ({
+export default (({ default: React, ...react }, { default: f, ...form }) => ({
   React,
   ...react,
   ...admin,
@@ -14,4 +14,4 @@ export default (({ default: React, ...react }) => ({
   ...router,
   ...form,
   ...ui
-}))(react);
+}))(react, form);

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "@vzhyhunou/vzh-cms-common-2": "^0.0.1",
-    "react-admin": "^5.2.1",
+    "react-admin": "^5.12.3",
     "reflect-metadata": "^0.2.2",
     "sql.js": "^1.13.0",
     "jwt-decode": "^3.1.2",
@@ -19,12 +19,12 @@
     "@vitejs/plugin-react": "^5.1.0",
     "vite-plugin-eslint": "^1.8.1",
     "eslint-config-react-app": "^7.0.1",
-    "jest": "^29.7.0",
-    "@testing-library/react": "^14.1.2",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest": "^30.2.0",
+    "@testing-library/react": "^16.3.0",
+    "jest-environment-jsdom": "^30.2.0",
     "cross-env": "^7.0.3",
     "rimraf": "^5.0.5",
-    "@babel/cli": "^7.23.4",
+    "@babel/cli": "^7.28.3",
     "prettier": "^3.2.5"
   },
   "scripts": {
@@ -33,6 +33,6 @@
     "start:fake": "cross-env REACT_APP_SRC=fake vite",
     "build": "cross-env BUILD_PATH=../server/dist/public REACT_APP_SRC=back vite build",
     "build:fake": "cross-env rimraf ../docs && BUILD_PATH=../docs REACT_APP_SRC=fake REACT_APP_BASE=/vzh-cms-2 vite build",
-    "test": "cross-env REACT_APP_SRC=back jest"
+    "test": "cross-env REACT_APP_SRC=fake jest"
   }
 }

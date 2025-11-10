@@ -10,5 +10,6 @@ export default {
     locateFile: (path, prefix) => `${prefix || '/'}${path}`
   },
   entities: [new EntitySchema(fileSchema)],
-  logging: true
+  logging: true,
+  synchronize: true
 };
