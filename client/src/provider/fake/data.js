@@ -98,7 +98,10 @@ export default ({
         .then((data) => ({ data }))
     ),
     delete: handle('delete', (resource, { id }) =>
-      schemasService.remove(resource, id)
+      schemasService.removeById(resource, id)
+    ),
+    deleteMany: handle('deleteMany', (resource, { ids }) =>
+      schemasService.removeByIdIn(resource, ids).then((data) => ({ data }))
     ),
     getContent: handle('getContent', (resource, { name, params }, { locale }) =>
       schemasService

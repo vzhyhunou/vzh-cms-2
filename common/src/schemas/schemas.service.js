@@ -67,7 +67,7 @@ export class SchemasService {
     return await this.save(resource, item, params);
   }
 
-  async remove(resource, id) {
+  async removeById(resource, id) {
     const repository = this.getRepository(resource);
     const item = await repository.findById(id);
     if (!item) {
@@ -78,6 +78,19 @@ export class SchemasService {
       await this.dataSourceService.remove(entities);
     }
     return await repository.remove(item);
+  }
+
+  async removeByIdIn(resource, ids) {
+    const repository = this.getRepository(resource);
+    const items = await repository.findByIdIn(ids);
+    if (ids.length > items.length) {
+      throw new NotFoundException();
+    }
+    if (resource === SCHEMA) {
+      const entities = this.entities(items);
+      await this.dataSourceService.remove(entities);
+    }
+    return await repository.remove(items);
   }
 
   async findAll(resource, { page, size, sort, parse: p, ...rest }) {

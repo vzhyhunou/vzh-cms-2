@@ -80,6 +80,13 @@ export default ({
       }).then(({ json }) => ({
         data: json
       })),
+    deleteMany: (resource, { ids, options }) =>
+      httpClient(`${API_URL}/resource/${resource}?${stringify({ ids })}`, {
+        method: 'DELETE',
+        ...options
+      }).then(({ json }) => ({
+        data: json
+      })),
     getContent: (resource, { name, params, options }) => {
       const s = stringify(params);
       return httpClient(
