@@ -1,6 +1,17 @@
 # ReactJS and NestJS - CMS
 ![Deploy](https://github.com/vzhyhunou/vzh-cms-2/actions/workflows/deploy.yml/badge.svg)
 
+## Features
+- Customizable resource manager
+- Object relational mapping
+- REST API interaction
+- Data querying
+- Projections and transformations
+- Reusable UI components
+- Authentication and authorization
+- Internationalization
+- Import and export resources
+
 ## Tech stack and libraries
 ### Backend
 - NestJS
