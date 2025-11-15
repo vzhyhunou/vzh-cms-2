@@ -1,6 +1,6 @@
 import React from 'react';
 import { Admin, CustomRoutes, Resource, Layout } from 'react-admin';
-import { Route } from 'react-router-dom';
+import { Route, Navigate } from 'react-router-dom';
 
 import ProvidersContext, { useProviders } from './context/ProvidersContext';
 import SettingsContext from './context/SettingsContext';
@@ -59,14 +59,20 @@ const App = () => {
             <>
               <CustomRoutes noLayout>
                 <Route path="admin">
-                  <Route path="" element={<Layout />} />
-                  {resources.map(({ id, resource }) => (
-                    <Route
-                      key={id}
-                      path={`${id}/*`}
-                      element={<Layout>{resource}</Layout>}
-                    />
-                  ))}
+                  {resources.length ? (
+                    <>
+                      <Route path="" element={<Layout />} />
+                      {resources.map(({ id, resource }) => (
+                        <Route
+                          key={id}
+                          path={`${id}/*`}
+                          element={<Layout>{resource}</Layout>}
+                        />
+                      ))}
+                    </>
+                  ) : (
+                    <Route path="*?" element={<Navigate to="/login" />} />
+                  )}
                 </Route>
                 {parse(routes, { Parser })}
               </CustomRoutes>
