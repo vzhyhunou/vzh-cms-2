@@ -8,7 +8,14 @@ export default ({ schemasService }) => {
   return {
     ...rest,
     async login({ username }) {
-      const user = await schemasService.findContent('user', 'authorities', {
+      const {
+        schema: {
+          contents: {
+            authorities: { resource, name }
+          }
+        }
+      } = await schemasService.findSettings();
+      const user = await schemasService.findContent(resource, name, {
         system: { username }
       });
       if (!user) {

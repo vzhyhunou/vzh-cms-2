@@ -7,7 +7,7 @@
     "{\n  name: 'messages',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    value: {\n      type: 'text'\n    }\n  },\n  relations: {\n    schema: {\n      type: 'many-to-one',\n      target: 'schema',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'messages'\n    }\n  },\n  indices: [\n    {\n      unique: true,\n      columns: ['schema', 'name']\n    }\n  ]\n}"
   ],
   "editor": "ADMIN",
-  "settings": "{\n  locales: {\n    en: 'English',\n    ru: 'Русский'\n  }\n}",
+  "settings": "{\n  locales: {\n    en: 'English',\n    ru: 'Русский'\n  },\n  contents: {\n    authorities: {\n      resource: 'user',\n      name: 'authorities'\n    }\n  }\n}",
   "parse": "{\n  ...target,\n  date: new Date(),\n  userId: request.user?.username,\n  messages: Object.entries(target.messages).map(([name, value], index) => ({id: target.messagesIds?.[index], name, value}))\n}",
   "format": "{\n  ...target,\n  messages: Object.fromEntries(target.messages.map(({name, value}) => [name, value])),\n  messagesIds: target.messages.map(({id}) => id)\n}",
   "components": [
