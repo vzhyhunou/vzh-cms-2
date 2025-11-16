@@ -25,7 +25,7 @@
     },
     {
       "name": "Routes",
-      "element": "<Route element={<Component schema=\"page\" name=\"Layout\"/>}>\n <Route path=\"\" element={<Component schema=\"page\" name=\"One\" id=\"home\"/>}/>\n <Route path=\":schema/:id\" element={<Parser code=\"(({schema, id}) => createElement(Component, {schema, name: 'One', id}))(useParams())\"/>}/>\n <Route path=\":id\" element={<Parser code=\"(({id}) => createElement(Component, {schema: 'page', name: 'One', id}))(useParams())\"/>}/>\n <Route path=\"*\" element={<Component schema=\"page\" name=\"One\" id=\"none\"/>}/>\n</Route>"
+      "element": "<Route element={<Component resource=\"page\" name=\"Layout\"/>}>\n <Route path=\"\" element={<Component resource=\"page\" name=\"One\" id=\"home\"/>}/>\n <Route path=\":resource/:id\" element={<Parser code=\"(({resource, id}) => createElement(Component, {resource, name: 'One', id}))(useParams())\"/>}/>\n <Route path=\":id\" element={<Parser code=\"(({id}) => createElement(Component, {resource: 'page', name: 'One', id}))(useParams())\"/>}/>\n <Route path=\"*\" element={<Component resource=\"page\" name=\"One\" id=\"none\"/>}/>\n</Route>"
     }
   ],
   "messages": {

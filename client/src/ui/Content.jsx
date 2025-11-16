@@ -12,7 +12,7 @@ export default ({ resource, name, children, ...params }) => {
   }
 
   if (error && error.status === 404) {
-    return <Component schema="page" name="One" id="none" />;
+    return <Component resource="page" name="One" id="none" />;
   }
 
   return children(data);
