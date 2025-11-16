@@ -1,4 +1,5 @@
 import md5 from 'js-md5';
+import { NotFoundException } from '@vzhyhunou/vzh-cms-common-2';
 
 const STATIC = 'static';
 const log = (type, args, response) => {
@@ -26,6 +27,12 @@ const processFile = (file) =>
       value,
       id: `${md5(value)}.${type}`
     }));
+const processError = (e) => {
+  if (e instanceof NotFoundException) {
+    e.status = 404;
+    throw e;
+  }
+};
 
 export default ({
   schemasService,
@@ -109,10 +116,12 @@ export default ({
           request: { query: params },
           system: { locale }
         })
-        .then((data) => ({ data }))
+        .then((data) => ({ data }), processError)
     ),
     getComponent: handle('getComponent', (resource, { name }) =>
-      schemasService.findComponent(resource, name).then((data) => ({ data }))
+      schemasService
+        .findComponent(resource, name)
+        .then((data) => ({ data }), processError)
     ),
     getResources: handle('getResources', (params, { permissions = [] }) =>
       schemasService.findResources(permissions).then((data) => ({ data }))

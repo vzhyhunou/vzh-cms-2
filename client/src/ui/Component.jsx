@@ -11,7 +11,7 @@ const Component = ({ schema, name, ...props }) => {
   }
 
   if (error && error.status === 404) {
-    return <Component schema="page" name="one" id="none" />;
+    return <Component schema="page" name="One" id="none" />;
   }
 
   return <Parser code={data} bindings={{ props }} />;
@@ -25,7 +25,7 @@ export const AdminComponent = ({ schema, name, ...props }) => {
   }
 
   if (error && error.status === 404) {
-    return <Component schema="page" name="one" id="none" />;
+    return <Component schema="page" name="One" id="none" />;
   }
 
   return <AdminParser code={data} bindings={{ props }} />;
