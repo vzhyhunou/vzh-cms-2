@@ -7,7 +7,7 @@
     "{\n  name: 'messages',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    value: {\n      type: 'text'\n    }\n  },\n  relations: {\n    schema: {\n      type: 'many-to-one',\n      target: 'schema',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'messages'\n    }\n  },\n  indices: [\n    {\n      unique: true,\n      columns: ['schema', 'name']\n    }\n  ]\n}"
   ],
   "editor": "ADMIN",
-  "settings": "{\n  locales: {\n    en: 'English',\n    ru: 'Русский'\n  },\n  contents: {\n    authorities: {\n      resource: 'user',\n      name: 'authorities'\n    }\n  }\n}",
+  "settings": "{\n  locales: {\n    en: 'English',\n    ru: 'Русский'\n  },\n  contents: {\n    authorities: {\n      resource: 'user',\n      name: 'authorities'\n    }\n  },\n  components: {\n    none: {\n      resource: 'page',\n      name: 'One',\n      id: 'none'\n    }\n  }\n}",
   "parse": "{\n  ...target,\n  date: new Date(),\n  userId: request.user?.username,\n  messages: Object.entries(target.messages).map(([name, value], index) => ({id: target.messagesIds?.[index], name, value}))\n}",
   "format": "{\n  ...target,\n  messages: Object.fromEntries(target.messages.map(({name, value}) => [name, value])),\n  messagesIds: target.messages.map(({id}) => id)\n}",
   "components": [
@@ -25,7 +25,7 @@
     },
     {
       "name": "Routes",
-      "element": "<Route element={<Component resource=\"page\" name=\"Layout\"/>}>\n <Route path=\"\" element={<Component resource=\"page\" name=\"One\" id=\"home\"/>}/>\n <Route path=\":resource/:id\" element={<Parser code=\"(({resource, id}) => createElement(Component, {resource, name: 'One', id}))(useParams())\"/>}/>\n <Route path=\":id\" element={<Parser code=\"(({id}) => createElement(Component, {resource: 'page', name: 'One', id}))(useParams())\"/>}/>\n <Route path=\"*\" element={<Component resource=\"page\" name=\"One\" id=\"none\"/>}/>\n</Route>"
+      "element": "<Route element={<Component resource=\"page\" name=\"Layout\"/>}>\n <Route path=\"\" element={<Component resource=\"page\" name=\"One\" id=\"home\"/>}/>\n <Route path=\":resource/:id\" element={<Parser code=\"(({resource, id}) => createElement(Component, {resource, name: 'One', id}))(useParams())\"/>}/>\n <Route path=\":id\" element={<Parser code=\"(({id}) => createElement(Component, {resource: 'page', name: 'One', id}))(useParams())\"/>}/>\n <Route path=\"*\" element={<Component {...settings.schema.components.none}/>}/>\n</Route>"
     }
   ],
   "messages": {

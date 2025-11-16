@@ -11,14 +11,16 @@ import useGetRoutes from './data/useGetRoutes';
 import useGetLocale from './locale/useGetLocale';
 import useGetMessages from './data/useGetMessages';
 import i18nProvider from './i18n/polyglot';
+import { useSettings } from './context/SettingsContext';
 
 const App = () => {
   const routes = useGetRoutes();
   const providers = useProviders();
   const { locales, locale } = useGetLocale();
   const { messages, getMessages } = useGetMessages();
+  const settings = useSettings();
 
-  if (!routes || !providers || !locales || !messages) {
+  if (!routes || !providers || !locales || !messages || !settings) {
     return null;
   }
 
@@ -74,7 +76,7 @@ const App = () => {
                     <Route path="*?" element={<Navigate to="/login" />} />
                   )}
                 </Route>
-                {parse(routes, { Parser })}
+                {parse(routes, { Parser, settings })}
               </CustomRoutes>
               {resources.map(({ resource }) => resource)}
             </>

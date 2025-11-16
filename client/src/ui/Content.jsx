@@ -1,7 +1,7 @@
 import React from 'react';
 
 import useGetContent from '../data/useGetContent';
-import Component from './Component';
+import None from './None';
 
 export default ({ resource, name, children, ...params }) => {
   const props = { name, params };
@@ -12,7 +12,7 @@ export default ({ resource, name, children, ...params }) => {
   }
 
   if (error && error.status === 404) {
-    return <Component resource="page" name="One" id="none" />;
+    return <None />;
   }
 
   return children(data);
