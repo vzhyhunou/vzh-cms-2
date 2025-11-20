@@ -1,12 +1,12 @@
 {
   "id": "user",
   "entities": [
-    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    password: {\n      type: 'varchar'\n    },\n    userId: {\n      type: 'varchar',\n      nullable: true\n    },\n    date: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
+    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    password: {\n      type: 'varchar'\n    },\n    userId: {\n      type: 'varchar',\n      nullable: true\n    },\n    updatedAt: {\n      type: 'date',\n      nullable: true,\n      updateDate: true\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
     "{\n  name: 'userTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    user: {\n      type: 'many-to-one',\n      target: 'user',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
   ],
   "editor": "MANAGER",
   "settings": "{\n  tags: [\n    'ADMIN',\n    'MANAGER',\n    'PAGES_EDITOR'\n  ]\n}",
-  "parse": "{\n  ...target,\n  password: /^\\$2[ayb]\\$.{56}$/.test(target.password) ? target.password : hashSync(target.password, 10),\n  date: new Date(),\n  userId: request.user?.username\n}",
+  "parse": "{\n  ...target,\n  password: /^\\$2[ayb]\\$.{56}$/.test(target.password) ? target.password : hashSync(target.password, 10),\n  userId: request.user?.username\n}",
   "contents": [
     {
       "name": "authorities",
@@ -22,7 +22,7 @@
     },
     {
       "name": "Edit",
-      "element": "{(translate => <Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled>\n    <TextField source=\"userId\"/>\n   </Labeled>\n   <Labeled>\n    <DateField showTime source=\"date\"/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: translate(`resources.user.tags.${tag}`)}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>)(useTranslate())}"
+      "element": "{(translate => <Edit>\n <TabbedForm>\n  <FormTab label=\"General\">\n   <Labeled>\n    <FunctionField source=\"updatedAt\" render={() => <><DateField showTime source=\"updatedAt\"/> <TextField source=\"userId\"/></>}/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label=\"Tags\">\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: translate(`resources.user.tags.${tag}`)}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>)(useTranslate())}"
     },
     {
       "name": "List",
@@ -30,7 +30,7 @@
     }
   ],
   "messages": {
-    "en": "{\n    resources: {\n        user: {\n            name: 'Users',\n            tags: {\n                'ADMIN': 'Administrator',\n                'MANAGER': 'Manager',\n                'PAGES_EDITOR': 'Pages editor'\n            },\n            fields: {\n                date: 'Update',\n                userId: 'User',\n                password: 'Password',\n                tags: 'Tags'\n            }\n        }\n    }\n}",
-    "ru": "{\n    resources: {\n        user: {\n            name: 'Пользователи',\n            tags: {\n                'ADMIN': 'Администратор',\n                'MANAGER': 'Менеджер',\n                'PAGES_EDITOR': 'Редактор страниц'\n            },\n            fields: {\n                date: 'Обновление',\n                userId: 'Пользователь',\n                password: 'Пароль',\n                tags: 'Теги'\n            }\n        }\n    }\n}"
+    "en": "{\n    resources: {\n        user: {\n            name: 'Users',\n            tags: {\n                'ADMIN': 'Administrator',\n                'MANAGER': 'Manager',\n                'PAGES_EDITOR': 'Pages editor'\n            },\n            fields: {\n                updatedAt: 'Updated',\n                password: 'Password',\n                tags: 'Tags'\n            }\n        }\n    }\n}",
+    "ru": "{\n    resources: {\n        user: {\n            name: 'Пользователи',\n            tags: {\n                'ADMIN': 'Администратор',\n                'MANAGER': 'Менеджер',\n                'PAGES_EDITOR': 'Редактор страниц'\n            },\n            fields: {\n                updatedAt: 'Обновлено',\n                password: 'Пароль',\n                tags: 'Теги'\n            }\n        }\n    }\n}"
   }
 }

@@ -30,9 +30,10 @@ export default {
           type: 'varchar',
           nullable: true
         },
-        date: {
+        updatedAt: {
           type: 'date',
-          nullable: true
+          nullable: true,
+          updateDate: true
         }
       },
       relations: {
