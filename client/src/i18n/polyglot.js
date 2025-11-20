@@ -2,10 +2,7 @@ import polyglotI18nProvider from 'ra-i18n-polyglot';
 
 export default (
   { localeProvider: { setLocale } },
-  locales,
-  locale,
-  messages,
-  getMessages
+  { locales, locale, messages, getMessages }
 ) =>
   polyglotI18nProvider(
     (value) => {

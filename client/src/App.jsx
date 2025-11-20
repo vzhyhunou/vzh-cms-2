@@ -8,19 +8,17 @@ import Parser, { AdminParser } from './ui/Parser';
 import addUploadFeature from './data/upload';
 import parse from './ui/parse';
 import useGetRoutes from './data/useGetRoutes';
-import useGetLocale from './locale/useGetLocale';
-import useGetMessages from './data/useGetMessages';
+import useGetI18n from './i18n/useGetI18n';
 import i18nProvider from './i18n/polyglot';
 import { useSettings } from './context/SettingsContext';
 
 const App = () => {
   const routes = useGetRoutes();
   const providers = useProviders();
-  const { locales, locale } = useGetLocale();
-  const { messages, getMessages } = useGetMessages();
+  const i18n = useGetI18n();
   const settings = useSettings();
 
-  if (!routes || !providers || !locales || !messages || !settings) {
+  if (!routes || !providers || !i18n || !settings) {
     return null;
   }
 
@@ -33,13 +31,7 @@ const App = () => {
     <Admin
       basename="/admin"
       dataProvider={addUploadFeature(providers)}
-      i18nProvider={i18nProvider(
-        providers,
-        locales,
-        locale,
-        messages,
-        getMessages
-      )}
+      i18nProvider={i18nProvider(providers, i18n)}
       authProvider={authProvider}
     >
       {() =>
