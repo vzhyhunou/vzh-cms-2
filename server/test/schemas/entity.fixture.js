@@ -26,7 +26,7 @@ export default {
           type: 'text',
           nullable: true
         },
-        userId: {
+        updatedBy: {
           type: 'varchar',
           nullable: true
         },
