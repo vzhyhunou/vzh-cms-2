@@ -25,7 +25,7 @@
     },
     {
       "name": "Routes",
-      "element": "<Route element={<Component resource=\"page\" name=\"Layout\"/>}>\n <Route path=\"\" element={<Component resource=\"page\" name=\"One\" id=\"home\"/>}/>\n <Route path=\":resource/:id\" element={<Parser code=\"(({resource, id}) => createElement(Component, {resource, name: 'One', id}))(useParams())\"/>}/>\n <Route path=\":id\" element={<Parser code=\"(({id}) => createElement(Component, {resource: 'page', name: 'One', id}))(useParams())\"/>}/>\n <Route path=\"*\" element={<Component {...settings.schema.components.none}/>}/>\n</Route>"
+      "element": "<Route element={<Component resource=\"page\" name=\"Layout\"/>}>\n <Route path=\"\" element={<Component resource=\"page\" name=\"One\" id=\"home\"/>}/>\n <Route path=\":resource/:id\" element={<RouteComponent name=\"One\"/>}/>\n <Route path=\":id\" element={<RouteComponent resource=\"page\" name=\"One\"/>}/>\n <Route path=\"*\" element={<Component {...settings.schema.components.none}/>}/>\n</Route>"
     }
   ],
   "messages": {
