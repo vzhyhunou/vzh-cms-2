@@ -2,7 +2,7 @@
     "parser": "@babel/eslint-parser",
     "parserOptions": {
         "babelOptions": {
-            //"configFile": "./base/.babelrc"
+            //"configFile": "./base/server/.babelrc"
         }
     },
     "extends": "eslint:recommended",
