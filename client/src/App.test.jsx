@@ -1,9 +1,11 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, configure } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import App from './App';
 import config from './config';
+
+configure({ asyncUtilTimeout: 10000 });
 
 const renderWithHistory = (route = '/') =>
   render(

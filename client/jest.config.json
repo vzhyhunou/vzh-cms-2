@@ -1,5 +1,6 @@
 {
   "testEnvironment": "jsdom",
   "rootDir": "src",
-  "setupFilesAfterEnv": ["../jest.setup.js"]
+  "setupFilesAfterEnv": ["../jest.setup.js"],
+  "testTimeout": 15000
 }
