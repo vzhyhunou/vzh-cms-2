@@ -25,6 +25,10 @@
       "element": "{(translate => <Edit>\n <TabbedForm>\n  <FormTab label={translate('resources.user.tabs.general')}>\n   <Labeled>\n    <FunctionField source=\"updatedAt\" render={() => <><DateField showTime source=\"updatedAt\"/> <TextField source=\"updatedBy\"/></>}/>\n   </Labeled>\n   <PasswordInput source=\"password\" validate={[minLength(5)]}/>\n  </FormTab>\n  <FormTab label={translate('resources.user.tabs.tags')}>\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.user.tags.map(tag => ({id: tag, name: translate(`resources.user.tags.${tag}`)}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>)(useTranslate())}"
     },
     {
+      "name": "Icon",
+      "element": "<SvgIcon>\n  <path d=\"M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5\" />\n</SvgIcon>"
+    },
+    {
       "name": "List",
       "element": "{(translate => <List filters={[\n <TextInput source=\"id\" alwaysOn/>,\n <ParseInput component={SelectInput} source=\"tags\" parse={value => `{name: '${value}'}`} choices={settings.user.tags.map(tag => ({id: tag, name: translate(`resources.user.tags.${tag}`)}))} label={translate('resources.user.tabs.tags')}/>\n]} exporter={false}>\n <Datagrid rowClick={false}>\n  <TextField source=\"id\"/>\n  <ArrayField source=\"tags\" label={translate('resources.user.tabs.tags')}>\n   <SingleFieldList linkType={false}>\n    <FunctionField render={({name}) => <Chip size=\"small\" label={translate(`resources.user.tags.${name}`)}/>}/>\n   </SingleFieldList>\n  </ArrayField>\n  <EditButton/>\n </Datagrid>\n</List>)(useTranslate())}"
     }

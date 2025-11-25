@@ -33,6 +33,10 @@
       "element": "{(translate => <Edit>\n <TabbedForm>\n  <FormTab label={translate('resources.page.tabs.general')}>\n   <Labeled>\n    <FunctionField source=\"updatedAt\" render={() => <><DateField showTime source=\"updatedAt\"/> <TextField source=\"updatedBy\"/></>}/>\n   </Labeled>\n   <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>\n    <TextInput source=\"title\"/>\n    <CodeInput source=\"body\"/>\n    <ImageInput multiple accept={{'image/*': []}} source=\"@files.body\">\n     <Component resource=\"page\" name=\"ImageInput\"/>\n    </ImageInput>\n   </TranslatableInputs>\n  </FormTab>\n  <FormTab label={translate('resources.page.tabs.tags')}>\n   <ArrayInput source=\"tags\" label=\"\">\n    <SimpleFormIterator inline getItemLabel={() => ''}>\n     <SelectInput source=\"name\" choices={settings.page.tags.map(tag => ({id: tag, name: translate(`resources.page.tags.${tag}`)}))} validate={[required()]}/>\n     <DateTimeInput source=\"start\"/>\n     <DateTimeInput source=\"end\"/>\n    </SimpleFormIterator>\n   </ArrayInput>\n  </FormTab>\n </TabbedForm>\n</Edit>)(useTranslate())}"
     },
     {
+      "name": "Icon",
+      "element": "<SvgIcon>\n  <path d=\"M4 6H2v14c0 1.1.9 2 2 2h14v-2H4zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2m-1 9H9V9h10zm-4 4H9v-2h6zm4-8H9V5h10z\" />\n</SvgIcon>"
+    },
+    {
       "name": "ImageInput",
       "element": "{((value, {setValue}, {selectedLocale}) => <ImageField source=\"src\" title=\"title\" onClick={({target: {title}}) => setValue(`body.${selectedLocale}`, (value ? (value[selectedLocale] ? value[selectedLocale] : '') : '') + `<img src=\"${title}\"/>`)}/>)(useWatch({name: 'body'}), useFormContext(), useTranslatableContext())}"
     },
