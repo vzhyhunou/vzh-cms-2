@@ -8,13 +8,31 @@ const config = ({
     REACT_APP_BASE,
     BUILD_PATH
 }) => ({
-    plugins: [react(), eslint(), analyzer()],
+    plugins: [
+        react(),
+        eslint(),
+        analyzer(),
+        {
+            transformIndexHtml: {
+                order: 'pre',
+                handler: () => [
+                    {
+                        tag: 'script',
+                        attrs: {
+                            type: 'module',
+                            src: `/src/${REACT_APP_SRC}.main.jsx`
+                        },
+                        injectTo: 'body'
+                    }
+                ]
+            }
+        }
+    ],
     server: {
         port: 3010
     },
     define: {
         'process.env': {
-            REACT_APP_SRC,
             REACT_APP_BASE
         }
     },

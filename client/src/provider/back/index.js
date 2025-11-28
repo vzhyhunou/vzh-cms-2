@@ -3,7 +3,7 @@ import getFuncProvider from './func';
 import getAuthProvider from './auth';
 import getDataProvider from './data';
 
-export default (props) => {
+export default async (props) => {
   const localeProvider = getLocaleProvider(props);
   const funcProvider = getFuncProvider(props);
   const authProvider = getAuthProvider(props);

@@ -34,6 +34,6 @@
     "start:fake": "cross-env REACT_APP_SRC=fake vite",
     "build": "cross-env BUILD_PATH=../server/dist/public REACT_APP_SRC=back NODE_OPTIONS=--max-old-space-size=4096 vite build",
     "build:fake": "cross-env rimraf ../docs && BUILD_PATH=../docs REACT_APP_SRC=fake REACT_APP_BASE=/vzh-cms-2 NODE_OPTIONS=--max-old-space-size=4096 vite build",
-    "test": "cross-env REACT_APP_SRC=fake jest"
+    "test": "jest"
   }
 }
