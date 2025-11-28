@@ -80,8 +80,8 @@ const App = () => {
   );
 };
 
-export default ({ config }) => (
-  <ProvidersContext {...config}>
+export default (props) => (
+  <ProvidersContext {...props}>
     <SettingsContext>
       <App />
     </SettingsContext>

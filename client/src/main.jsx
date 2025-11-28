@@ -7,10 +7,6 @@ import config from './config';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter basename={config.basename}>
-    <App {...{ config }} />
+    <App {...config} />
   </BrowserRouter>
 );
-
-//import('.').then(i => console.log(i));
-//import('./provider/back').then(i => console.log(i));
-//import('./provider/fake').then(i => console.log(i));

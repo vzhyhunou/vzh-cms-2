@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import path from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
@@ -9,11 +9,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: (configService) => [
         {
-          rootPath: join(process.cwd(), configService.get('locations.static')),
+          rootPath: path.join(
+            process.cwd(),
+            configService.get('locations.static')
+          ),
           serveRoot: '/static'
         },
         {
-          rootPath: join(process.cwd(), configService.get('locations.public'))
+          rootPath: path.join(
+            process.cwd(),
+            configService.get('locations.public')
+          )
         }
       ],
       inject: [ConfigService]

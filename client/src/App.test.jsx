@@ -10,7 +10,7 @@ configure({ asyncUtilTimeout: 10000 });
 const renderWithHistory = (route = '/') =>
   render(
     <MemoryRouter initialEntries={[route]}>
-      <App {...{ config }} />
+      <App {...config} />
     </MemoryRouter>
   );
 
