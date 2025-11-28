@@ -1,4 +1,5 @@
 import merge from 'lodash/merge';
+import DOMPurify from 'dompurify';
 
 import SchemasRepository from './schemas.repository';
 import { NotFoundException, ConflictException } from './schemas.exception';
@@ -8,25 +9,29 @@ import { transform } from './utils';
 const SCHEMA = 'schema';
 
 export class SchemasService {
-  constructor(dataSourceService) {
+  constructor(dataSourceService, window) {
     this.dataSourceService = dataSourceService;
+    this.window = window;
   }
 
   async save(resource, item, params) {
     if (resource === SCHEMA) {
       const entities = this.entities(item);
       await this.dataSourceService.save(entities);
-      this.settings = undefined;
     }
     const transform =
       resource === SCHEMA && item.id === SCHEMA
         ? item.parse
         : await this.findResourceField(resource, 'parse');
     if (transform) {
-      item = await parse(transform, { ...params, target: item });
+      item = await this.parse(transform, { ...params, target: item });
     }
     const repository = this.getRepository(resource);
-    return await repository.save(item);
+    const result = await repository.save(item);
+    if (resource === SCHEMA) {
+      this.settings = undefined;
+    }
+    return result;
   }
 
   async verifyEntities(item) {
@@ -112,7 +117,9 @@ export class SchemasService {
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
       content = await Promise.all(
-        content.map(async (item) => await parse(transform, { target: item }))
+        content.map(
+          async (item) => await this.parse(transform, { target: item })
+        )
       );
     }
     return {
@@ -126,6 +133,7 @@ export class SchemasService {
   async getIterator(resource) {
     const transform = await this.findResourceField(resource, 'format');
     const repository = this.getRepository(resource);
+    const self = this;
     let index = 0;
     return {
       [Symbol.asyncIterator]() {
@@ -137,7 +145,7 @@ export class SchemasService {
               where: {}
             });
             if (value && transform) {
-              value = await parse(transform, { target: value });
+              value = await self.parse(transform, { target: value });
             }
             return { value, done: !value };
           }
@@ -187,7 +195,7 @@ export class SchemasService {
     }
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
-      item = await parse(transform, { target: item });
+      item = await this.parse(transform, { target: item });
     }
     return item;
   }
@@ -198,7 +206,9 @@ export class SchemasService {
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
       content = await Promise.all(
-        content.map(async (item) => await parse(transform, { target: item }))
+        content.map(
+          async (item) => await this.parse(transform, { target: item })
+        )
       );
     }
     return content;
@@ -291,7 +301,8 @@ export class SchemasService {
   async parse(code, bindings) {
     const settings = await this.findSettings();
     const content = (...args) => this.findContent(...args);
-    return parse(code, { settings, content, ...bindings });
+    const sanitize = (...args) => this.sanitize(...args);
+    return parse(code, { settings, content, sanitize, ...bindings });
   }
 
   getRepository(resource) {
@@ -303,5 +314,13 @@ export class SchemasService {
       repository = repository.extend(SchemasRepository);
     }
     return repository;
+  }
+
+  sanitize(code, { ADD_TAGS = [], ...rest } = {}) {
+    const sanitized = DOMPurify(this.window).sanitize(`<root>${code}</root>`, {
+      ...rest,
+      ADD_TAGS: ['root', ...ADD_TAGS]
+    });
+    return sanitized.match(/<[^>]*>([\s|\S]*)</)[1];
   }
 }

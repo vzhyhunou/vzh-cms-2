@@ -21,7 +21,8 @@
     "bcrypt": "^5.1.1",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
-    "adm-zip": "^0.5.16"
+    "adm-zip": "^0.5.16",
+    "jest-environment-jsdom": "^30.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",

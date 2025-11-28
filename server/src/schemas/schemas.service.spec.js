@@ -1,8 +1,14 @@
-import { sanitize } from './utils';
+import { SchemasService } from './schemas.service';
 
-describe('utils', () => {
+describe('SchemasService', () => {
+  let subj;
+
+  beforeAll(() => {
+    subj = new SchemasService();
+  });
+
   it('sanitize()', () => {
-    const result = sanitize(
+    const result = subj.sanitize(
       '<h1 onclick="">[<S onClick="" a="v">\nt\n</S>]</h1>',
       {
         PARSER_MEDIA_TYPE: 'application/xhtml+xml',

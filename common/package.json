@@ -6,7 +6,6 @@
     "typeorm": "^0.3.27",
     "@babel/standalone": "^7.28.3",
     "lodash": "^4.17.21",
-    "jest-environment-jsdom": "^30.2.0",
     "dompurify": "^3.3.0"
   },
   "devDependencies": {
