@@ -5,8 +5,16 @@ import { ResourcesModule } from './resources/resources.module';
 import { StaticModule } from './static/static.module';
 import { AuthModule } from './auth/auth.module';
 import { I18nModule } from './i18n/i18n.module';
+import { ServerModule } from './server/server.module';
 
 @Module({
-  imports: [ConfigModule, ResourcesModule, StaticModule, AuthModule, I18nModule]
+  imports: [
+    ConfigModule,
+    ResourcesModule,
+    StaticModule,
+    AuthModule,
+    I18nModule,
+    ServerModule
+  ]
 })
 export class AppModule {}

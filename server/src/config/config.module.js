@@ -3,6 +3,8 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import merge from 'lodash/merge';
 import path from 'path';
 
+import configuration from './configuration';
+
 @Module({
   imports: [
     NestConfigModule.forRoot({
@@ -17,7 +19,7 @@ import path from 'path';
             args
               .filter((c) => c)
               .map((c) => c.default)
-              .reduce(merge, {})
+              .reduce(merge, { ...configuration })
         )
       ]
     })
