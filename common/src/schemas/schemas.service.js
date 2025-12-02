@@ -226,6 +226,9 @@ export class SchemasService {
     }
     const { single, options, projection } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
+    if (!options) {
+      return this.parse(projection, { ...params });
+    }
     const target = await itemsRepository[single ? 'findOne' : 'find'](
       await this.parse(options, params)
     );
