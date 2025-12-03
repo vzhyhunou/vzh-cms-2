@@ -16,7 +16,8 @@ export default (id) => ({
     }`
   ],
   editor: `editor`,
-  settings: '{}',
+  clientSettings: '{}',
+  serverSettings: '{}',
   parse: 'target',
   format: 'target',
   contents: [

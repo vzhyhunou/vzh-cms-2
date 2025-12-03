@@ -5,7 +5,7 @@
     "{\n  name: 'userTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    user: {\n      type: 'many-to-one',\n      target: 'user',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
   ],
   "editor": "MANAGER",
-  "settings": "{\n  tags: [\n    'ADMIN',\n    'MANAGER',\n    'PAGES_EDITOR'\n  ]\n}",
+  "clientSettings": "{\n  tags: [\n    'ADMIN',\n    'MANAGER',\n    'PAGES_EDITOR'\n  ]\n}",
   "parse": "{\n  ...target,\n  password: /^\\$2[ayb]\\$.{56}$/.test(target.password) ? target.password : hashSync(target.password, 10),\n  updatedBy: request.user?.username\n}",
   "contents": [
     {

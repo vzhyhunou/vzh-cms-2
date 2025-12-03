@@ -83,7 +83,7 @@ describe('SchemasRepository', () => {
   describe('findField()', () => {
     it('should return an array of schemas with field values', async () => {
       await manager.save(SCHEMA, schema('user'));
-      const result = await subj.findField('settings');
+      const result = await subj.findField('clientSettings');
       expect(result).toHaveLength(1);
     });
   });

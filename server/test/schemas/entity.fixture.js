@@ -14,7 +14,11 @@ export default {
         editor: {
           type: 'varchar'
         },
-        settings: {
+        clientSettings: {
+          type: 'text',
+          nullable: true
+        },
+        serverSettings: {
           type: 'text',
           nullable: true
         },

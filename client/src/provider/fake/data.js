@@ -127,7 +127,7 @@ export default ({
       schemasService.findResources(permissions).then((data) => ({ data }))
     ),
     getSettings: handle('getSettings', () =>
-      schemasService.findSettings().then((data) => ({ data }))
+      schemasService.findClientSettings().then((data) => ({ data }))
     ),
     getMessages: handle('getMessages', (params, { locale }) =>
       schemasService.findMessages(locale).then((data) => ({ data }))

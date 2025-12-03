@@ -102,7 +102,7 @@ export class SchemasController {
   @Public()
   @Get('settings')
   getSettings() {
-    return this.schemasService.findSettings();
+    return this.schemasService.findClientSettings();
   }
 
   @Public()

@@ -255,14 +255,31 @@ export class SchemasService {
     return transform(element);
   }
 
+  async findClientSettings() {
+    const repository = this.getRepository(SCHEMA);
+    const schemas = await repository.findField('clientSettings');
+    return Object.fromEntries(
+      schemas.map(({ id, clientSettings }) => [
+        id,
+        new Function(`return ${clientSettings}`)()
+      ])
+    );
+  }
+
   async findSettings() {
     if (!this.settings) {
       const repository = this.getRepository(SCHEMA);
-      const schemas = await repository.findField('settings');
+      const schemas = await repository.findField(
+        'clientSettings',
+        'serverSettings'
+      );
       this.settings = Object.fromEntries(
-        schemas.map(({ id, settings }) => [
+        schemas.map(({ id, clientSettings, serverSettings }) => [
           id,
-          new Function(`return ${settings}`)()
+          merge(
+            new Function(`return ${clientSettings}`)(),
+            new Function(`return ${serverSettings}`)()
+          )
         ])
       );
     }
