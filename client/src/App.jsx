@@ -40,9 +40,9 @@ const App = () => {
             .map(({ id, List, Create, Edit, Icon }) => ({
               id,
               ...Object.fromEntries(
-                Object.entries({ list: List, create: Create, edit: Edit }).map(
-                  ([k, v]) => [k, <AdminParser code={v} />]
-                )
+                Object.entries({ list: List, create: Create, edit: Edit })
+                  .filter(([k, v]) => v)
+                  .map(([k, v]) => [k, <AdminParser code={v} />])
               ),
               icon: Icon && (() => <AdminParser code={Icon} />)
             }))

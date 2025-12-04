@@ -47,9 +47,11 @@ export class SchemasService {
   async create(resource, item, params) {
     const repository = this.getRepository(resource);
     const id = repository.getId(item);
-    const databaseItem = await repository.findById(id);
-    if (databaseItem) {
-      throw new ConflictException();
+    if (id) {
+      const databaseItem = await repository.findById(id);
+      if (databaseItem) {
+        throw new ConflictException();
+      }
     }
     if (resource === SCHEMA) {
       await this.verifyEntities(item);
