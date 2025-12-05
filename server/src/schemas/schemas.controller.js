@@ -18,7 +18,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { I18nContext } from 'nestjs-i18n';
 
 import { SchemasService } from './schemas.service';
-import { PageablePipe } from '../common/pageable.pipe';
+import { ParamsPipe } from '../common/params.pipe';
 import { HttpExceptionFilter } from './schemas.filter';
 import { StorageService } from '../storage/storage.service';
 import { Public } from '../auth/public.decorator';
@@ -37,7 +37,7 @@ export class SchemasController {
   @Bind(Param('resource'), Body(), UploadedFiles(), Request())
   create(resource, { dto }, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasService.save(resource, transformed, { request });
+    return this.schemasService.create(resource, transformed, { request });
   }
 
   @Put('resource/:resource/:id')
@@ -45,17 +45,23 @@ export class SchemasController {
   @Bind(Param('resource'), Body(), UploadedFiles(), Request())
   update(resource, { dto }, files, request) {
     const transformed = this.storageService.replaceFilenames(dto, files);
-    return this.schemasService.save(resource, transformed, { request });
+    return this.schemasService.update(resource, transformed, { request });
   }
 
   @Delete('resource/:resource/:id')
   @Bind(Param('resource'), Param('id'))
-  remove(resource, id) {
-    return this.schemasService.remove(resource, id);
+  removeById(resource, id) {
+    return this.schemasService.removeById(resource, id);
+  }
+
+  @Delete('resource/:resource')
+  @Bind(Param('resource'), Query(ParamsPipe))
+  removeByIdIn(resource, { ids }) {
+    return this.schemasService.removeByIdIn(resource, ids);
   }
 
   @Get('resource/:resource')
-  @Bind(Param('resource'), Query(PageablePipe))
+  @Bind(Param('resource'), Query(ParamsPipe))
   findAll(resource, { ids, ...rest }) {
     if (ids.length) {
       return this.schemasService.findByIdIn(resource, ids);
@@ -96,7 +102,7 @@ export class SchemasController {
   @Public()
   @Get('settings')
   getSettings() {
-    return this.schemasService.findSettings();
+    return this.schemasService.findClientSettings();
   }
 
   @Public()

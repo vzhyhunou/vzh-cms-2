@@ -3,25 +3,15 @@ import * as router from 'react-router-dom';
 import * as form from 'react-hook-form';
 import * as admin from 'react-admin';
 import * as mui from '@mui/material';
-import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-import { EditorView } from '@codemirror/view';
-import { oneDark } from '@codemirror/theme-one-dark';
 
-import Content from './Content';
-import Component from './Component';
+import * as ui from '.';
 
-export default (({ default: React, ...react }) => ({
+export default (({ default: React, ...react }, { default: f, ...form }) => ({
   React,
   ...react,
   ...admin,
   ...mui,
   ...router,
   ...form,
-  Content,
-  Component,
-  CodeMirror,
-  javascript,
-  EditorView,
-  oneDark
-}))(react);
+  ...ui
+}))(react, form);

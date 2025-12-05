@@ -1,12 +1,18 @@
-import { Catch, NotFoundException } from '@nestjs/common';
-import { NotFoundException as Exception } from '@vzhyhunou/vzh-cms-common-2';
+import { Catch, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  NotFoundException as ServiceNotFoundException,
+  ConflictException as ServiceConflictException
+} from '@vzhyhunou/vzh-cms-common-2';
 
-@Catch(Exception)
+@Catch(ServiceNotFoundException, ServiceConflictException)
 export class HttpExceptionFilter {
   catch(exception, host) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const e = new NotFoundException();
+    const e =
+      exception instanceof ServiceNotFoundException
+        ? new NotFoundException()
+        : new ConflictException();
 
     response.status(e.getStatus()).json(e.getResponse());
   }

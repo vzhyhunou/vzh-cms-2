@@ -1,4 +1,5 @@
 import md5 from 'js-md5';
+import { NotFoundException } from '@vzhyhunou/vzh-cms-common-2';
 
 const STATIC = 'static';
 const log = (type, args, response) => {
@@ -26,6 +27,12 @@ const processFile = (file) =>
       value,
       id: `${md5(value)}.${type}`
     }));
+const processError = (e) => {
+  if (e instanceof NotFoundException) {
+    e.status = 404;
+    throw e;
+  }
+};
 
 export default ({
   schemasService,
@@ -43,25 +50,18 @@ export default ({
       log(type, args, data);
       return data;
     };
-  const save = (resource, { data }, { username }) =>
+  const processFiles = (data) =>
     Promise.all(
       data
         .getAll('files')
         .map((file) =>
           processFile(file).then((item) =>
             schemasService
-              .save(STATIC, item)
+              .create(STATIC, item)
               .then(({ id }) => ({ originalname: file.name, filename: id }))
           )
         )
-    )
-      .then((files) => replaceFilenames(data.get('dto'), files))
-      .then((data) =>
-        schemasService.save(resource, data, {
-          request: { user: { username } }
-        })
-      )
-      .then((data) => ({ data }));
+    ).then((files) => replaceFilenames(data.get('dto'), files));
 
   return {
     getList: handle('getList', (resource, { pagination, sort, filter }) => {
@@ -86,10 +86,29 @@ export default ({
     getMany: handle('getMany', (resource, { ids }) =>
       schemasService.findByIdIn(resource, ids).then((data) => ({ data }))
     ),
-    create: handle('create', save),
-    update: handle('update', save),
+    create: handle('create', (resource, { data }, { username }) =>
+      processFiles(data)
+        .then((data) =>
+          schemasService.create(resource, data, {
+            request: { user: { username } }
+          })
+        )
+        .then((data) => ({ data }))
+    ),
+    update: handle('update', (resource, { data }, { username }) =>
+      processFiles(data)
+        .then((data) =>
+          schemasService.update(resource, data, {
+            request: { user: { username } }
+          })
+        )
+        .then((data) => ({ data }))
+    ),
     delete: handle('delete', (resource, { id }) =>
-      schemasService.remove(resource, id)
+      schemasService.removeById(resource, id)
+    ),
+    deleteMany: handle('deleteMany', (resource, { ids }) =>
+      schemasService.removeByIdIn(resource, ids).then((data) => ({ data }))
     ),
     getContent: handle('getContent', (resource, { name, params }, { locale }) =>
       schemasService
@@ -97,16 +116,18 @@ export default ({
           request: { query: params },
           system: { locale }
         })
-        .then((data) => ({ data }))
+        .then((data) => ({ data }), processError)
     ),
     getComponent: handle('getComponent', (resource, { name }) =>
-      schemasService.findComponent(resource, name).then((data) => ({ data }))
+      schemasService
+        .findComponent(resource, name)
+        .then((data) => ({ data }), processError)
     ),
     getResources: handle('getResources', (params, { permissions = [] }) =>
       schemasService.findResources(permissions).then((data) => ({ data }))
     ),
     getSettings: handle('getSettings', () =>
-      schemasService.findSettings().then((data) => ({ data }))
+      schemasService.findClientSettings().then((data) => ({ data }))
     ),
     getMessages: handle('getMessages', (params, { locale }) =>
       schemasService.findMessages(locale).then((data) => ({ data }))

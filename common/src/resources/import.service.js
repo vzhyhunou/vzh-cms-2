@@ -10,12 +10,14 @@ export class AbstractImportService {
     this.logger.log('Import [1/4]');
     await this.consume(
       (resource, name) => resource === SCHEMA && name === SCHEMA,
-      (item) => item
+      (item) => item,
+      'save'
     );
     this.logger.log('Import [2/4]');
     await this.consume(
       (resource, name) => resource === SCHEMA && name !== SCHEMA,
-      (item) => item
+      (item) => item,
+      'create'
     );
     this.logger.log('Import [3/4]');
     const columns = await this.schemasService.findColumns();
@@ -24,12 +26,14 @@ export class AbstractImportService {
       (item, resource) =>
         Object.fromEntries(
           Object.entries(item).filter(([k]) => columns[resource].includes(k))
-        )
+        ),
+      'create'
     );
     this.logger.log('Import [4/4]');
     await this.consume(
       (resource) => !resource || resource !== SCHEMA,
-      (item) => item
+      (item) => item,
+      'update'
     );
   }
 }

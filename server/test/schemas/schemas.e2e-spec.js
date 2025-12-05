@@ -95,7 +95,8 @@ describe('Schemas (e2e)', () => {
       id: 'page',
       entities: [
         `{name: 'page', columns: {id: {type: 'varchar', primary: true}}}`
-      ]
+      ],
+      editor: 'editor'
     };
     await request(app.getHttpServer())
       .put('/api/resource/schema/page')

@@ -1,35 +1,80 @@
 import merge from 'lodash/merge';
+import DOMPurify from 'dompurify';
 
 import SchemasRepository from './schemas.repository';
-import { NotFoundException } from './schemas.exception';
+import { NotFoundException, ConflictException } from './schemas.exception';
 import parse from './parse';
 import { transform } from './utils';
 
 const SCHEMA = 'schema';
 
 export class SchemasService {
-  constructor(dataSourceService) {
+  constructor(dataSourceService, window) {
     this.dataSourceService = dataSourceService;
+    this.window = window;
   }
 
   async save(resource, item, params) {
     if (resource === SCHEMA) {
       const entities = this.entities(item);
       await this.dataSourceService.save(entities);
-      this.settings = undefined;
     }
-    const repository = this.getRepository(resource);
     const transform =
       resource === SCHEMA && item.id === SCHEMA
         ? item.parse
         : await this.findResourceField(resource, 'parse');
     if (transform) {
-      item = await parse(transform, { ...params, target: item });
+      item = await this.parse(transform, { ...params, target: item });
     }
-    return await repository.save(item);
+    const repository = this.getRepository(resource);
+    const result = await repository.save(item);
+    if (resource === SCHEMA) {
+      this.settings = undefined;
+    }
+    return result;
   }
 
-  async remove(resource, id) {
+  async verifyEntities(item) {
+    const others = Object.entries(await this.findEntities())
+      .filter(([key]) => key !== item.id)
+      .flatMap(([key, value]) => value);
+    const current = this.entities(item).map(({ name }) => name);
+    if (current.some((name) => others.includes(name))) {
+      throw new ConflictException();
+    }
+  }
+
+  async create(resource, item, params) {
+    const repository = this.getRepository(resource);
+    const id = repository.getId(item);
+    if (id) {
+      const databaseItem = await repository.findById(id);
+      if (databaseItem) {
+        throw new ConflictException();
+      }
+    }
+    if (resource === SCHEMA) {
+      await this.verifyEntities(item);
+    }
+    return await this.save(resource, item, params);
+  }
+
+  async update(resource, item, params) {
+    const repository = this.getRepository(resource);
+    const id = repository.getId(item);
+    const databaseItem = await repository.findById(id);
+    if (!databaseItem) {
+      throw new NotFoundException();
+    }
+    if (resource === SCHEMA) {
+      await this.verifyEntities(item);
+      const entities = this.entities(databaseItem);
+      await this.dataSourceService.remove(entities);
+    }
+    return await this.save(resource, item, params);
+  }
+
+  async removeById(resource, id) {
     const repository = this.getRepository(resource);
     const item = await repository.findById(id);
     if (!item) {
@@ -40,6 +85,19 @@ export class SchemasService {
       await this.dataSourceService.remove(entities);
     }
     return await repository.remove(item);
+  }
+
+  async removeByIdIn(resource, ids) {
+    const repository = this.getRepository(resource);
+    const items = await repository.findByIdIn(ids);
+    if (ids.length > items.length) {
+      throw new NotFoundException();
+    }
+    if (resource === SCHEMA) {
+      const entities = this.entities(items);
+      await this.dataSourceService.remove(entities);
+    }
+    return await repository.remove(items);
   }
 
   async findAll(resource, { page, size, sort, parse: p, ...rest }) {
@@ -61,7 +119,9 @@ export class SchemasService {
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
       content = await Promise.all(
-        content.map(async (item) => await parse(transform, { target: item }))
+        content.map(
+          async (item) => await this.parse(transform, { target: item })
+        )
       );
     }
     return {
@@ -75,6 +135,7 @@ export class SchemasService {
   async getIterator(resource) {
     const transform = await this.findResourceField(resource, 'format');
     const repository = this.getRepository(resource);
+    const self = this;
     let index = 0;
     return {
       [Symbol.asyncIterator]() {
@@ -86,7 +147,7 @@ export class SchemasService {
               where: {}
             });
             if (value && transform) {
-              value = await parse(transform, { target: value });
+              value = await self.parse(transform, { target: value });
             }
             return { value, done: !value };
           }
@@ -117,6 +178,17 @@ export class SchemasService {
     );
   }
 
+  async findEntities() {
+    const repository = this.getRepository(SCHEMA);
+    const schemas = await repository.findField('entities');
+    return Object.fromEntries(
+      schemas.map(({ id, ...rest }) => [
+        id,
+        this.entities(rest).map(({ name }) => name)
+      ])
+    );
+  }
+
   async findById(resource, id) {
     const repository = this.getRepository(resource);
     let item = await repository.findById(id);
@@ -125,7 +197,7 @@ export class SchemasService {
     }
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
-      item = await parse(transform, { target: item });
+      item = await this.parse(transform, { target: item });
     }
     return item;
   }
@@ -136,7 +208,9 @@ export class SchemasService {
     const transform = await this.findResourceField(resource, 'format');
     if (transform) {
       content = await Promise.all(
-        content.map(async (item) => await parse(transform, { target: item }))
+        content.map(
+          async (item) => await this.parse(transform, { target: item })
+        )
       );
     }
     return content;
@@ -154,6 +228,9 @@ export class SchemasService {
     }
     const { single, options, projection } = schema.contents[0];
     const itemsRepository = this.getRepository(resource);
+    if (!options) {
+      return this.parse(projection, { ...params });
+    }
     const target = await itemsRepository[single ? 'findOne' : 'find'](
       await this.parse(options, params)
     );
@@ -180,14 +257,31 @@ export class SchemasService {
     return transform(element);
   }
 
+  async findClientSettings() {
+    const repository = this.getRepository(SCHEMA);
+    const schemas = await repository.findField('clientSettings');
+    return Object.fromEntries(
+      schemas.map(({ id, clientSettings }) => [
+        id,
+        new Function(`return ${clientSettings}`)()
+      ])
+    );
+  }
+
   async findSettings() {
     if (!this.settings) {
       const repository = this.getRepository(SCHEMA);
-      const schemas = await repository.findField('settings');
+      const schemas = await repository.findField(
+        'clientSettings',
+        'serverSettings'
+      );
       this.settings = Object.fromEntries(
-        schemas.map(({ id, settings }) => [
+        schemas.map(({ id, clientSettings, serverSettings }) => [
           id,
-          new Function(`return ${settings}`)()
+          merge(
+            new Function(`return ${clientSettings}`)(),
+            new Function(`return ${serverSettings}`)()
+          )
         ])
       );
     }
@@ -229,7 +323,8 @@ export class SchemasService {
   async parse(code, bindings) {
     const settings = await this.findSettings();
     const content = (...args) => this.findContent(...args);
-    return parse(code, { settings, content, ...bindings });
+    const sanitize = (...args) => this.sanitize(...args);
+    return parse(code, { settings, content, sanitize, ...bindings });
   }
 
   getRepository(resource) {
@@ -241,5 +336,13 @@ export class SchemasService {
       repository = repository.extend(SchemasRepository);
     }
     return repository;
+  }
+
+  sanitize(code, { ADD_TAGS = [], ...rest } = {}) {
+    const sanitized = DOMPurify(this.window).sanitize(`<root>${code}</root>`, {
+      ...rest,
+      ADD_TAGS: ['root', ...ADD_TAGS]
+    });
+    return sanitized.match(/<[^>]*>([\s|\S]*)</)[1];
   }
 }

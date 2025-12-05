@@ -4,13 +4,10 @@ import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
 import config from './config';
+import provider from './provider/back';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter basename={config.basename}>
-    <App {...{ config }} />
+    <App {...{ ...config, provider }} />
   </BrowserRouter>
 );
-
-//import('.').then(i => console.log(i));
-//import('./provider/back').then(i => console.log(i));
-//import('./provider/fake').then(i => console.log(i));

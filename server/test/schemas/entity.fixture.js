@@ -14,7 +14,11 @@ export default {
         editor: {
           type: 'varchar'
         },
-        settings: {
+        clientSettings: {
+          type: 'text',
+          nullable: true
+        },
+        serverSettings: {
           type: 'text',
           nullable: true
         },
@@ -26,13 +30,14 @@ export default {
           type: 'text',
           nullable: true
         },
-        userId: {
+        updatedBy: {
           type: 'varchar',
           nullable: true
         },
-        date: {
+        updatedAt: {
           type: 'date',
-          nullable: true
+          nullable: true,
+          updateDate: true
         }
       },
       relations: {
@@ -93,7 +98,6 @@ export default {
       },
       indices: [
         {
-          synchronize: false,
           unique: true,
           columns: ['schema', 'name']
         }

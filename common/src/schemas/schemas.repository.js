@@ -3,12 +3,12 @@ import { In } from 'typeorm';
 import '../common/base.repository';
 
 export default {
-  findField(field) {
+  findField(...fields) {
     return this.find({
       loadEagerRelations: false,
       select: {
         id: true,
-        [field]: true
+        ...Object.fromEntries(fields.map((field) => [field, true]))
       }
     });
   },
@@ -71,7 +71,7 @@ export default {
       },
       where: {
         components: {
-          name: In(['List', 'Create', 'Edit'])
+          name: In(['List', 'Create', 'Edit', 'Icon'])
         },
         editor: In(authorities)
       }

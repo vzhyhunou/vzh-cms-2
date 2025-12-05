@@ -21,7 +21,8 @@
     "bcrypt": "^5.1.1",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
-    "adm-zip": "^0.5.16"
+    "adm-zip": "^0.5.16",
+    "jest-environment-jsdom": "^30.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
@@ -44,9 +45,9 @@
   "scripts": {
     "clean": "rimraf dist coverage",
     "format": "prettier --write '{src,test}/**/*.{js,json}'",
-    "build": "babel src -d dist --ignore '**/*.spec.js'",
-    "start": "babel-node index.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon",
+    "build": "cross-env APP_VERSION=$npm_package_version babel src -d dist --ignore '**/*.spec.js'",
+    "start": "cross-env APP_VERSION=$npm_package_version babel-node index.js",
+    "start:dev": "cross-env APP_VERSION=$npm_package_version NODE_ENV=development nodemon",
     "lint": "eslint '{src,test}/**/*.js'",
     "test": "cross-env NODE_ENV=development jest",
     "test:cov": "cross-env NODE_ENV=development jest --coverage",

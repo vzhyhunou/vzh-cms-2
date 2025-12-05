@@ -9,7 +9,7 @@ export default () => {
   const settings = useSettings();
 
   if (!providers || !settings) {
-    return {};
+    return null;
   }
 
   const {
@@ -31,6 +31,10 @@ export default () => {
       })
       .then(setState);
   }, [getLocale, setLocale, locales]);
+
+  if (!state) {
+    return null;
+  }
 
   return { locale: state, locales };
 };

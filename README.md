@@ -1,6 +1,17 @@
 # ReactJS and NestJS - CMS
 ![Deploy](https://github.com/vzhyhunou/vzh-cms-2/actions/workflows/deploy.yml/badge.svg)
 
+## Features
+- Customizable resource manager
+- Object relational mapping
+- REST API interaction
+- Data querying
+- Projections and transformations
+- Reusable UI components
+- Authentication and authorization
+- Internationalization
+- Import and export resources
+
 ## Tech stack and libraries
 ### Backend
 - NestJS
@@ -26,7 +37,8 @@
 - Install packages: `npm install`
 - Build app: `npm run build`
 - Change current directory: `cd server`
-- Run app: `node dist/main.js`
+- Start app: `node dist/main.js`
 ### Usage
 - Home page: http://localhost:8090
 - Admin console: http://localhost:8090/admin, use `admin`, `editor`, `manager` as username and password
+- Import: replace `resources.imp.path` property in `config.js` with existing filename (e.g. `storage/import/hello.zip`) and restart app

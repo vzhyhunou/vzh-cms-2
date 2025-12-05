@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class PageablePipe {
+export class ParamsPipe {
   transform({ ids = [], page = 0, size = 20, sort = [], parse = [], ...rest }) {
     return {
       ids: Array.isArray(ids) ? ids : [ids],

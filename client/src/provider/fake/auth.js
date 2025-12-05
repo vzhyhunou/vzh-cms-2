@@ -8,13 +8,20 @@ export default ({ schemasService }) => {
   return {
     ...rest,
     async login({ username }) {
-      const { authorities } = await schemasService.findContent(
-        'user',
-        'authorities',
-        {
-          system: { username }
+      const {
+        schema: {
+          contents: {
+            authorities: { resource, name }
+          }
         }
-      );
+      } = await schemasService.findSettings();
+      const user = await schemasService.findContent(resource, name, {
+        system: { username }
+      });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      const { authorities } = user;
       const token = sign(
         { sub: username, roles: authorities, exp: Date.now() / 1000 + 86400 },
         'JwtSecretKey'

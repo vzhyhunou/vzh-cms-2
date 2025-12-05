@@ -1,5 +1,6 @@
 import { Dependencies, Injectable } from '@nestjs/common';
 import { SchemasService as BaseSchemasService } from '@vzhyhunou/vzh-cms-common-2';
+import { JSDOM } from 'jsdom';
 
 import { DataSourceService } from '../datasource/datasource.service';
 
@@ -7,7 +8,7 @@ import { DataSourceService } from '../datasource/datasource.service';
 @Dependencies(DataSourceService)
 export class SchemasService extends BaseSchemasService {
   constructor(dataSourceService) {
-    super(dataSourceService);
+    super(dataSourceService, new JSDOM('').window);
   }
 
   async onModuleInit() {
