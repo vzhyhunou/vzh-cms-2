@@ -1,8 +1,8 @@
 {
   "id": "user",
   "entities": [
-    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: 'varchar',\n      primary: true\n    },\n    password: {\n      type: 'varchar'\n    },\n    updatedBy: {\n      type: 'varchar',\n      nullable: true\n    },\n    updatedAt: {\n      type: 'date',\n      nullable: true,\n      updateDate: true\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
-    "{\n  name: 'userTag',\n  columns: {\n    id: {\n      type: 'int',\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: 'varchar'\n    },\n    start: {\n      type: 'date',\n      nullable: true\n    },\n    end: {\n      type: 'date',\n      nullable: true\n    }\n  },\n  relations: {\n    user: {\n      type: 'many-to-one',\n      target: 'user',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
+    "{\n  name: 'user',\n  columns: {\n    id: {\n      type: String,\n      primary: true\n    },\n    password: {\n      type: String\n    },\n    updatedBy: {\n      type: String,\n      nullable: true\n    },\n    updatedAt: {\n      type: Date,\n      nullable: true,\n      updateDate: true\n    }\n  },\n  relations: {\n    tags: {\n      type: 'one-to-many',\n      target: 'userTag',\n      eager: true,\n      cascade: true,\n      inverseSide: 'user'\n    }\n  }\n}",
+    "{\n  name: 'userTag',\n  columns: {\n    id: {\n      type: Number,\n      primary: true,\n      generated: true\n    },\n    name: {\n      type: String\n    },\n    start: {\n      type: Date,\n      nullable: true\n    },\n    end: {\n      type: Date,\n      nullable: true\n    }\n  },\n  relations: {\n    user: {\n      type: 'many-to-one',\n      target: 'user',\n      onDelete: 'CASCADE',\n      orphanedRowAction: 'delete',\n      inverseSide: 'tags'\n    }\n  }\n}"
   ],
   "editor": "MANAGER",
   "clientSettings": "{\n  tags: [\n    'ADMIN',\n    'MANAGER',\n    'PAGES_EDITOR'\n  ]\n}",
