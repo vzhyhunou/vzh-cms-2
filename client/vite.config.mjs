@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
-import { analyzer } from 'vite-bundle-analyzer';
+// import { analyzer } from 'vite-bundle-analyzer';
 
 const config = ({
     REACT_APP_SRC,
@@ -11,7 +11,7 @@ const config = ({
     plugins: [
         react(),
         eslint(),
-        analyzer(),
+        // analyzer(),
         {
             transformIndexHtml: {
                 order: 'pre',
