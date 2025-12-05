@@ -37,7 +37,8 @@
 - Install packages: `npm install`
 - Build app: `npm run build`
 - Change current directory: `cd server`
-- Run app: `node dist/main.js`
+- Start app: `node dist/main.js`
 ### Usage
 - Home page: http://localhost:8090
 - Admin console: http://localhost:8090/admin, use `admin`, `editor`, `manager` as username and password
+- Import: replace `resources.imp.path` property in `config.js` with existing filename (e.g. `storage/import/hello.zip`) and restart app
