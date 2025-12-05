@@ -1,0 +1,19 @@
+{
+  "id": "sample2",
+  "tags": [
+    {
+      "name": "MENU"
+    },
+    {
+      "name": "PUBLISHED"
+    }
+  ],
+  "title": {
+    "en": "Sample page 2",
+    "ru": "Пример страницы 2"
+  },
+  "body": {
+    "en": "<h1>Sample page 2</h1>",
+    "ru": "<h1>Пример страницы 2</h1>"
+  }
+}
