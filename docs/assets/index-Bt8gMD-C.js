@@ -1956,7 +1956,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
    <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>
     <TextInput source="title"/>
     <CodeInput source="body"/>
-    <Typography variant="caption" gutterBottom sx={{ display: 'block' }}>
+    <Typography variant="caption" gutterBottom>
       {translate('resources.page.tips.attachment')}
     </Typography>
     <ImageInput multiple accept={{'image/*': []}} source="@files.body">
@@ -1983,7 +1983,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
    <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>
     <TextInput source="title"/>
     <CodeInput source="body"/>
-    <Typography variant="caption" gutterBottom sx={{ display: 'block' }}>
+    <Typography variant="caption" gutterBottom>
       {translate('resources.page.tips.attachment')}
     </Typography>
     <ImageInput multiple accept={{'image/*': []}} source="@files.body">
@@ -2130,7 +2130,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 }
             },
             tips: {
-              attachment: 'To insert image tag to page HTML code click on the file added below'
+              attachment: 'To insert image tag to page HTML code click on image file added below'
             }
         }
     }
