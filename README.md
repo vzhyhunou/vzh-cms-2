@@ -8,6 +8,7 @@
 - Data querying
 - Projections and transformations
 - Reusable UI components
+- Server-side XSS sanitization
 - Authentication and authorization
 - Internationalization
 - Import and export resources
@@ -21,6 +22,7 @@
 - cron
 - moment
 - bcrypt
+- DOMPurify
 ### Frontend
 - ReactJS
 - React-admin
@@ -32,7 +34,7 @@
 ## Getting Started
 ### Running
 - Download and install Node: https://nodejs.org/download/release/v20.19.5
-- Download and unzip app: https://github.com/vzhyhunou/vzh-cms-2/archive/refs/heads/master.zip
+- Checkout this repo or download and unzip https://github.com/vzhyhunou/vzh-cms-2/archive/refs/heads/master.zip
 - Change current directory: `cd vzh-cms-2-master`
 - Install packages: `npm install`
 - Build app: `npm run build`
@@ -41,4 +43,9 @@
 ### Usage
 - Home page: http://localhost:8090
 - Admin console: http://localhost:8090/admin, use `admin`, `editor`, `manager` as username and password
-- Import: replace `resources.imp.path` property in `config.js` with existing filename (e.g. `storage/import/hello.zip`) and restart app
+## Configuration
+### Datasource
+- Update `datasource` properties in `config.js` according to your environment, see https://typeorm.io/docs/data-source/data-source-options
+- Install appropriate database driver (e.g. `npm install mysql`, see https://typeorm.io/docs/drivers/mysql)
+### Import
+- Replace `resources.imp.path` property in `config.js` with existing filename (e.g. `storage/import/hello.zip`) and restart app
