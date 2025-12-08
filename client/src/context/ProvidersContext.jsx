@@ -7,7 +7,7 @@ export default ({ provider, children, ...rest }) => {
   const config = JSON.stringify(rest);
 
   useEffect(() => {
-    provider(config).then(setState);
+    provider(JSON.parse(config)).then(setState);
   }, [provider, config]);
 
   if (!state) {
