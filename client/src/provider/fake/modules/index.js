@@ -8,8 +8,8 @@ import {
 import { ImportService } from './resources/import.service';
 import sourceConfig from './datasource/configuration';
 
-export default async () => {
-  const dataSource = new DataSource(sourceConfig);
+export default async (props) => {
+  const dataSource = new DataSource(sourceConfig(props));
   await dataSource.initialize();
   const dataSourceService = new DataSourceService(dataSource);
   const schemasService = new SchemasService(dataSourceService);

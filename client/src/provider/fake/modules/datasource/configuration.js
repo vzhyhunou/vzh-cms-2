@@ -3,13 +3,13 @@ import sqlJs from 'sql.js';
 
 import fileSchema from './file.schema.json';
 
-export default {
+export default ({ basename = '' }) => ({
   type: 'sqljs',
   driver: sqlJs,
   sqlJsConfig: {
-    locateFile: (path, prefix) => `${prefix || '/'}${path}`
+    locateFile: (path, prefix) => `${basename}/${prefix}${path}`
   },
   entities: [new EntitySchema(fileSchema)],
   logging: true,
   synchronize: true
-};
+});
