@@ -43,9 +43,12 @@
 ### Usage
 - Home page: http://localhost:8090
 - Admin console: http://localhost:8090/admin, use `admin`, `editor`, `manager` as username and password
+
 ## Configuration
 ### Datasource
-- Update `datasource` properties in `config.js` according to your environment, see https://typeorm.io/docs/data-source/data-source-options
-- Install appropriate database driver (e.g. `npm install mysql`, see https://typeorm.io/docs/drivers/mysql)
+- Update `datasource` properties in `config.js` according to your environment. See https://typeorm.io/docs/data-source/data-source-options
+- Install appropriate database driver (e.g. `npm install mysql`). See https://typeorm.io/docs/drivers/mysql
 ### Import
-- Replace `resources.imp.path` property in `config.js` with existing filename (e.g. `storage/import/hello.zip`) and restart app
+- Create empty database
+- Replace `resources.imp.path` property in `config.js` with existing filename (e.g. `storage/import/hello.zip`)
+- Restart app
