@@ -17,7 +17,7 @@ const createFormData = (dto, files) => {
   return formData;
 };
 
-export default ({ dataProvider, funcProvider: { originByData } }) => {
+export default ({ dataProvider, funcProvider: { fileOrigin } }) => {
   const req = (data) => {
     const { '@files': extra, ...rest } = data;
     const sanitized = cloneDeep(rest);
@@ -59,7 +59,7 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
         .filter(({ v }) => FIELD_PATTERN.test(v))
         .map(async ({ k, v }) =>
           set(sanitized, k, {
-            src: await originByData(v),
+            src: await fileOrigin(v),
             title: v
           })
         )
@@ -80,7 +80,7 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
             `@files.${k}`,
             await Promise.all(
               v.map(async (n) => ({
-                src: await originByData(n),
+                src: await fileOrigin(n),
                 title: n
               }))
             )
@@ -101,7 +101,7 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
         .filter(({ v }) => FIELD_PATTERN.test(v))
         .map(async ({ k, v }) =>
           set(sanitized, k, {
-            src: await originByData(v),
+            src: await fileOrigin(v),
             title: v
           })
         )
@@ -122,7 +122,7 @@ export default ({ dataProvider, funcProvider: { originByData } }) => {
             sanitized,
             k,
             await s.reduce(
-              async (r, n) => (await r).replaceAll(n, await originByData(n)),
+              async (r, n) => (await r).replaceAll(n, await fileOrigin(n)),
               Promise.resolve(v)
             )
           )

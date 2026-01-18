@@ -5,12 +5,12 @@ const map = extList();
 const metaByName = (name) => map.get(name.split('.')[1]);
 
 export default ({ schemasService }) => {
-  const valueByName = async (name) =>
+  const fileValue = async (name) =>
     (await schemasService.findById(STATIC, name)).value;
   const func = {
-    pathByData: async (type, name) =>
-      `data:${metaByName(name)};base64,${await valueByName(name)}`,
-    originByData: (name) => func.pathByData(undefined, name)
+    fileSrc: async (type, name) =>
+      `data:${metaByName(name)};base64,${await fileValue(name)}`,
+    fileOrigin: (name) => func.fileSrc(undefined, name)
   };
   return func;
 };
