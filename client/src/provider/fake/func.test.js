@@ -15,7 +15,7 @@ describe('functions', () => {
     expect(result).toEqual('data:image/png;base64,abc');
   });
 
-  it('fileOrigin no param', async () => {
+  it('fileOrigin no context', async () => {
     const result = await getFuncProvider({ schemasService }).fileOrigin(
       '900150983cd24fb0d6963f7d28e17f71.png'
     );
