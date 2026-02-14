@@ -4,6 +4,7 @@
   "dependencies": {
     "@vzhyhunou/vzh-cms-common-2": "^0.0.1",
     "react-admin": "^5.12.3",
+    "ra-input-rich-text": "^5.12.3",
     "reflect-metadata": "^0.2.2",
     "sql.js": "^1.13.0",
     "jwt-decode": "^3.1.2",

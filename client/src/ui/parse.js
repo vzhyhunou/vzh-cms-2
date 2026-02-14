@@ -1,6 +1,5 @@
-import * as admin from 'react-admin';
-
 import b from './bindings';
+import a from './admin';
 
 const parse = (code, bindings) => {
   const params = { parse, ...b, ...bindings };
@@ -12,7 +11,11 @@ const parse = (code, bindings) => {
 };
 
 export const adminParse = (code, bindings) => {
-  return parse(code, { parse: adminParse, ...admin, ...bindings });
+  return parse(code, {
+    parse: adminParse,
+    ...a,
+    ...bindings
+  });
 };
 
 export default parse;

@@ -3,7 +3,16 @@ import Component from './Component';
 import CodeInput from './CodeInput';
 import ParseInput from './ParseInput';
 import RouteComponent from './RouteComponent';
+import ImagesInput from './ImagesInput';
 
 export * from './validation';
+export * from './editor';
 
-export { Content, Component, CodeInput, ParseInput, RouteComponent };
+export {
+  Content,
+  Component,
+  CodeInput,
+  ParseInput,
+  RouteComponent,
+  ImagesInput
+};

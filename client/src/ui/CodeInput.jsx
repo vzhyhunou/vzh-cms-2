@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Labeled, useInput, useTheme, InputHelperText } from 'react-admin';
 import { Box } from '@mui/material';
 import CodeMirror from '@uiw/react-codemirror';
@@ -7,19 +7,32 @@ import { EditorView } from '@codemirror/view';
 import { oneDark } from '@codemirror/theme-one-dark';
 import FormHelperText from '@mui/material/FormHelperText';
 
-export default (props) => {
+export default ({ inputProps, ...props }) => {
   const {
-    field: { value, onChange },
+    field: { value, onChange, onBlur },
     fieldState: { error }
   } = useInput(props);
   const [theme] = useTheme();
+  const [state, setState] = useState();
+
+  useEffect(() => {
+    setState(value);
+  }, [value]);
 
   return (
     <Labeled fullWidth>
-      <Box sx={{ '& .cm-editor': { backgroundColor: 'inherit' } }} {...props}>
+      <Box
+        sx={{ '& .cm-editor': { backgroundColor: 'inherit' } }}
+        {...props}
+        onBlur={(value) => {
+          onChange(state);
+          onBlur(value);
+        }}
+      >
         <CodeMirror
           value={value}
-          onChange={onChange}
+          {...inputProps}
+          onChange={setState}
           extensions={[
             EditorView.lineWrapping,
             ...[theme === 'dark' ? [oneDark] : []],

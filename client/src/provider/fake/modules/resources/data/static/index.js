@@ -1,3 +1,3 @@
-import a6b1fe048182b876c7472e431fae9ba8 from './a6b1fe048182b876c7472e431fae9ba8.json';
+import _607c21494861903fae104cea2e04533c from './607c21494861903fae104cea2e04533c.json';
 
-export default [a6b1fe048182b876c7472e431fae9ba8];
+export default [_607c21494861903fae104cea2e04533c];

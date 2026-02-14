@@ -10,7 +10,7 @@
     "ru": "Домашняя страница"
   },
   "body": {
-    "en": "<h1>Home page</h1>\n<img src=\"a6b1fe048182b876c7472e431fae9ba8.png\"/>\n<p>Use this page as a way to start new project.</p>",
-    "ru": "<h1>Домашняя страница</h1>\n<img src=\"a6b1fe048182b876c7472e431fae9ba8.png\"/>\n<p>Используйте эту страницу для создания нового проекта.</p>"
+    "en": "<div>\n <h1>Home page</h1>\n <img src=\"607c21494861903fae104cea2e04533c.png\"/>\n <p>Use this page as a way to start new project.</p>\n</div>",
+    "ru": "<div>\n <h1>Домашняя страница</h1>\n <img src=\"607c21494861903fae104cea2e04533c.png\"/>\n <p>Используйте эту страницу для создания нового проекта.</p>\n</div>"
   }
 }
