@@ -19,7 +19,7 @@ const createFormData = (dto, files) => {
 
 export default ({ dataProvider, funcProvider: { fileOrigin } }) => {
   const req = (data) => {
-    const { '@files': extra, ...rest } = data;
+    const { '@files': extra, '@editor': extra2, ...rest } = data;
     const sanitized = cloneDeep(rest);
 
     dump(sanitized)

@@ -13,7 +13,7 @@
     "ru": "Пример страницы 2"
   },
   "body": {
-    "en": "<h1>Sample page 2</h1>",
-    "ru": "<h1>Пример страницы 2</h1>"
+    "en": "<div>\n <h1>Sample page 2</h1>\n <Component resource=\"page\" name=\"Menu\"/>\n</div>",
+    "ru": "<div>\n <h1>Пример страницы 2</h1>\n <Component resource=\"page\" name=\"Menu\"/>\n</div>"
   }
 }
