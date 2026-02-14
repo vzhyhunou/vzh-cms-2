@@ -7,7 +7,7 @@ import { EditorView } from '@codemirror/view';
 import { oneDark } from '@codemirror/theme-one-dark';
 import FormHelperText from '@mui/material/FormHelperText';
 
-export default (props) => {
+export default ({ inputProps, ...props }) => {
   const {
     field: { value, onChange, onBlur },
     fieldState: { error }
@@ -31,6 +31,7 @@ export default (props) => {
       >
         <CodeMirror
           value={value}
+          {...inputProps}
           onChange={setState}
           extensions={[
             EditorView.lineWrapping,

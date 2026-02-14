@@ -13,7 +13,7 @@ export default ({ source, ...rest }) => {
   const { setValue, getValues } = useFormContext();
   const { selectedLocale } = useTranslatableContext();
   const currentName = selectedLocale ? `${source}.${selectedLocale}` : source;
-  const val = useWatch({ name: currentName });
+  const val = useWatch({ name: currentName }) || '<div></div>';
   const [state, setState] = useState();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default ({ source, ...rest }) => {
     return null;
   }
 
-  const handleBlur = (val) => {
+  const handle = (val) => {
     let value = (get(getValues(), `@files.${currentName}`) || []).reduce(
       (r, { src, title }) => r.replaceAll(src, title),
       val
@@ -47,7 +47,8 @@ export default ({ source, ...rest }) => {
       defaultValue={state}
       editorOptions={{
         ...DefaultEditorOptions,
-        onBlur: ({ editor }) => handleBlur(editor.getHTML()),
+        onBlur: ({ editor }) => handle(editor.getHTML()),
+        onFocus: ({ editor }) => handle(editor.getHTML()),
         extensions: [
           ...DefaultEditorOptions.extensions.map((e) =>
             e.name === 'image'

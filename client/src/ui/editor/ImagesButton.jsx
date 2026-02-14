@@ -9,14 +9,14 @@ import {
 import { useTranslate, ImageInput, ImageField } from 'react-admin';
 import { useTiptapEditor } from 'ra-input-rich-text';
 
-export default ({ title, children, ...rest }) => {
+export default ({ title, source, children, ...rest }) => {
   const [open, setOpen] = useState(false);
   const translate = useTranslate();
   const editor = useTiptapEditor();
   const handleClick = useCallback(
     (url) => {
-      editor.chain().focus().setImage({ src: url }).run();
       setOpen(false);
+      editor.chain().focus().setImage({ src: url }).run();
     },
     [editor]
   );
@@ -33,7 +33,11 @@ export default ({ title, children, ...rest }) => {
       </ToggleButton>
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogContent>
-          <ImageInput multiple accept={{ 'image/*': [] }} source="@files.body">
+          <ImageInput
+            multiple
+            accept={{ 'image/*': [] }}
+            source={`@files.${source}`}
+          >
             <ImageField
               source="src"
               title="title"
