@@ -8,6 +8,12 @@ import ComponentExtension from './ComponentExtension';
 
 const replaceTagName = (s, n1, n2) =>
   s.replace(new RegExp(`(/?)(${n1})([ >])`, 'g'), `$1${n2}$3`);
+const xml = (s) => {
+  const doc = new DOMParser().parseFromString(s, 'text/html');
+  const body = doc.querySelector('body');
+  const value = new XMLSerializer().serializeToString(body);
+  return value.match(/<[^>]*>([\s|\S]*)</)[1];
+};
 
 export default ({ source, ...rest }) => {
   const { setValue, getValues } = useFormContext();
@@ -36,6 +42,7 @@ export default ({ source, ...rest }) => {
       (r, { src, title }) => r.replaceAll(src, title),
       val
     );
+    value = xml(value);
     value = replaceTagName(value, 'react-component', 'Component');
     setValue(currentName, value);
   };
