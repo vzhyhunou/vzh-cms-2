@@ -2,7 +2,7 @@
 ![Deploy](https://github.com/vzhyhunou/vzh-cms-2/actions/workflows/deploy.yml/badge.svg)
 
 ## Demo
-[![Demo](./cms.png)](https://vzhyhunou.github.io/vzh-cms-2)
+![Demo](./cms.png)
 [https://vzhyhunou.github.io/vzh-cms-2](https://vzhyhunou.github.io/vzh-cms-2)
 
 ## Features
