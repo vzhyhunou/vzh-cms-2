@@ -77,8 +77,7 @@ Also you can import `storage/import/hello.zip` to see expected result.
 - Select `Administrator` as Editor
 #### Create Entity
 - Select Entities tab
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/schema/entity.png)
 - Input next code
 ```javascript
@@ -98,8 +97,7 @@ Also you can import `storage/import/hello.zip` to see expected result.
 ```
 #### Create Admin Components
 - Select Components tab
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/schema/create.png)
 - Input `Create` as Name
 - Input next code as Element
@@ -110,8 +108,7 @@ Also you can import `storage/import/hello.zip` to see expected result.
  </SimpleForm>
 </Create>
 ```
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/schema/edit.png)
 - Input `Edit` as Name
 - Input next code as Element
@@ -122,8 +119,7 @@ Also you can import `storage/import/hello.zip` to see expected result.
  </SimpleForm>
 </Edit>
 ```
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/schema/list.png)
 - Input `List` as Name
 - Input next code as Element
@@ -137,7 +133,6 @@ Also you can import `storage/import/hello.zip` to see expected result.
 </List>
 ```
 - Click Save button
-![Hello World](./img/hello/object/list.png)
 - Reload page, notice new menu item Objects along with Schemas
 ### Create Data Instances
 - Select Objects menu item
@@ -145,20 +140,18 @@ Also you can import `storage/import/hello.zip` to see expected result.
 ![Hello World](./img/hello/object/create.png)
 - Input `cat` as Name
 - Click Save button
-![Hello World](./img/hello/object/list1.png)
 - Select Objects menu item, notice new object
 - Click Create button
 - Input `dog` as Name
 - Click Save button
-![Hello World](./img/hello/object/list2.png)
+![Hello World](./img/hello/object/list.png)
 - Select Objects menu item, notice another object
 ### Data Querying
 #### Create Multiple Result Query
 - Select Schemas menu item
 - Click Edit button for 'object' row
 - Select Contents tab
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/object/content/menu.png)
 - Input `menu` as Name
 - Input next code as Options
@@ -189,8 +182,7 @@ curl "localhost:8090/api/content/object/menu"
 - Select Schemas menu item
 - Click Edit button for 'object' row
 - Select Contents tab
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/object/content/one.png)
 - Input `one` as Name
 - Turn on 'Single row' switch
@@ -216,8 +208,7 @@ curl "localhost:8090/api/content/object/one?id=1"
 - Select Schemas menu item
 - Click Edit button for 'object' row
 - Select Components tab
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/object/component/menu.png)
 - Input `Menu` as Name
 - Input next code as Element
@@ -234,8 +225,7 @@ curl "localhost:8090/api/content/object/one?id=1"
  }
 </Content>
 ```
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/object/component/header.png)
 - Input `Header` as Name
 - Input next code as Element
@@ -246,8 +236,7 @@ curl "localhost:8090/api/content/object/one?id=1"
  }
 </Content>
 ```
-- Click Add
-- Pull down combo
+- Add then pull down new combo
 ![Hello World](./img/hello/object/component/home.png)
 - Input `Home` as Name
 - Input next code as Element
