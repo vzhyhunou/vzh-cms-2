@@ -37,6 +37,7 @@ export class SchemasService {
   async verifyEntities(item) {
     const others = Object.entries(await this.findEntities())
       .filter(([key]) => key !== item.id)
+      // eslint-disable-next-line no-unused-vars
       .flatMap(([key, value]) => value);
     const current = this.entities(item).map(({ name }) => name);
     if (current.some((name) => others.includes(name))) {

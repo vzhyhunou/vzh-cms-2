@@ -1491,7 +1491,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   ...target,
   messages: Object.fromEntries(target.messages.map(({name, value}) => [name, value])),
   messagesIds: target.messages.map(({id}) => id)
-}`,dmn=[{name:"Create",element:`{(translate => <Create>
+}`,dmn=[{name:"Create",element:`{((translate, locales) => <Create>
  <TabbedForm>
   <FormTab label={translate('resources.schema.tabs.general')}>
    <TextInput source="id" validate={[required(), useUniqId()]}/>
@@ -1571,12 +1571,12 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
    </ArrayInput>
   </FormTab>
   <FormTab label={translate('resources.schema.tabs.messages')}>
-   <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>
+   <TranslatableInputs locales={locales.map(({locale}) => locale)}>
     <CodeInput source="messages" label=""/>
    </TranslatableInputs>
   </FormTab>
  </TabbedForm>
-</Create>)(useTranslate())}`},{name:"Edit",element:`{(translate => <Edit>
+</Create>)(useTranslate(), useLocales())}`},{name:"Edit",element:`{((translate, locales) => <Edit>
  <TabbedForm>
   <FormTab label={translate('resources.schema.tabs.general')}>
    <Labeled>
@@ -1658,12 +1658,12 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
    </ArrayInput>
   </FormTab>
   <FormTab label={translate('resources.schema.tabs.messages')}>
-   <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>
+   <TranslatableInputs locales={locales.map(({locale}) => locale)}>
     <CodeInput source="messages" label=""/>
    </TranslatableInputs>
   </FormTab>
  </TabbedForm>
-</Edit>)(useTranslate())}`},{name:"List",element:`<List filters={[
+</Edit>)(useTranslate(), useLocales())}`},{name:"List",element:`<List filters={[
  <TextInput source="id" alwaysOn/>
 ]} exporter={false}>
  <Datagrid rowClick={false}>
@@ -2045,11 +2045,11 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 }))(system.locale, Object.keys(settings.schema.locales)[0])`,projection:`((currentLocale, defaultLocale) => ({
   title: target.title.find(({locale}) => locale === currentLocale)?.value || target.title.find(({locale}) => locale === defaultLocale)?.value,
   code: transform(target.body.find(({locale}) => locale === currentLocale)?.value || target.body.find(({locale}) => locale === defaultLocale)?.value)
-}))(system.locale, Object.keys(settings.schema.locales)[0])`}],Tmn=[{name:"Create",element:`{(translate => <Create>
+}))(system.locale, Object.keys(settings.schema.locales)[0])`}],Tmn=[{name:"Create",element:`{((translate, locales) => <Create>
  <TabbedForm>
   <FormTab label={translate('resources.page.tabs.general')}>
    <TextInput source="id" validate={[required(), useUniqId()]}/>
-   <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>
+   <TranslatableInputs locales={locales.map(({locale}) => locale)}>
     <TextInput source="title"/>
     <Component resource="page" name="RichInput" source="body"/>
    </TranslatableInputs>
@@ -2064,13 +2064,13 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
    </ArrayInput>
   </FormTab>
  </TabbedForm>
-</Create>)(useTranslate())}`},{name:"Edit",element:`{(translate => <Edit>
+</Create>)(useTranslate(), useLocales())}`},{name:"Edit",element:`{((translate, locales) => <Edit>
  <TabbedForm>
   <FormTab label={translate('resources.page.tabs.general')}>
    <Labeled>
     <FunctionField source="updatedAt" render={() => <><DateField showTime source="updatedAt"/> <TextField source="updatedBy"/></>}/>
    </Labeled>
-   <TranslatableInputs locales={Object.entries(settings.schema.locales).map(([name]) => name)}>
+   <TranslatableInputs locales={locales.map(({locale}) => locale)}>
     <TextInput source="title"/>
     <Component resource="page" name="RichInput" source="body"/>
    </TranslatableInputs>
@@ -2085,7 +2085,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
    </ArrayInput>
   </FormTab>
  </TabbedForm>
-</Edit>)(useTranslate())}`},{name:"Icon",element:`<SvgIcon>
+</Edit>)(useTranslate(), useLocales())}`},{name:"Icon",element:`<SvgIcon>
   <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2m-1 9H9V9h10zm-4 4H9v-2h6zm4-8H9V5h10z" />
 </SvgIcon>`},{name:"Layout",element:`<Component resource="page" name="Style"/>
 {(([open, setOpen]) => (
