@@ -1,8 +1,10 @@
 # ReactJS and NestJS - CMS
 ![Deploy](https://github.com/vzhyhunou/vzh-cms-2/actions/workflows/deploy.yml/badge.svg)
 
+Full-stack JavaScript customizable CMS, supports REST API and component-based UI.
+
 ## Demo
-![Demo](./cms.png)
+![Demo](./img/cms.png)
 [https://vzhyhunou.github.io/vzh-cms-2](https://vzhyhunou.github.io/vzh-cms-2)
 
 ## Features
@@ -58,21 +60,26 @@
 - Restart app
 
 ## Hello World
+This explains how to create your own schemas from scratch step by step.
+Also you can import `storage/import/hello.zip` to see expected result.
 ### Preparation
 - Replace `resources.imp.path` property in `config.js` with `storage/import/empty.zip`
 - Restart app
 - Open page: http://localhost:8090
+![Hello World](./img/hello/preparation.png)
 - Use `admin` as username and password
 ### Create New Schema
 - Select Schemas menu item
 - Click Create button
 - Select General tab
+![Hello World](./img/hello/schema/general.png)
 - Input `object` as Id
 - Select `Administrator` as Editor
 #### Create Entity
 - Select Entities tab
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/schema/entity.png)
 - Input next code
 ```javascript
 {
@@ -93,6 +100,7 @@
 - Select Components tab
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/schema/create.png)
 - Input `Create` as Name
 - Input next code as Element
 ```jsx
@@ -104,6 +112,7 @@
 ```
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/schema/edit.png)
 - Input `Edit` as Name
 - Input next code as Element
 ```jsx
@@ -115,6 +124,7 @@
 ```
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/schema/list.png)
 - Input `List` as Name
 - Input next code as Element
 ```jsx
@@ -127,16 +137,20 @@
 </List>
 ```
 - Click Save button
+![Hello World](./img/hello/object/list.png)
 - Reload page, notice new menu item Objects along with Schemas
 ### Create Data Instances
 - Select Objects menu item
 - Click Create button
+![Hello World](./img/hello/object/create.png)
 - Input `cat` as Name
 - Click Save button
+![Hello World](./img/hello/object/list1.png)
 - Select Objects menu item, notice new object
 - Click Create button
 - Input `dog` as Name
 - Click Save button
+![Hello World](./img/hello/object/list2.png)
 - Select Objects menu item, notice another object
 ### Data Querying
 #### Create Multiple Result Query
@@ -145,6 +159,7 @@
 - Select Contents tab
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/object/content/menu.png)
 - Input `menu` as Name
 - Input next code as Options
 ```javascript
@@ -176,6 +191,7 @@ curl "localhost:8090/api/content/object/menu"
 - Select Contents tab
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/object/content/one.png)
 - Input `one` as Name
 - Turn on 'Single row' switch
 - Input next code as Options
@@ -202,6 +218,7 @@ curl "localhost:8090/api/content/object/one?id=1"
 - Select Components tab
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/object/component/menu.png)
 - Input `Menu` as Name
 - Input next code as Element
 ```jsx
@@ -219,6 +236,7 @@ curl "localhost:8090/api/content/object/one?id=1"
 ```
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/object/component/header.png)
 - Input `Header` as Name
 - Input next code as Element
 ```jsx
@@ -230,6 +248,7 @@ curl "localhost:8090/api/content/object/one?id=1"
 ```
 - Click Add
 - Pull down combo
+![Hello World](./img/hello/object/component/home.png)
 - Input `Home` as Name
 - Input next code as Element
 ```jsx
@@ -244,6 +263,7 @@ curl "localhost:8090/api/content/object/one?id=1"
 - Click Edit button for 'schema' row
 - Select Components tab
 - Pull down Routes combo
+![Hello World](./img/hello/schema/routes.png)
 - Update Element with next code
 ```jsx
 <Route path=":id?" element={<RouteComponent resource="object" name="Home"/>}/>
