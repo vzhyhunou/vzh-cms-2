@@ -63,22 +63,22 @@ Full-stack JavaScript customizable CMS, supports REST API and component-based UI
 This explains how to create your own schemas from scratch step by step.
 Also you can import `storage/import/hello.zip` to see expected result.
 ### Preparation
+![Hello World](./img/hello/preparation.png)
 - Replace `resources.imp.path` property in `config.js` with `storage/import/empty.zip`
 - Restart app
 - Open page: http://localhost:8090
-![Hello World](./img/hello/preparation.png)
 - Use `admin` as username and password
-### Create New Schema
+### Create Schema
+![Hello World](./img/hello/schema/general.png)
 - Select Schemas menu item
 - Click Create button
 - Select General tab
-![Hello World](./img/hello/schema/general.png)
 - Input `object` as Id
 - Select `Administrator` as Editor
 #### Create Entity
+![Hello World](./img/hello/schema/entity.png)
 - Select Entities tab
 - Add then pull down new combo
-![Hello World](./img/hello/schema/entity.png)
 - Input next code
 ```javascript
 {
@@ -96,9 +96,9 @@ Also you can import `storage/import/hello.zip` to see expected result.
 }
 ```
 #### Create Admin Components
+![Hello World](./img/hello/schema/create.png)
 - Select Components tab
 - Add then pull down new combo
-![Hello World](./img/hello/schema/create.png)
 - Input `Create` as Name
 - Input next code as Element
 ```jsx
@@ -109,7 +109,6 @@ Also you can import `storage/import/hello.zip` to see expected result.
 </Create>
 ```
 - Add then pull down new combo
-![Hello World](./img/hello/schema/edit.png)
 - Input `Edit` as Name
 - Input next code as Element
 ```jsx
@@ -120,7 +119,6 @@ Also you can import `storage/import/hello.zip` to see expected result.
 </Edit>
 ```
 - Add then pull down new combo
-![Hello World](./img/hello/schema/list.png)
 - Input `List` as Name
 - Input next code as Element
 ```jsx
@@ -133,26 +131,25 @@ Also you can import `storage/import/hello.zip` to see expected result.
 </List>
 ```
 - Click Save button
-- Reload page, notice new menu item Objects along with Schemas
+- Reload page, notice new Objects menu item along with Schemas
 ### Create Data Instances
+![Hello World](./img/hello/object/list.png)
 - Select Objects menu item
 - Click Create button
-![Hello World](./img/hello/object/create.png)
 - Input `cat` as Name
 - Click Save button
 - Select Objects menu item, notice new object
 - Click Create button
 - Input `dog` as Name
 - Click Save button
-![Hello World](./img/hello/object/list.png)
 - Select Objects menu item, notice another object
 ### Data Querying
 #### Create Multiple Result Query
+![Hello World](./img/hello/object/content/menu.png)
 - Select Schemas menu item
 - Click Edit button for 'object' row
 - Select Contents tab
 - Add then pull down new combo
-![Hello World](./img/hello/object/content/menu.png)
 - Input `menu` as Name
 - Input next code as Options
 ```javascript
@@ -165,8 +162,8 @@ Also you can import `storage/import/hello.zip` to see expected result.
 ```
 - Click Save button
 - At the moment you are able to fetch data by HTTP request
-```bash
-curl "localhost:8090/api/content/object/menu"
+```console
+# curl "localhost:8090/api/content/object/menu"
 [
   {
     "id": 1,
@@ -179,13 +176,13 @@ curl "localhost:8090/api/content/object/menu"
 ]
 ```
 #### Create Single Result Query
+![Hello World](./img/hello/object/content/one.png)
 - Select Schemas menu item
 - Click Edit button for 'object' row
 - Select Contents tab
 - Add then pull down new combo
-![Hello World](./img/hello/object/content/one.png)
 - Input `one` as Name
-- Turn on 'Single row' switch
+- Turn 'Single row' switch on
 - Input next code as Options
 ```javascript
 {
@@ -196,8 +193,8 @@ curl "localhost:8090/api/content/object/menu"
 ```
 - Click Save button
 - At the moment you are able to fetch data by HTTP request
-```bash
-curl "localhost:8090/api/content/object/one?id=1"
+```console
+# curl "localhost:8090/api/content/object/one?id=1"
 {
   "id": 1,
   "name": "cat"
@@ -205,11 +202,11 @@ curl "localhost:8090/api/content/object/one?id=1"
 ```
 ### Create Home Page
 #### Create Page Components
+![Hello World](./img/hello/object/component/menu.png)
 - Select Schemas menu item
 - Click Edit button for 'object' row
 - Select Components tab
 - Add then pull down new combo
-![Hello World](./img/hello/object/component/menu.png)
 - Input `Menu` as Name
 - Input next code as Element
 ```jsx
@@ -226,7 +223,6 @@ curl "localhost:8090/api/content/object/one?id=1"
 </Content>
 ```
 - Add then pull down new combo
-![Hello World](./img/hello/object/component/header.png)
 - Input `Header` as Name
 - Input next code as Element
 ```jsx
@@ -237,7 +233,6 @@ curl "localhost:8090/api/content/object/one?id=1"
 </Content>
 ```
 - Add then pull down new combo
-![Hello World](./img/hello/object/component/home.png)
 - Input `Home` as Name
 - Input next code as Element
 ```jsx
@@ -248,14 +243,17 @@ curl "localhost:8090/api/content/object/one?id=1"
 ```
 - Click Save button
 #### Update Routing
+![Hello World](./img/hello/schema/routes.png)
 - Select Schemas menu item
 - Click Edit button for 'schema' row
 - Select Components tab
 - Pull down Routes combo
-![Hello World](./img/hello/schema/routes.png)
 - Update Element with next code
 ```jsx
 <Route path=":id?" element={<RouteComponent resource="object" name="Home"/>}/>
 ```
 - Click Save button
-- Check result: http://localhost:8090
+#### Check result
+![Hello World](./img/hello/result.png)
+- Open page: http://localhost:8090
+- Click any link to update content
