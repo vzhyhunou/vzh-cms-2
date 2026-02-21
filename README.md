@@ -95,6 +95,7 @@ Also you can import `storage/import/hello.zip` to see expected result.
     }
 }
 ```
+See [https://typeorm.io/docs/entity/separating-entity-definition](https://typeorm.io/docs/entity/separating-entity-definition) for further information
 #### Create Admin Components
 ![Hello World](./img/hello/schema/create.png)
 - Select Components tab
@@ -132,6 +133,8 @@ Also you can import `storage/import/hello.zip` to see expected result.
 ```
 - Click Save button
 - Reload page, notice new Objects menu item along with Schemas
+
+See [https://marmelab.com/react-admin/documentation.html](https://marmelab.com/react-admin/documentation.html) for further information
 ### Create Data Instances
 ![Hello World](./img/hello/object/list.png)
 - Select Objects menu item
@@ -200,6 +203,7 @@ Also you can import `storage/import/hello.zip` to see expected result.
   "name": "cat"
 }
 ```
+See [https://typeorm.io/docs/working-with-entity-manager/find-options](https://typeorm.io/docs/working-with-entity-manager/find-options) for further information
 ### Create Home Page
 #### Create Page Components
 ![Hello World](./img/hello/object/component/menu.png)
@@ -253,6 +257,8 @@ Also you can import `storage/import/hello.zip` to see expected result.
 <Route path=":id?" element={<RouteComponent resource="object" name="Home"/>}/>
 ```
 - Click Save button
+
+See [https://reactrouter.com/api/components/Route](https://reactrouter.com/api/components/Route) for further information
 #### Check result
 ![Hello World](./img/hello/result.png)
 - Open page: http://localhost:8090
