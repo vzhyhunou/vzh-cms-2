@@ -109,6 +109,7 @@ See [https://typeorm.io/docs/entity/separating-entity-definition](https://typeor
  </SimpleForm>
 </Create>
 ```
+See [https://marmelab.com/react-admin/documentation.html](https://marmelab.com/react-admin/documentation.html) for further information
 - Add then pull down new combo
 - Input `Edit` as Name
 - Input next code as Element
@@ -133,8 +134,6 @@ See [https://typeorm.io/docs/entity/separating-entity-definition](https://typeor
 ```
 - Click Save button
 - Reload page, notice new Objects menu item along with Schemas
-
-See [https://marmelab.com/react-admin/documentation.html](https://marmelab.com/react-admin/documentation.html) for further information
 ### Create Data Instances
 ![Hello World](./img/hello/object/list.png)
 - Select Objects menu item
@@ -163,6 +162,7 @@ See [https://marmelab.com/react-admin/documentation.html](https://marmelab.com/r
     }
 }
 ```
+See [https://typeorm.io/docs/working-with-entity-manager/find-options](https://typeorm.io/docs/working-with-entity-manager/find-options) for further information
 - Click Save button
 - At the moment you are able to fetch data by HTTP request
 ```console
@@ -203,7 +203,6 @@ See [https://marmelab.com/react-admin/documentation.html](https://marmelab.com/r
   "name": "cat"
 }
 ```
-See [https://typeorm.io/docs/working-with-entity-manager/find-options](https://typeorm.io/docs/working-with-entity-manager/find-options) for further information
 ### Create Home Page
 #### Create Page Components
 ![Hello World](./img/hello/object/component/menu.png)
@@ -256,9 +255,8 @@ See [https://typeorm.io/docs/working-with-entity-manager/find-options](https://t
 ```jsx
 <Route path=":id?" element={<RouteComponent resource="object" name="Home"/>}/>
 ```
-- Click Save button
-
 See [https://reactrouter.com/api/components/Route](https://reactrouter.com/api/components/Route) for further information
+- Click Save button
 #### Check result
 ![Hello World](./img/hello/result.png)
 - Open page: http://localhost:8090
